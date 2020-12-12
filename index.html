@@ -1,47 +1,113 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="description" content="Webseite von Markus Schmieder">
-  <meta name="keywords" content="Schmieder, Frontend, Developer, Entwickler, Köln">
+  <meta name="description" content="Weather at your location">
+  <meta name="keywords" content="Weather, forecast, temperature">
   <meta name="author" content="Markus Schmieder">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="5; http://schmieder.bplaced.net">
-  
-  <title>Homepage von Markus Schmieder</title>
-  
-  <style>
-    
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial;
-      font-size: 16px;
-    }
-    
-    p {
-    text-align: center;
-    }
-    
-    a {
-    color: #ccc;
-    }
-    
-    a:hover {
-    color: #aaa;
-    }
-    
-    .bold {
-    font-weight: bold;
-    }
-    
-  </style>
-  
-</head>
-<body>
 
-<p>Webseite von Markus Schmieder: <a href="http://schmieder.bplaced.net">http://schmieder.bplaced.net</a></p>
-<p>Automatische Weiterleitung zur Webseite "http://schmieder.bplaced.net" in <span class="bold">5 Sekunden</span>...</p>
+<title>Weather at your location</title>
+
+<style>
+
+body {
+font-family: Arial;
+}
+
+.big-icon {
+width: 50px;
+max-width: 50px;
+height: 50px;
+max-height: 50px;
+}
+
+.temp {
+font-size: 50px;
+}
+
+.font-size-12px {
+font-size: 12px;
+}
+
+.wrapper {
+max-width: 200px;
+margin: 0 auto;
+}
+
+.today {
+background-color: #eee;
+padding: 5px;
+border-radius: 5px;
+display: table;
+margin-top: 5px;
+}
+
+</style>
+
+</head>
+
+<body onload="getLocation()">
+<div class="wrapper">
+<div>Weather at your location</div>
+
+<p id="output">Loading...</p>
+</div>
+
+<script>
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    document.getElementById("output").innerHTML = "Browser-Support-Error: Geolocation not supported.";
+  }
+}
+
+function showPosition(position) {
+loadDoc(position.coords.latitude,position.coords.longitude);
+}
+
+function loadDoc(posLat,posLong) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(JSON.parse(this.responseText)[0].title + ' ' + JSON.parse(this.responseText)[0].woeid);
+	  loadDoc2(JSON.parse(this.responseText)[0].woeid);
+    }
+  };
+  xhttp.open("GET", "https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/search/?lattlong=" + posLat + "," + posLong, true);
+  xhttp.send();
+}
+
+function loadDoc2(cityid) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	/*console.log(JSON.parse(this.responseText));*/
+	document.querySelector('#output').innerHTML = '';
+	document.querySelector('#output').innerHTML +=
+      
+ 	  JSON.parse(this.responseText).title +'<br>'+
+	  '<div class="today"><span title="' + JSON.parse(this.responseText).consolidated_weather[0].applicable_date + '">Today:</span><br>' +
+	  '<span class="temp">' + Math.round(JSON.parse(this.responseText).consolidated_weather[0].the_temp)  + '</span> °C <img class="big-icon" src="https://www.metaweather.com/static/img/weather/' + JSON.parse(this.responseText).consolidated_weather[0].weather_state_abbr + '.svg" alt="' + JSON.parse(this.responseText).consolidated_weather[0].weather_state_name + '"><br>' +
+	  '<span class="font-size-12px">' + Math.round(JSON.parse(this.responseText).consolidated_weather[0].min_temp) +' - ' + Math.round(JSON.parse(this.responseText).consolidated_weather[0].max_temp) + ' °C, ' + JSON.parse(this.responseText).consolidated_weather[0].weather_state_name +'</span></div>'+
+       '<br>'+
+	  
+	  '<span title="' + JSON.parse(this.responseText).consolidated_weather[1].applicable_date + '">Tomorrow:</span><br>' +
+	  
+      '<img class="big-icon" src="https://www.metaweather.com/static/img/weather/' + JSON.parse(this.responseText).consolidated_weather[1].weather_state_abbr + '.svg" alt="' + JSON.parse(this.responseText).consolidated_weather[1].weather_state_name + '"><br>' +
+	  '<span class="font-size-12px">' + Math.round(JSON.parse(this.responseText).consolidated_weather[1].min_temp) +' - ' + Math.round(JSON.parse(this.responseText).consolidated_weather[1].max_temp) + ' °C, ' + JSON.parse(this.responseText).consolidated_weather[1].weather_state_name +'</span><br><br>'+
+	  
+	  '<span class="font-size-12px">source: <a href="https://www.metaweather.com/de/' + JSON.parse(this.responseText).woeid +'/" target="_blank">Metaweather.com</a></span>';
+    }
+  };
+  xhttp.open("GET", "https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/" + cityid, true);
+  xhttp.send();
+}
+
+</script>
 
 </body>
 </html>
