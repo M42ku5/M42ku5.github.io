@@ -45,6 +45,11 @@ let audio = new Audio('audio.mp3');
 audio.play();
 }
 
+  document.addEventListener("DOMContentLoaded", function(event) {
+    console.log("DOM fully loaded and parsed");
+    playAudio();
+  });
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
     navigator.serviceWorker

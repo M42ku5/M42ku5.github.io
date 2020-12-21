@@ -2,7 +2,6 @@ const myPwaApp = "v1";
 const assets = [
   "/leidernein/",
   "/leidernein/index.html",
-  "/leidernein/audio.ogg",
   "/leidernein/audio.mp3",
   "/leidernein/images/icons-192.png",
   "/leidernein/images/icons-512.png"
