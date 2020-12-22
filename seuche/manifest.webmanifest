@@ -1,0 +1,22 @@
+{
+  "short_name": "Seuche",
+  "name": "Voll die Seuche!",
+  "description": "Play the audio snippet of 'Voll die Seuche!'",
+  "icons": [
+    {
+      "src": "/seuche/images/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/seuche/images/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/seuche/index.html",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/seuche/",
+  "theme_color": "#000000"
+}
