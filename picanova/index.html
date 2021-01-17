@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Download (unofficial) wallpapers">
+    <meta name="keywords" content="picanova,wallpaper,background,download">
+    <meta name="author" content="Markus Schmieder">
+
+    <link rel="manifest" href="/picanova/manifest.webmanifest">
+
+    <link rel="stylesheet" href="styles.css">
+    
+    <title>(Unofficial) Picanova Wallpapers</title>
+</head>
+<body>
+    <main>
+        <section>
+            <h1>Picanova Wallpapers</h1>
+            <a href="images/picanova_wallpaper_1.png" download>
+                <img src="images/picanova_wallpaper_1_min.jpg" alt="Picanova Wallpaper 1" title="Click to download" width="100" height="63">
+            </a>
+            <a href="images/picanova_wallpaper_2.jpg" download>
+                <img src="images/picanova_wallpaper_2_min.jpg" alt="Picanova Wallpaper 2" title="Click to download" width="100" height="63">
+            </a>
+            <a href="images/picanova_wallpaper_3.jpg" download>
+                <img src="images/picanova_wallpaper_3_min.jpg" alt="Picanova Wallpaper 2" title="Click to download" width="100" height="63">
+            </a>
+        </section>
+    </main>
+
+    <script>
+        
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", function() {
+            navigator.serviceWorker
+              .register("serviceWorker.js")
+              .then(res => console.log("service worker registered"))
+              .catch(err => console.log("service worker not registered", err));
+          });
+        }
+        
+        </script>
+
+</body>
+</html>
