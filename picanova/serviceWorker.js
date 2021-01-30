@@ -12,7 +12,9 @@ const assets = [
   "/picanova/images/picanova_wallaper_3.jpg",
   "/picanova/images/picanova_wallaper_3_min.jpg",
   "/picanova/images/picanova_wallaper_4.png",
-  "/picanova/images/picanova_wallaper_4_min.jpg"
+  "/picanova/images/picanova_wallaper_4_min.jpg",
+  "/picanova/images/picanova_wallaper_5.png",
+  "/picanova/images/picanova_wallaper_5_min.jpg"
 ];
 
 self.addEventListener("install", installEvent => {
