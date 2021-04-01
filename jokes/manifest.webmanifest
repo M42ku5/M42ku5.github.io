@@ -1,0 +1,22 @@
+{
+  "short_name": "Jokes",
+  "name": "Random Jokes",
+  "description": "Shows random jokes",
+  "icons": [
+    {
+      "src": "/jokes/images/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/jokes/images/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/jokes/index.html",
+  "background_color": "#fff",
+  "display": "standalone",
+  "scope": "/jokes/",
+  "theme_color": "#fff"
+}
