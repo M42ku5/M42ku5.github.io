@@ -15,8 +15,8 @@
     }
   ],
   "start_url": "/jokes/index.html",
-  "background_color": "#def",
+  "background_color": "#fff",
   "display": "standalone",
   "scope": "/jokes/",
-  "theme_color": "#000"
+  "theme_color": "#fff"
 }

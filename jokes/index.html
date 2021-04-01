@@ -1,54 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2282px%22 font-size=%2283%22>😂</text></svg>">
-    <link rel="manifest" href="/jokes/manifest.webmanifest">
-    <title>Jokes</title>
-    <style>
-        body {
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: Arial;
-            cursor: pointer;
-            overflow: hidden;
-            }
-            h1 {
-                margin: 1rem;
-            }
-            .hint {
-                position: absolute;
-                bottom:0;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-    </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="This is a small web project that uses a public joke API.">
+<meta name="keywords" content="Jokes,API">
+<meta name="author" content="Markus Schmieder">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2282px%22 font-size=%2283%22>😂</text></svg>">
+<link rel="manifest" href="/jokes/manifest.webmanifest">
+<title>Jokes</title>
+<style>
+body {
+height: 100vh;
+margin: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: Arial;
+cursor: pointer;
+overflow: hidden;
+}
+h1 {
+margin: 1rem;
+}
+.hint {
+position: absolute;
+bottom:0;
+left: 50%;
+transform: translateX(-50%);
+}
+</style>
 </head>
 <body>
-    <small class="hint">Click/tap on screen to show next joke. <a href="https://github.com/15Dkatz/official_joke_api" target="_blank" title="joke API">Source of jokes</a></small>
-    <script>
-
-        function loadJoke() {
-        fetch('https://official-joke-api.appspot.com/random_joke')
-        .then(response=>response.json())
-        .then(data=>{
-            const elem = document.createElement('h1');
-            elem.innerHTML = data.setup+' '+data.punchline;                
-            document.body.prepend(elem); 
-            })
-        }
-
-        document.addEventListener('DOMContentLoaded', function(event) {
-            loadJoke();
-        });
-
-        document.body.addEventListener('click',()=>{document.querySelector('h1').remove();loadJoke()})
-
-    </script>
+<small class="hint">Click/tap on screen to show next joke. <a href="https://github.com/15Dkatz/official_joke_api" target="_blank" title="joke API" rel="noopener" rel="noreferrer">Source of jokes</a></small>
+<script>
+function loadJoke(){
+fetch('https://official-joke-api.appspot.com/random_joke')
+.then(response=>response.json())
+.then(data=>{
+const elem = document.createElement('h1');
+elem.innerHTML = data.setup+' '+data.punchline;                
+document.body.prepend(elem); 
+})
+};
+document.addEventListener('DOMContentLoaded', function(event) {
+loadJoke();
+});
+document.body.addEventListener('click',()=>{document.querySelector('h1').remove();loadJoke()});
+</script>
 </body>
 </html>
