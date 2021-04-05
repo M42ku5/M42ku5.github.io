@@ -7,6 +7,9 @@
 <meta name="author" content="Markus Schmieder">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+* {
+box-sizing: border-box;
+}
 body {
 font-family: sans-serif;
 background-color: #eee;
@@ -27,7 +30,8 @@ a:hover {
 color: #333;
 }
 p {
-margin: 4px 0;
+margin: 0;
+padding: 12px 0;
 }
 </style>
 <title>Tagesschau Nachrichten</title>
@@ -41,7 +45,7 @@ fetch('https://www.tagesschau.de/xml/rss2_https/')
 let parser = new DOMParser();
 let xmlDoc = parser.parseFromString(y,"text/xml");
 xmlDoc.querySelectorAll('item').forEach(e=>{
-document.querySelector('main').innerHTML += '<p><a href="' + e.querySelector('link').innerHTML + '" target="_blank">' + e.querySelector('title').innerHTML + '</a></p>';
+document.querySelector('main').innerHTML += '<p><a href="' + e.querySelector('link').innerHTML + '" target="_blank" rel="noreferrer">' + e.querySelector('title').innerHTML + '</a></p>';
 });
 });
 </script>
