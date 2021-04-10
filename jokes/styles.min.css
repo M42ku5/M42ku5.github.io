@@ -1,1 +1,1 @@
-body{height:100vh;margin:0;display:flex;align-items:center;justify-content:center;font-family:Arial;cursor:pointer;overflow:hidden}h1{margin:1rem}.hint{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
+body{height:100vh;margin:0;display:grid;place-items:center;font-family:Arial;cursor:pointer;overflow:hidden;background-color:#00f;background-image:linear-gradient(to bottom right,#00f,#0ff);color:#fff;text-shadow:0 0 5px #000}h1{margin:1rem;max-width:600px}.hint{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}a{color:#fff}
