@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Google-FLoC-Checker">
+<meta name="keywords" content="Google,FLoC,Checker,tracking">
+<meta name="author" content="Markus Schmieder">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+font-family:sans-serif;  
+}
+main{
+max-width:500px;
+margin:0 auto;
+}
+</style>
+<title>Google-FLoC-Checker</title>
+</head>
+<body>
+<main>
+<h1>Google-FLoC-Checker</h1>
+<p>Use the following link, that can also be used as a bookmarklet, to check if the Google FLoC API is activated in your version if the Google Chrome Browser.</p>
+<a href="javascript:(()=>{try{document.interestCohort().then(result=>{console.log('Your FLoC ID: '+result.id);alert('Your FLoC ID: '+result.id);})}catch(error){console.log('No working/activated Google API for Federated Learning of Cohorts (FLoC) detected');alert('No working/activated Google API for Federated Learning of Cohorts (FLoC) detected');}})()">Google-FLoC-Checker</a>
+</main>
+</body>
+</html>
