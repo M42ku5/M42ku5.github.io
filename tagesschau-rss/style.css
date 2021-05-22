@@ -1,0 +1,29 @@
+* {
+box-sizing: border-box;
+}
+body {
+font-family: sans-serif;
+background-color: #eee;
+}
+main {
+max-width: 500px;
+margin: 0 auto;
+background-color: #fff;
+padding: 5px 10px;
+border-radius: 5px;
+box-shadow: 0px 0px 5px #aaa;
+}
+a {
+color: #000;
+text-decoration: none;
+}
+a:hover {
+color: #333;
+}
+p {
+margin: 0;
+padding: 6px 0;
+}
+.more {
+cursor: pointer;
+}
