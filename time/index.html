@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Zeitanzeige">
+<meta name="keywords" content="Zeit,Time">
+<meta name="author" content="Markus Schmieder">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text style=%22font-weight:900%22 x=%2220%22 y=%2250%22 fill=%22white%22 font-size=%2270%22>00<tspan x=%2220%22 y=%22100%22>00</tspan></text></svg>">
+<title>00:00</title>
+</head>
+<body>
+<h1>00:00</h1>
+<script>
+(()=>{
+setInterval(()=>{
+const x=new Date();
+const y=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+const h=x.toLocaleTimeString('de-DE',{hour:'2-digit'}).slice(0,2);
+const m=x.getMinutes();
+const zero= (x.getMinutes() < 10) ? '0' : '';
+document.querySelector('h1').innerHTML=y;
+document.querySelector('title').innerHTML=y;
+const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text style=%22font-weight:900%22 x=%2220%22 y=%2250%22 fill=%22white%22 font-size=%2270%22>${h}<tspan x=%2220%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
+document.querySelector('link[rel=icon]').setAttribute('href',z);
+},1000)
+})()
+</script>
+</body>
+</html>
