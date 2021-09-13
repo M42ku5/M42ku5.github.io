@@ -6,18 +6,39 @@
 <meta name="keywords" content="Zeit,Time">
 <meta name="author" content="Markus Schmieder">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:black%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22white%22 font-size=%2270%22>00<tspan x=%2215%22 y=%22100%22>00</tspan></text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:transparent%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22black%22 font-size=%2270%22>00<tspan x=%2215%22 y=%22100%22>00</tspan></text></svg>">
 <style>
-body {
-background-color:#000;
-color:#fff;
+body{
+background-color:transparent;
+color:#000;
+}
+input[type="checkbox"]{
+vertical-align:middle;
 }
 </style>
 <title>00:00</title>
 </head>
 <body>
 <h1>00:00</h1>
+<label>
+<input type="checkbox">
+dark mode</label>
 <script>
+let iconColor='black';
+let iconBg='transparent';
+const darkMode=(x,y)=>{
+iconColor=x;
+iconBg='transparent';
+document.body.style.color=x;
+document.body.style.backgroundColor=y;
+};
+document.querySelector('input[type=checkbox]').addEventListener('click',function(){
+if(this.checked){
+darkMode('white','black');
+}else{
+darkMode('black','white');
+}
+});
 (()=>{
 setInterval(()=>{
 const x=new Date();
@@ -27,9 +48,14 @@ const m=x.getMinutes();
 const zero= (x.getMinutes() < 10) ? '0' : '';
 document.querySelector('h1').innerHTML=y;
 document.querySelector('title').innerHTML=y;
-const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:black%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22white%22 font-size=%2270%22>${h}<tspan x=%2215%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
+const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:${iconBg}%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22${iconColor}%22 font-size=%2270%22>${h}<tspan x=%2215%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
 document.querySelector('link[rel=icon]').setAttribute('href',z);
 },1000)
+})();
+(()=>{
+if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+document.querySelector('input[type=checkbox]').click()
+}
 })()
 </script>
 </body>
