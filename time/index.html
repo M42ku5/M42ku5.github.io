@@ -9,21 +9,61 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:transparent%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22black%22 font-size=%2270%22>00<tspan x=%2215%22 y=%22100%22>00</tspan></text></svg>">
 <meta name="theme-color" content="white">
 <style>
+*{
+box-sizing:border-box;
+}
 body{
 background-color:transparent;
 color:#000;
+margin:0;
+font-family:Arial,sans-serif;
 }
 input[type="checkbox"]{
 vertical-align:middle;
+}
+label{
+display:block;
+cursor:pointer;
+}
+summary{
+cursor:pointer;
+margin-bottom:10px;
+color:#aaa;
+}
+summary:hover{
+color:#fff;
+}
+main{
+max-width:320px;
+margin:0 auto;
+}
+h1{
+text-align:center;
+font-weight:100;
+margin:0;
+padding:100px 0;
+}
+details{
+display:block;
+max-width:101px;
+margin:0 auto;
 }
 </style>
 <title>00:00</title>
 </head>
 <body>
+<main>
 <h1>00:00:00</h1>
-<label>
+<details open>
+<summary>settings</summary>
+<label class="darkmode">
 <input type="checkbox">
 dark mode</label>
+<label class="fullscreen">
+<input type="checkbox">
+full screen</label>
+</details>
+</main>
 <script>
 let iconColor='black';
 let iconBg='transparent';
@@ -34,11 +74,37 @@ document.body.style.color=x;
 document.body.style.backgroundColor=y;
 document.querySelector('meta[name=theme-color]').setAttribute('content',y)
 };
-document.querySelector('input[type=checkbox]').addEventListener('click',function(){
+document.querySelector('.darkmode input[type=checkbox]').addEventListener('click',function(){
 if(this.checked){
 darkMode('white','black');
 }else{
 darkMode('black','white');
+}
+});
+const openFullscreen=()=>{
+const el=document.documentElement;
+if(el.requestFullscreen) {
+el.requestFullscreen();
+}else if(el.webkitRequestFullscreen){
+el.webkitRequestFullscreen();
+}else if(el.msRequestFullscreen){
+el.msRequestFullscreen();
+}
+}
+const closeFullscreen=()=>{
+if(document.exitFullscreen) {
+document.exitFullscreen();
+}else if(document.webkitExitFullscreen){
+document.webkitExitFullscreen();
+}else if(document.msExitFullscreen){
+document.msExitFullscreen();
+}
+}
+document.querySelector('.fullscreen input[type=checkbox]').addEventListener('click',function(){
+if(this.checked){
+openFullscreen();
+}else{
+closeFullscreen();
 }
 });
 (()=>{
@@ -57,7 +123,7 @@ document.querySelector('h1').innerHTML=fullTime;
 })();
 (()=>{
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
-document.querySelector('input[type=checkbox]').click()
+document.querySelector('.darkmode input[type=checkbox]').click()
 }
 })()
 </script>
