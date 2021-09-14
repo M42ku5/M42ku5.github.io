@@ -77,6 +77,7 @@ iconColor=x;
 iconBg='transparent';
 document.body.style.color=x;
 document.body.style.backgroundColor=y;
+document.querySelector('html').style.backgroundColor=y;
 document.querySelector('meta[name=theme-color]').setAttribute('content',y)
 };
 document.querySelector('.darkmode input[type=checkbox]').addEventListener('click',function(){
