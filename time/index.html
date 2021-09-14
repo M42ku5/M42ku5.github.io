@@ -7,6 +7,7 @@
 <meta name="author" content="Markus Schmieder">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:transparent%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22black%22 font-size=%2270%22>00<tspan x=%2215%22 y=%22100%22>00</tspan></text></svg>">
+<meta name="theme-color" content="white">
 <style>
 body{
 background-color:transparent;
@@ -19,7 +20,7 @@ vertical-align:middle;
 <title>00:00</title>
 </head>
 <body>
-<h1>00:00</h1>
+<h1>00:00:00</h1>
 <label>
 <input type="checkbox">
 dark mode</label>
@@ -31,6 +32,7 @@ iconColor=x;
 iconBg='transparent';
 document.body.style.color=x;
 document.body.style.backgroundColor=y;
+document.querySelector('meta[name=theme-color]').setAttribute('content',y)
 };
 document.querySelector('input[type=checkbox]').addEventListener('click',function(){
 if(this.checked){
@@ -43,13 +45,14 @@ darkMode('black','white');
 setInterval(()=>{
 const x=new Date();
 const y=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+const fullTime=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 const h=x.toLocaleTimeString('de-DE',{hour:'2-digit'}).slice(0,2);
 const m=x.getMinutes();
 const zero= (x.getMinutes() < 10) ? '0' : '';
-document.querySelector('h1').innerHTML=y;
-document.querySelector('title').innerHTML=y;
 const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:${iconBg}%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22${iconColor}%22 font-size=%2270%22>${h}<tspan x=%2215%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
 document.querySelector('link[rel=icon]').setAttribute('href',z);
+document.querySelector('title').innerHTML=y;
+document.querySelector('h1').innerHTML=fullTime;
 },1000)
 })();
 (()=>{
