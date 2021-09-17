@@ -46,6 +46,7 @@ font-weight:400;
 margin:0;
 padding:100px 0;
 font-size:3rem;
+cursor:pointer;
 }
 details{
 position:absolute;
@@ -89,7 +90,7 @@ darkMode('black','white');
 });
 const openFullscreen=()=>{
 const el=document.documentElement;
-if(el.requestFullscreen) {
+if(el.requestFullscreen){
 el.requestFullscreen();
 }else if(el.webkitRequestFullscreen){
 el.webkitRequestFullscreen();
@@ -98,7 +99,7 @@ el.msRequestFullscreen();
 }
 }
 const closeFullscreen=()=>{
-if(document.exitFullscreen) {
+if(document.exitFullscreen){
 document.exitFullscreen();
 }else if(document.webkitExitFullscreen){
 document.webkitExitFullscreen();
@@ -113,19 +114,25 @@ openFullscreen();
 closeFullscreen();
 }
 });
+
 (()=>{
 setInterval(()=>{
 const x=new Date();
-const y=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+const sTime=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 const fullTime=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 const h=x.toLocaleTimeString('de-DE',{hour:'2-digit'}).slice(0,2);
 const m=x.getMinutes();
 const zero= (x.getMinutes() < 10) ? '0' : '';
 const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:${iconBg}%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22${iconColor}%22 font-size=%2270%22>${h}<tspan x=%2215%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
 document.querySelector('link[rel=icon]').setAttribute('href',z);
-document.querySelector('title').innerHTML=y;
+document.querySelector('title').innerHTML=sTime;
 document.querySelector('h1').innerHTML=fullTime;
-},1000)
+},1000);
+document.querySelector('h1').addEventListener('click',function(){
+const y=new Date();
+const x=new SpeechSynthesisUtterance(y.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}));
+window.speechSynthesis.speak(x);
+});
 })();
 (()=>{
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
