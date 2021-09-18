@@ -25,10 +25,16 @@ label{
 display:block;
 cursor:pointer;
 }
+label span{
+padding-left:24px;
+}
+label:first-of-type{
+padding-top:10px;
+}
 summary{
 cursor:pointer;
-margin-bottom:10px;
 color:#aaa;
+text-align:center;
 }
 summary:hover{
 color:#ccc;
@@ -41,6 +47,10 @@ max-width:320px;
 margin:0 auto;
 }
 h1{
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%,-50%);
 text-align:center;
 font-weight:400;
 margin:0;
@@ -53,12 +63,11 @@ position:absolute;
 bottom:0;
 left:50%;
 transform:translateX(-50%);
+margin-bottom:10px;
+min-width:218px;
 }
-button{
-border:1px solid #aaa;
+select{
 font-size:1rem;
-cursor:pointer;
-margin-left:25px;
 }
 </style>
 <title>00:00</title>
@@ -74,20 +83,38 @@ dark mode</label>
 <label class="fullscreen">
 <input type="checkbox">
 full screen</label>
-<button>tts time</button>
+<label class="tts">
+<input type="checkbox">
+automatic tts</label>
+<label><span>tts language:</span>
+<select id="lang">
+<option value="de-DE">German</option>
+<option value="en-US">English</option>
+<option value="es-ES">Spanish</option>
+<option value="pt-PT">Portugese</option>
+<option value="fr-FR">French</option>
+<option value="it-IT">Italian</option>
+<option value="pl-PL">Polish</option>
+<option value="ru-RU">Russian</option>
+<option value="zh-CN">Chinese</option>
+<option value="nl-NL">Dutch</option>
+<option value="hi-IN">Hindi</option>
+</select>
+</label>
 </details>
 </main>
 <script>
 let iconColor='black';
 let iconBg='transparent';
+let ttsAuto=false;
 const darkMode=(x,y)=>{
 iconColor=x;
 iconBg='transparent';
 document.body.style.color=x;
 document.body.style.backgroundColor=y;
 document.querySelector('html').style.backgroundColor=y;
-document.querySelector('button').style.color=x;
-document.querySelector('button').style.backgroundColor=y;
+document.querySelector('#lang').style.color=x;
+document.querySelector('#lang').style.backgroundColor=y;
 document.querySelector('meta[name=theme-color]').setAttribute('content',y)
 };
 const openFullscreen=()=>{
@@ -120,6 +147,7 @@ const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=
 document.querySelector('link[rel=icon]').setAttribute('href',z);
 document.querySelector('title').innerHTML=sTime;
 document.querySelector('h1').innerHTML=fullTime;
+if(x.getSeconds()===0 && ttsAuto){getTime(document.getElementById('lang').value)};
 },1000);
 const getTime=lang=>{
 const y=new Date();
@@ -143,15 +171,20 @@ closeFullscreen();
 }
 });
 document.querySelector('h1').addEventListener('click',()=>{
-getTime('de-DE')
+getTime(document.getElementById('lang').value)
 });
-document.querySelector('button').addEventListener('click',()=>{
-getTime('en-US')
+document.querySelector('.tts input[type=checkbox]').addEventListener('click',function(){
+if(this.checked){
+ttsAuto=true;
+}else{
+ttsAuto=false;
+}
 });
 // eventListeners -end
 if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
 document.querySelector('.darkmode input[type=checkbox]').click()
 }
+document.querySelectorAll('#lang option').forEach(e=>{if(e.value===navigator.language){e.setAttribute('selected','')}})
 </script>
 </body>
 </html>
