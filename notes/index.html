@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{
+box-sizing:border-box;
+}
+body{
+margin:0;
+height:100vh;
+}
+textarea{
+width:100%;
+resize:none;
+height:100vh;
+outline-width:0;
+border-width:0;
+font-family:Arial;
+font-size:16px;
+}
+</style>
+</head>
+<body onload="document.querySelector('textarea').value=localStorage.getItem('notes')">
+<textarea onkeyup="localStorage.setItem('notes',this.value)"></textarea>
+</body>
+</html>
