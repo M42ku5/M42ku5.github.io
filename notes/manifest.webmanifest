@@ -1,0 +1,23 @@
+{
+  "short_name": "Notes",
+  "name": "Notes",
+  "description": "Write notes and keep them stored in your browser window.",
+  "icons": [
+    {
+      "src": "/notes/images/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/notes/images/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/notes/index.html",
+  "background_color": "#000",
+  "display": "fullscreen",
+  "scope": "/notes/",
+  "theme_color": "#000"
+}
