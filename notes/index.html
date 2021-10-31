@@ -9,39 +9,11 @@
 <meta name="theme-color" content="#000">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2282px%22 font-size=%2283%22>📝</text></svg>">
 <link rel="manifest" href="/notes/manifest.webmanifest">
+<script src="scripts.min.js" defer></script>
 <title>Notes</title>
-<style>
-*{
-box-sizing:border-box;
-}
-body{
-margin:0;
-height:100vh;
-overflow:hidden;
-}
-textarea{
-width:100%;
-resize:none;
-height:100vh;
-outline-width:0;
-border-width:0;
-font-family:Arial,Helvetica,sans-serif;
-font-size:16px;
-color:#fff;
-background-color:#000;
-padding:5px;
-}
-</style>
+<link rel="stylesheet" href="style.min.css">
 </head>
 <body>
-<textarea placeholder="Use this area to take your notes and store them in your browser. Closing this tab or your browser does not delete your data."></textarea>
-<script>
-window.addEventListener('DOMContentLoaded',()=>{
-document.querySelector('textarea').value=localStorage.getItem('notes');
-});
-document.querySelector('textarea').addEventListener('keyup',function(){
-localStorage.setItem('notes',this.value);
-})
-</script>
+<textarea></textarea>
 </body>
 </html>
