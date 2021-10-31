@@ -30,7 +30,15 @@ padding:5px;
 }
 </style>
 </head>
-<body onload="document.querySelector('textarea').value=localStorage.getItem('notes')">
-<textarea onkeyup="localStorage.setItem('notes',this.value)" placeholder="Use this area to take your notes and store them in your browser. Closing this tab or your browser does not delete your data."></textarea>
+<body>
+<textarea placeholder="Use this area to take your notes and store them in your browser. Closing this tab or your browser does not delete your data."></textarea>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+document.querySelector('textarea').value=localStorage.getItem('notes');
+});
+document.querySelector('textarea').addEventListener('keyup',function(){
+localStorage.setItem('notes',this.value);
+})
+</script>
 </body>
 </html>
