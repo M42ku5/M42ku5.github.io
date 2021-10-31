@@ -3,7 +3,7 @@ const assets = [
   "/notes/",
   "/notes/index.html",
   "/notes/scripts.min.js",
-  "/notes/style.min.js",
+  "/notes/style.min.css",
   "/notes/images/icon-192.png",
   "/notes/images/icon-512.png"
 ];
