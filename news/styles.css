@@ -85,8 +85,8 @@ button:hover,
 }
 .search {
   display: block;
-  margin: 1% auto;
-  width: 98%;
+  margin: 10px auto;
+  width: calc(100% - 20px);
   font-size: 1rem;
   padding: 5px;
   border: 1px solid #aaa;
@@ -103,7 +103,7 @@ button:hover,
   font-size: 22px;
   padding: 1px 8px;
   border-radius: 0;
-  right: 8px;
+  right: 11px;
 }
 .clear-btn:hover {
   background-color: transparent;
