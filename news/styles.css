@@ -101,7 +101,7 @@ button:hover,
   display: inline-block;
   background-color: transparent;
   font-size: 22px;
-  padding: 2px 8px;
+  padding: 1px 8px;
   border-radius: 0;
   right: 8px;
 }
