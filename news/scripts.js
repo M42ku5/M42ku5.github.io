@@ -34,7 +34,7 @@ const btnArr = [
 
     document.querySelectorAll('.rss-btn').forEach(addBtnTitles);
 
-function searchFeed() {
+function searchFeed(){
     let txtValue;
     const input = document.querySelector('.search');
     let filter = input.value.toUpperCase();
@@ -51,6 +51,7 @@ function searchFeed() {
 
 function clearSearch() {
     document.querySelector('.search').value='';
+    searchFeed();
 };
 
 function updateActive(elem) {
