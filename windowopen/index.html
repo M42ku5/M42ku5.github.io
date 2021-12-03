@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>open windows</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+margin:0;
+font-family:Arial;
+}
+*{
+box-sizing:border-box;
+}
+main{
+max-width:800px;
+margin:0 auto;
+}
+textarea{
+width:100%;
+min-height:50vh;
+}
+button{
+cursor:pointer;
+}
+</style>
+</head>
+<body>
+<main>
+<p>Open multiple urls in new tabs.<br>Enter as a list with line breaks only.</p>
+<textarea></textarea><br>
+<button onclick="f()">open</button>
+</main>
+<script>
+const f=()=>{
+const x=document.querySelector('textarea').value;
+if(x!=''){
+x.split('\n').forEach(e=>window.open(e))
+}
+else{
+alert('enter more that one url first.')
+}
+}
+</script>
+</body>
+</html>
