@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Weather Forecast">
+<meta name="keywords" content="Weather, Forecast">
+<meta name="author" content="Markus Schmieder">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Forecast</title>
+</head>
+<body>
+<main>
+</main>
+<script>
+(()=>{
+const proxy="https://corsproxyms.herokuapp.com/";
+const source="https://www.metaweather.com/api/location/667931/";
+fetch(proxy+source)
+.then(x=>x.text())
+.then(y=>{
+const jsonData = JSON.parse(y);
+const title = jsonData.title;
+const date0 = jsonData.consolidated_weather[0].applicable_date;
+const descr0 = jsonData.consolidated_weather[0].weather_state_name;
+const min_temp0 = Math.round(jsonData.consolidated_weather[0].min_temp);
+const max_temp0 = Math.round(jsonData.consolidated_weather[0].max_temp);
+const the_temp0 = Math.round(jsonData.consolidated_weather[0].the_temp);
+const date1 = jsonData.consolidated_weather[1].applicable_date;
+const descr1 = jsonData.consolidated_weather[1].weather_state_name;
+const min_temp1 = Math.round(jsonData.consolidated_weather[1].min_temp);
+const max_temp1 = Math.round(jsonData.consolidated_weather[1].max_temp);
+const date2 = jsonData.consolidated_weather[2].applicable_date;
+const descr2 = jsonData.consolidated_weather[2].weather_state_name;
+const min_temp2 = Math.round(jsonData.consolidated_weather[2].min_temp);
+const max_temp2 = Math.round(jsonData.consolidated_weather[2].max_temp);
+document.querySelector('main').innerHTML = `<strong>Weather in ${title}</strong><br>
+<br>
+${date0}:<br>
+<strong>${descr0}</strong><br>
+${min_temp0} °C to ${max_temp0} °C<br>
+${the_temp0} °C<br>
+<br>
+${date1}:<br>
+<strong>${descr1}</strong><br>
+${min_temp1} °C to ${max_temp1} °C<br>
+<br>
+${date2}:<br>
+<strong>${descr2}</strong><br>
+${min_temp2} °C to ${max_temp2} °C<br>
+<br>
+source: <a href="https://www.metaweather.com/" target="_blank">metaweather.com</a>`;
+});
+})()
+</script>
+</body>
+</html>
