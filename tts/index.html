@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Text-to-Speech">
+    <meta name="keywords" content="TTS, Text-to-Speech, Tool">
+    <meta name="author" content="Markus Schmieder">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech</title>
+    <link rel="stylesheet" href="style.min.css">
+  </head>
+  <body>
+    <div id="all">
+      <h1>Text-to-Speech</h1>
+        <textarea class="tts-input">Exampletext</textarea>
+        <div class="language">
+        <input type="radio" id="german" name="language" value="de-DE">
+        <label for="german">German</label><br>
+        <input type="radio" id="english" name="language" value="en-US" checked>
+        <label for="english">English</label>
+    </div>
+        <div class="flex-container">
+          <label for="rate">Rate:</label>
+          <input type="range" min="1" max="10" value="2" step="0.5" class="rate" id="rate" onchange="showVal()">
+          <div class="rate-value"></div>
+        </div>
+        <div class="flex-container">
+        <button class="btn-tts" onclick="speak()">read</button>
+        <button class="btn-stop" onclick="speak()">stop</button>
+      </div>
+    </div>
+    <script src="script.min.js"></script>
+  </body>
+</html>
