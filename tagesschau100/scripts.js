@@ -19,7 +19,9 @@ fetch("https://www.tagesschau.de/export/podcast/hi/tagesschau-in-100-sekunden/")
       <source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio tag.
       </audio>
       <p>Geschwindigkeit:<br>
-      <button class="speed-btn1">1x</button> <button class="speed-btn2">2x</button> <button class="speed-btn3">2.5x</button>
+      <div class="speed-wrapper">
+      <input type="range" class="speed" value="2.2" min="1" max="10" step="0.1"> <span class="speed-status"></span>
+      </div>
       </p>
       <p><label>
       <input type="checkbox" checked> Intro überspringen</label></p>
@@ -30,16 +32,24 @@ fetch("https://www.tagesschau.de/export/podcast/hi/tagesschau-in-100-sekunden/")
           document.querySelector('audio').pause();
         }
         if(x.checked){
-          document.querySelector('audio').currentTime = 10;
+          document.querySelector('audio').currentTime = 13;
         } else {
           document.querySelector('audio').currentTime = 0;
         }
       }
 
-    document.querySelector('audio').playbackRate = 2;
-    document.querySelector('.speed-btn1').addEventListener('click',() => document.querySelector('audio').playbackRate = 1);
-    document.querySelector('.speed-btn2').addEventListener('click',() => document.querySelector('audio').playbackRate = 2);
-    document.querySelector('.speed-btn3').addEventListener('click',() => document.querySelector('audio').playbackRate = 2.5);
+      function updateSpeedStatus(){
+        document.querySelector('.speed-status').innerHTML = document.querySelector('.speed').value;
+      }
+
+    document.querySelector('audio').playbackRate = document.querySelector('.speed').value;
+    document.querySelector('.speed').addEventListener('change',() => {
+    document.querySelector('audio').playbackRate = document.querySelector('.speed').value;
+    updateSpeedStatus();
+    });
     document.querySelector('input[type=checkbox]').addEventListener('change',function(){skipIntro(this)});
-    document.querySelector('audio').currentTime = 10;
+    document.querySelector('audio').currentTime = 13;
+
+    updateSpeedStatus();
+
   });
