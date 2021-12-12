@@ -65,6 +65,9 @@ function pasteText(){
     try{
     navigator.clipboard.readText().then(e=>{
     document.querySelector('.tts-input').value = e;
+    document.querySelector('.tts-input').value = document.querySelector('.tts-input').value.replace(/\n/gi,' ').replace(/[ ]{2,}/gi,' ');
+    updateLengthValue();
+    lengthElemHider();
     }).catch(error=>alert(error))
 } catch (e) {
     alert(e);
