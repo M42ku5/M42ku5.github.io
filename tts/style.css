@@ -83,7 +83,7 @@ select{
     padding:0 15px;
     display:block;
     cursor:pointer;
-    line-height:48px;
+    line-height: 40px;
     font-size:16px;
 }
 
@@ -108,4 +108,8 @@ label {
 .language {
     max-width: fit-content;
     margin: 6px auto;
+}
+
+.hidden {
+    display: none;
 }

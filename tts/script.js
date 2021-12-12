@@ -30,3 +30,33 @@ showVal();
 document.querySelector('.btn-stop').addEventListener('click', () => speechSynthesis.cancel());
 
 document.querySelectorAll('input[type=radio]').forEach(e=>e.addEventListener('click',function(){langSelect(this)}));
+
+document.querySelector('.tts-input').addEventListener('keyup',function(){
+    updateLengthValue();
+    lengthElemHider();
+}
+)
+
+function lengthElemHider() {
+if(document.querySelector('.tts-input').value.length > 4000){
+    if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+        document.querySelector('.shorten-warpper').classList.remove('hidden');
+    }
+} else {
+    if(!document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+        document.querySelector('.shorten-warpper').classList.add('hidden');
+    }
+}
+}
+
+document.querySelector('.shorten').addEventListener('click',function(){
+    document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,4000);
+    updateLengthValue();
+    lengthElemHider();
+}
+)
+
+function updateLengthValue(){
+document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
+}
+updateLengthValue();
