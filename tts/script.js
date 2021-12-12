@@ -38,7 +38,7 @@ document.querySelector('.tts-input').addEventListener('keyup',function(){
 )
 
 function lengthElemHider() {
-if(document.querySelector('.tts-input').value.length > 4000){
+if(document.querySelector('.tts-input').value.length > 3999){
     if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
         document.querySelector('.shorten-warpper').classList.remove('hidden');
     }
@@ -50,7 +50,7 @@ if(document.querySelector('.tts-input').value.length > 4000){
 }
 
 document.querySelector('.shorten').addEventListener('click',function(){
-    document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,4000);
+    document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,3999);
     updateLengthValue();
     lengthElemHider();
 }
