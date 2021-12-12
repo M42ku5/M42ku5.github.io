@@ -113,3 +113,6 @@ label {
 .hidden {
     display: none;
 }
+p {
+    padding-bottom: 10px;
+}

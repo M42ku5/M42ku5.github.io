@@ -60,3 +60,14 @@ function updateLengthValue(){
 document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
 }
 updateLengthValue();
+
+function pasteText(){
+    try{
+    navigator.clipboard.readText().then(e=>{
+    document.querySelector('.tts-input').value = e;
+    }).catch(error=>alert(error))
+} catch (e) {
+    alert(e);
+    document.querySelector('.btn-paste').setAttribute('disabled','');
+}
+}
