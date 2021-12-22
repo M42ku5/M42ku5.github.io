@@ -20,7 +20,7 @@ fetch("https://www.tagesschau.de/export/podcast/hi/tagesschau-in-100-sekunden/")
       </audio>
       <p>Geschwindigkeit:<br>
       <div class="speed-wrapper">
-      <input type="range" class="speed" value="2.2" min="1" max="10" step="0.1"> <span class="speed-status"></span>
+      <input type="range" class="speed" value="2.2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span>
       </div>
       </p>
       <p><label>
