@@ -16,7 +16,7 @@ let txt = '';
 let description = xmlDoc.querySelectorAll('description');
 let url = xmlDoc.querySelectorAll('enclosure[url]');
 for(let i = 0; i < 1; i++){
-txt = txt + '<li> <a href="' + url[i].getAttribute('url') + '" target="_blank">' + description[i+1].innerHTML + '</a> <span class="note">(normale Geschw.)</span><div class="display-flex align-items-center"><button onclick="playAudio(this)"><div class="font-size-14 padding-top-1">&#9654;</div><div class="font-size-9 letter-spacing-0">&#10073;&#10073;</div></button><audio><source src="'+ url[i].getAttribute('url') +'" type="audio/mpeg"> Your browser does not support the audio element.</audio><span class="time"></span> <span class="note">(2-fache Geschw.)</span></div></li>';
+txt = txt + '<li> <a href="' + url[i].getAttribute('url') + '" target="_blank">' + description[i+1].innerHTML + '</a> <span class="note">(normale Geschw.)</span><div class="controls"><button onclick="playAudio(this)"><div class="font-size-14 padding-top-1">&#9654;</div><div class="font-size-9 letter-spacing-0">&#10073;&#10073;</div></button><audio><source src="'+ url[i].getAttribute('url') +'" type="audio/mpeg"> Your browser does not support the audio element.</audio><span class="time"></span> <span class="note">(2-fache Geschw.)</span></div></li>';
 }
 output.innerHTML = '<ul>' + txt + '</ul>';
 const audioHook = document.querySelectorAll('audio');
