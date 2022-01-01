@@ -7,9 +7,13 @@ color:#000;
 font-family:Arial;
 font-size:16px;
 margin:10px 0;
+}
+@media screen and (max-width:480px){
+body{
 display:flex;
 align-items:center;
 height:calc(100vh - 20px);
+}
 }
 audio{
 margin:0 auto;
