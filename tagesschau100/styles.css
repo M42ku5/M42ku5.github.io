@@ -1,55 +1,46 @@
-* {
-    box-sizing: border-box;
+*{
+box-sizing:border-box;
 }
-
-body {
-  background-color: #fafafa;
-  color: #000;
-  font-family: Arial;
-  font-size: 16px;
-  margin: 10px 0;
+body{
+background-color:#fafafa;
+color:#000;
+font-family:Arial;
+font-size:16px;
+margin:10px 0;
 }
-
-audio {
-  margin: 0 auto;
-  display: block;
+audio{
+margin:0 auto;
+display:block;
 }
-
-main {
-  margin: 0 auto;
-  max-width: 320px;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 5px #aaa;
-  background-color: #fff;
-  overflow-x: auto;
+main{
+margin:0 auto;
+max-width:320px;
+padding:10px;
+border-radius:5px;
+box-shadow:0px 0px 5px #aaa;
+background-color:#fff;
+overflow-x:auto;
 }
-
-h1 {
-  font-size: 16px;
+h1{
+font-size:16px;
 }
-
-a {
-  color: #000;
+a{
+color:#000;
 }
-
-button {
-  cursor: pointer;
+button{
+cursor:pointer;
 }
-
-label {
-  cursor: pointer;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+label{
+cursor:pointer;
+-webkit-user-select:none;
+-ms-user-select:none;
+user-select:none;
 }
-
-.speed-wrapper {
-  display: flex;
-  align-items: center;
+.speed-wrapper{
+display:flex;
+align-items:center;
 }
-
-.speed {
-  margin-right: 10px;
-  cursor: pointer;
+.speed{
+margin-right:10px;
+cursor:pointer;
 }
