@@ -16,9 +16,9 @@ document.querySelector('section').innerHTML=
 <audio controls>
 <source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio tag.
 </audio>
-<p>Geschwindigkeit:<br>
+<p><label for="speed">Geschwindigkeit:</label><br>
 <div class="speed-wrapper">
-<input type="range" class="speed" value="2.2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span>
+<input type="range" class="speed" id="speed" value="2.2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span>
 </div>
 </p>
 <p><label>
