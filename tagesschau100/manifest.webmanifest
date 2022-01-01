@@ -1,23 +1,23 @@
 {
-  "short_name": "Tagesschau 100s",
-  "name": "Tagesschau in 100 Sekunden",
-  "description": "Audio-Podcast von Tagesschau in 100 Sekunden",
-  "icons": [
-    {
-      "src": "/tagesschau100/images/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/tagesschau100/images/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": "/tagesschau100/index.html",
-  "background_color": "#aaa",
-  "display": "fullscreen",
-  "scope": "/tagesschau100/",
-  "theme_color": "#aaa"
+"short_name":"Tagesschau 100s",
+"name":"Tagesschau in 100 Sekunden",
+"description":"Audio-Podcast von Tagesschau in 100 Sekunden",
+"icons":[
+{
+"src":"/tagesschau100/images/icon-192.png",
+"type":"image/png",
+"sizes":"192x192",
+"purpose":"any maskable"
+},
+{
+"src":"/tagesschau100/images/icon-512.png",
+"type":"image/png",
+"sizes":"512x512"
+}
+],
+"start_url":"/tagesschau100/index.html",
+"background_color":"#aaa",
+"display":"fullscreen",
+"scope":"/tagesschau100/",
+"theme_color":"#aaa"
 }
