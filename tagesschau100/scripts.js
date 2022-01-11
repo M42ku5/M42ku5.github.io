@@ -18,7 +18,7 @@ document.querySelector('section').innerHTML=
 </audio>
 <p><label for="speed">Geschwindigkeit:</label><br>
 <div class="speed-wrapper">
-<input type="range" class="speed" id="speed" value="2.2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span>
+<input type="range" class="speed" id="speed" value="2.2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span> <button class="btn-increase-playback-rate">+</button>
 </div>
 </p>
 <p><label>
@@ -45,4 +45,11 @@ updateSpeedStatus();
 document.querySelector('input[type=checkbox]').addEventListener('change',function(){skipIntro(this)});
 document.querySelector('audio').currentTime=13;
 updateSpeedStatus();
+document.querySelector('.btn-increase-playback-rate').addEventListener('click',function(){
+if(document.querySelector('audio').playbackRate < 3.5){
+document.querySelector('audio').playbackRate=Number((document.querySelector('audio').playbackRate + 0.1).toFixed(1));
+document.querySelector('.speed-status').innerHTML=document.querySelector('audio').playbackRate;
+document.querySelector('.speed').value=document.querySelector('audio').playbackRate;
+}
+});
 });

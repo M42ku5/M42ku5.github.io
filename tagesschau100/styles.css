@@ -44,3 +44,9 @@ align-items:center;
 margin-right:10px;
 cursor:pointer;
 }
+.speed-status{
+min-width:23px;
+}
+.btn-increase-playback-rate{
+margin-left:5px;
+}
