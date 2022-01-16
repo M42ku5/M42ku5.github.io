@@ -37,6 +37,7 @@ Your browser does not support the audio element.
 <button onclick="setPlaySpeed(2.5)">2.5x</button>
 <button onclick="setPlaySpeed(3)">3x</button>
 <button onclick="setPlaySpeed(3.5)">3.5x</button>
+<button onclick="setPlaySpeed(4)">4x</button>
 </div>
 </li>
 </ul>`;
@@ -45,12 +46,12 @@ const playTimeHook = document.querySelector('.time');
 function showPlayTime(){
 audioHook.addEventListener(
 "timeupdate",()=>{
-let cTime = audioHook.currentTime;
-let zero = '';
+let cTime=audioHook.currentTime;
+let zero='';
 if(Math.floor(cTime) % 60 < 10){
 zero=0;
 }
-playTimeHook.innerHTML=`{Math.floor(Math.floor(cTime) / 60)}:${zero}${(Math.floor(cTime) % 60)}`;
+playTimeHook.innerHTML=`${Math.floor(Math.floor(cTime) / 60)}:${zero}${(Math.floor(cTime) % 60)}`;
 }
 );
 }
