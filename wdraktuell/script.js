@@ -17,7 +17,28 @@ if(this.readyState == 4 && this.status == 200){
 let xmlDoc = this.responseXML;
 let description = xmlDoc.querySelector('item description');
 let url = xmlDoc.querySelector('enclosure[url]');
-output.innerHTML = `<ul><li><a href="${url.getAttribute('url')}" target="_blank">${description.innerHTML}</a> <span class="note">(normale Geschw.)</span><div class="controls"><button onclick="playAudio(this)"><div class="font-size-14 padding-top-1">&#9654;</div><div class="font-size-9 letter-spacing-0">&#10073;&#10073;</div></button><audio><source src="${url.getAttribute('url')}" type="audio/mpeg"> Your browser does not support the audio element.</audio><span class="time"></span><button onclick="setPlaySpeed(1)">1x</button><button onclick="setPlaySpeed(1.5)">1.5x</button><button onclick="setPlaySpeed(2)">2x</button></div></li></ul>`;
+output.innerHTML = `
+<ul>
+<li>
+<a href="${url.getAttribute('url')}" target="_blank">${description.innerHTML}</a>
+<div class="controls">
+<button onclick="playAudio(this)"><div class="font-size-14 padding-top-1">&#9654;</div>
+<div class="font-size-9 letter-spacing-0">&#10073;&#10073;</div>
+</button>
+<audio>
+<source src="${url.getAttribute('url')}" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+<span class="time"></span>
+<button onclick="setPlaySpeed(1)">1x</button>
+<button onclick="setPlaySpeed(1.5)">1.5x</button>
+<button onclick="setPlaySpeed(2)">2x</button>
+<button onclick="setPlaySpeed(2.5)">2.5x</button>
+<button onclick="setPlaySpeed(3)">3x</button>
+<button onclick="setPlaySpeed(3.5)">3.5x</button>
+</div>
+</li>
+</ul>`;
 const audioHook = document.querySelector('audio');
 const playTimeHook = document.querySelector('.time');
 function showPlayTime(){
@@ -28,7 +49,7 @@ let zero = '';
 if(Math.floor(cTime) % 60 < 10){
 zero = 0;
 }
-playTimeHook.innerHTML=(Math.floor(Math.floor(cTime) / 60)) + ':' + zero +(Math.floor(cTime) % 60);
+playTimeHook.innerHTML=`{Math.floor(Math.floor(cTime) / 60)}:${zero}${(Math.floor(cTime) % 60)}`;
 }
 );
 }
