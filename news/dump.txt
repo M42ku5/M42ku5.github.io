@@ -1,2 +1,0 @@
-<link rel="stylesheet" href="styles-desktop.min.css?v=0" media="screen and (min-width: 600px)">
-<link rel="stylesheet" href="styles-mobile.min.css?v=0" media="screen and (max-width: 599px)">
