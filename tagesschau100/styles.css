@@ -59,4 +59,7 @@ main{
 background-color:#000!important;
 color:#acb!important;
 }
+button{
+border:1px solid #acb!important;
+}
 }
