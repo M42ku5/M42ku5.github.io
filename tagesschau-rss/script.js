@@ -2,7 +2,7 @@ if(localStorage.getItem('xmlDoc')){
 const raw = localStorage.getItem('xmlDoc');
 const parser = new DOMParser();
 const xmlDoc = parser.parseFromString(raw,"text/xml");
-xmlDoc.querySelectorAll('item').forEach(e=>{
+[...xmlDoc.querySelectorAll('item')].slice(0, 10).forEach(e=>{
 document.querySelector('main').innerHTML += '<details><summary>' + e.querySelector('title').innerHTML + '</summary><p><a href="' + e.querySelector('link').innerHTML + '" target="_blank" rel="noreferrer">' + e.querySelector('description').innerHTML + '</a></p></details>';
 });
 }
