@@ -51,7 +51,11 @@ min-width:23px;
 margin-left:5px;
 }
 @media(prefers-color-scheme:dark){
-body,button,a,input{
+body,
+button,
+a,
+input,
+main{
 background-color:#000!important;
 color:#acb!important;
 }
