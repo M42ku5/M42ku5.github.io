@@ -50,3 +50,9 @@ min-width:23px;
 .btn-increase-playback-rate{
 margin-left:5px;
 }
+@media(prefers-color-scheme:dark){
+body,button,a,input{
+background-color:#000!important;
+color:#acb!important;
+}
+}
