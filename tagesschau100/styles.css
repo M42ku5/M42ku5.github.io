@@ -50,6 +50,9 @@ min-width:23px;
 .btn-increase-playback-rate{
 margin-left:5px;
 }
+.btn-decrease-playback-rate{
+margin-right:5px;
+}
 @media(prefers-color-scheme:dark){
 body,
 button,
