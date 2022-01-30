@@ -16,13 +16,14 @@ document.querySelector('section').innerHTML=
 <audio controls>
 <source src="${audioUrl}" type="audio/mpeg">Your browser does not support the audio tag.
 </audio>
-<p><label for="speed">Geschwindigkeit:</label><br>
-<div class="speed-wrapper">
-<button class="btn-decrease-playback-rate">-</button> <input type="range" class="speed" id="speed" value="2.3" min="1" max="3.5" step="0.1"> <span class="speed-status"></span> <button class="btn-increase-playback-rate">+</button>
-</div>
 <p>
-<button class="btn-skip-back">&lt;&lt; 10s</button>
+<button class="btn-skip-back">&lt;&lt; 10s</button> <button class="btn-skip-ahead">10s &gt;&gt;</button>
 </p>
+<p>
+<label for="speed">Geschwindigkeit:</label><br>
+<div class="speed-wrapper">
+<button class="btn-decrease-playback-rate">-</button> <input type="range" class="speed" id="speed" value="2" min="1" max="3.5" step="0.1"> <span class="speed-status"></span> <button class="btn-increase-playback-rate">+</button>
+</div>
 </p>
 <p><label>
 <input type="checkbox" checked> Intro überspringen</label></p>
@@ -68,6 +69,12 @@ document.querySelector('.speed').value=document.querySelector('audio').playbackR
 document.querySelector('.btn-skip-back').addEventListener('click',function(){
     if(document.querySelector('audio').currentTime >= 10) {
         document.querySelector('audio').currentTime = document.querySelector('audio').currentTime - 10
+    }
+})
+
+document.querySelector('.btn-skip-ahead').addEventListener('click',function(){
+    if(document.querySelector('audio').currentTime < Number((document.querySelector('audio').duration - 10).toFixed(0))) {
+        document.querySelector('audio').currentTime = document.querySelector('audio').currentTime + 10
     }
 })
 
