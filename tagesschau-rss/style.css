@@ -4,6 +4,7 @@
 body {
     font-family:sans-serif;
     background-color:#eee;
+    margin:0;
 }
 main {
     display:table;
@@ -37,7 +38,7 @@ summary {
     border: 1px solid #000;
     border-radius: 5px;
     padding: 5px 10px;
-    margin: 0 0 5px auto;
+    margin: 5px 5px 5px auto;
     display: block;
     cursor: pointer;
 }
@@ -45,6 +46,7 @@ summary {
     background-color:#eee;
 }
 @media(prefers-color-scheme:dark) {
+
 body,
 button,
 a,
@@ -53,10 +55,20 @@ main {
     background-color:#000!important;
     color:#acb!important;
 }
+
 button {
     border:1px solid #acb!important;
 }
+
 button:hover {
     background-color:#000!important;
+}
+
+}
+
+@media screen and (max-width: 480px) {
+main {
+    box-shadow: none;
+    border-radius: 0;
 }
 }
