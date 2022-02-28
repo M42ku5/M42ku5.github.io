@@ -4,13 +4,19 @@
   "description": "Tagesschau Nachrichten: RSS-Feed",
   "icons": [
     {
-      "src": "/tagesschau-rss/images/icons-192.png",
+      "src": "/tagesschau-rss/images/icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-	  "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/tagesschau-rss/images/icons-512.png",
+      "src": "/tagesschau-rss/images/icon-192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/tagesschau-rss/images/icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
