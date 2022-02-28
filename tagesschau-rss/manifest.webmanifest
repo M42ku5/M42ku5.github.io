@@ -6,7 +6,8 @@
     {
       "src": "/tagesschau-rss/images/icons-192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+	  "purpose": "any maskable"
     },
     {
       "src": "/tagesschau-rss/images/icons-512.png",
@@ -16,7 +17,7 @@
   ],
   "start_url": "/tagesschau-rss/index.html",
   "background_color": "#000000",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "/tagesschau-rss/",
   "theme_color": "#000000"
 }
