@@ -41,7 +41,14 @@ summary {
     margin: 5px 5px 5px auto;
     display: block;
     cursor: pointer;
+    line-height: 1;
+    display: flex;
 }
+
+.reload svg {
+height: 16px;
+}
+
 .reload:hover {
     background-color:#eee;
 }
@@ -57,7 +64,11 @@ main {
 }
 
 button {
-    border:1px solid #acb!important;
+    border:1px solid #333!important;
+}
+
+button svg path {
+    fill: #acb;
 }
 
 button:hover {
