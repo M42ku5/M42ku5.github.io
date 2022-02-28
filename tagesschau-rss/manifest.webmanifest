@@ -1,0 +1,22 @@
+{
+  "short_name": "Tagesschau News",
+  "name": "Tagesschau Nachrichten",
+  "description": "Tagesschau Nachrichten: RSS-Feed",
+  "icons": [
+    {
+      "src": "/tagesschau-rss/images/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/tagesschau-rss/images/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/tagesschau-rss/index.html",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/tagesschau-rss/",
+  "theme_color": "#000000"
+}
