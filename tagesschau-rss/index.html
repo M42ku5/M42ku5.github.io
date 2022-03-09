@@ -37,7 +37,7 @@ main {
     display: table;
     max-width: 580px;
     min-width: 25%;
-    margin: 0 auto 10px;
+    margin: 5px auto 10px;
     background-color: var(--bg-color);
     padding: 5px 10px;
     border-radius: 5px;
@@ -78,6 +78,9 @@ summary {
     cursor: pointer;
     line-height: 1;
     display: flex;
+    position: absolute;
+    top:0;
+    right:0;
 }
 
 .reload svg {
@@ -150,6 +153,11 @@ main {
     box-shadow: none;
     border-radius: 0;
     min-width: 100%;
+    margin: 0 auto;
+}
+	
+.reload {
+    position: relative;
 }
 
 }
