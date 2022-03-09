@@ -92,6 +92,15 @@ button svg path {
     fill: var(--text-color);
 }
 
+html {
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+	
 @media(prefers-color-scheme: dark) {
 
  :root {
@@ -104,22 +113,20 @@ button svg path {
 }
 	
 html {
-scrollbar-color: #555 transparent;
-scrollbar-width: thin;
+  scrollbar-color: #555 transparent;
 }
-::-webkit-scrollbar {
-width: 7px;
-height: 7px;
-}
+
 ::-webkit-scrollbar-track {
-background: #000;
+  background: var(--bg-color);
 }
+
 ::-webkit-scrollbar-thumb {
-background: #555;
-border-radius: 5px;
+  background: #555;
+  border-radius: 5px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-background: #888;
+  background: #888;
 }
 
 }
@@ -143,8 +150,8 @@ if ("serviceWorker" in navigator) {
     window.addEventListener("load", function() {
     navigator.serviceWorker
         .register("sw.js")
-        .then(res => console.log("sw reg"))
-        .catch(err => console.log("sw not registered", err));
+        .then(res => console.log("✔️"))
+        .catch(err => console.log("❌", err));
     });
 }
 </script>
