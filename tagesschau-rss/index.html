@@ -79,8 +79,13 @@ summary {
     line-height: 1;
     display: flex;
     position: absolute;
-    top:0;
-    right:0;
+    top: 0;
+    right: 0;
+    color: var(--text-color);
+}
+	
+.reload[disabled] {
+    color: var(--text-color);
 }
 
 .reload svg {
@@ -91,7 +96,7 @@ summary {
     background-color: var(--btn-hover-color);
 }
 
-button svg path {
+.reload svg path {
     fill: var(--text-color);
 }
 
