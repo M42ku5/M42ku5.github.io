@@ -1,0 +1,23 @@
+{
+"short_name":"News",
+"name":"News RSS-Feeds",
+"description":"Collection of news sources.",
+"icons":[
+{
+"src":"/news/images/icon-192.png",
+"type":"image/png",
+"sizes":"192x192",
+"purpose":"any maskable"
+},
+{
+"src":"/news/images/icon-512.png",
+"type":"image/png",
+"sizes":"512x512"
+}
+],
+"start_url":"/news/index.html",
+"background_color":"#000",
+"display":"fullscreen",
+"scope":"/news/",
+"theme_color":"#000"
+}
