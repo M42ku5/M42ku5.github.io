@@ -1,4 +1,4 @@
-const sourceurl = "https://www.tagesschau.de/xml/rss2_https/";
+const sourceUrl = "https://www.tagesschau.de/xml/rss2_https/";
 
 function showData(y) {
     const parser = new DOMParser();
