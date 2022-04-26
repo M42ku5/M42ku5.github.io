@@ -1,3 +1,5 @@
+const sourceurl = "https://www.tagesschau.de/xml/rss2_https/";
+
 function showData(y) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(y, "text/xml");
@@ -35,9 +37,11 @@ if (localStorage.getItem('xmlDoc')) {
         document.querySelector('main').innerHTML += '<details><summary>' + e.querySelector('title').innerHTML + '</summary><p><a href="' + e.querySelector('link').innerHTML + '" target="_blank" rel="noreferrer">' + e.querySelector('description').innerHTML + '</a></p></details>';
     });
 } else {
-    getExternalData('https://www.tagesschau.de/xml/rss2_https/')
+    getExternalData(sourceUrl)
 }
 
 document.querySelector(".reload").addEventListener("click", function() {
-    getExternalData("https://www.tagesschau.de/xml/rss2_https/")
+    getExternalData(sourceUrl)
 })
+
+getExternalData(sourceUrl)
