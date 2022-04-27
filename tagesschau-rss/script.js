@@ -16,6 +16,8 @@ document.querySelector('main').innerHTML=txt
 
 function getExternalData(url){fetch(url).then(response=>response.text()).then(data=>showData(data))}
 
-document.querySelector(".reload").addEventListener("click",function(){getExternalData(sourceUrl)})
+document.querySelector(".logo").addEventListener("click",function(){getExternalData(sourceUrl)})
+
+document.querySelector(".menu").addEventListener("click",function(){getExternalData(sourceUrl)})
 
 getExternalData(sourceUrl)
