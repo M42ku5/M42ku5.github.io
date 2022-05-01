@@ -12,6 +12,20 @@ txt+=`<details><summary><span class="time">${getTime(e.querySelector('pubDate').
 })
 document.querySelector('main').innerHTML=""
 document.querySelector('main').innerHTML=txt
+
+document.querySelectorAll("details").forEach(el => {
+    el.addEventListener("click",function(ev){
+    ev.preventDefault()
+
+    import("/toggle.js")
+    .then(module => module.toggle(this) )
+    .catch(err => {
+          console.log(`error: ${err.message}`);
+        });
+
+    })
+  })
+
 }
 
 function getExternalData(url){fetch(url).then(response=>response.text()).then(data=>showData(data))}

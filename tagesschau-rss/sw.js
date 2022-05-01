@@ -3,6 +3,7 @@ const assets = [
   "/tagesschau-rss/",
   "/tagesschau-rss/index.html",
   "/tagesschau-rss/script.js",
+  "/tagesschau-rss/toggle.js",
   "/tagesschau-rss/images/icon-192.png",
   "/tagesschau-rss/images/icon-192-maskable.png",
   "/tagesschau-rss/images/icon-512.png"
