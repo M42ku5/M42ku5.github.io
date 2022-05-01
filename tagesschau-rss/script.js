@@ -17,7 +17,7 @@ document.querySelectorAll("details").forEach(el => {
     el.addEventListener("click",function(ev){
     ev.preventDefault()
 
-    import("/toggle.js")
+    import("/tagesschau-rss/toggle.js")
     .then(module => module.toggle(this) )
     .catch(err => {
           console.log(`error: ${err.message}`);
