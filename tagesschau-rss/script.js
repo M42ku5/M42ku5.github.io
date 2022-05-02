@@ -13,7 +13,7 @@ txt+=`<details><summary><span class="time">${getTime(e.querySelector('pubDate').
 document.querySelector('main').innerHTML=""
 document.querySelector('main').innerHTML=txt
 
-document.querySelectorAll("details").forEach(el => {
+document.querySelectorAll("summary").forEach(el => {
     el.addEventListener("click",function(ev){
     ev.preventDefault()
 
