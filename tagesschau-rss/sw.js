@@ -1,4 +1,4 @@
-const myPwaApp = "v2022.05.04-0";
+const myPwaApp = "v2022.05.04-14";
 const assets = [
   "/tagesschau-rss/",
   "/tagesschau-rss/index.html",
