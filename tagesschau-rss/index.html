@@ -195,7 +195,7 @@ nav {
     <div class="wrapper">
         <nav>
             <div class="logo" onclick="let x = this.innerHTML; this.innerHTML = 'bitte warten...'; setTimeout(() => { this.innerHTML = x; }, 2000)">TAGESSCHAU</div>
-            <div class="menu" onclick="let y = this.innerHTML; this.innerHTML = '⏳'; setTimeout(() => { this.innerHTML = y; }, 2000)">
+            <div class="menu" onclick="document.documentElement.requestFullscreen()">
                 <svg class="dots">
                     <circle cx="5" cy="4" r="1.5"/>
                     <circle cx="5" cy="10" r="1.5"/>
