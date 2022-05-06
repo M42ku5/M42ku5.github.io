@@ -123,6 +123,16 @@ html {
 
 }
 
+summary.filler {
+    min-width: 33vw;
+    background-color: #ccc;
+    height: 16px;
+    border-radius: 5px;
+    opacity: 0.1;
+    margin: 3px 0;
+    cursor: auto;
+}
+
 @media screen and (max-width: 580px) {
 
 main {
@@ -138,6 +148,11 @@ summary {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0;
+}
+
+summary.filler {
+    min-width: 97vw;
+    height: 13px;
 }
 
 }
@@ -186,15 +201,6 @@ nav {
     width: 20px;
     justify-content: center;
     color: var(--text-color);
-}
-.filler {
-    min-width: 33vw;
-    background-color: #ccc;
-    height: 16px;
-    border-radius: 5px;
-    opacity: 0.1;
-    margin: 3px 0;
-    cursor: auto;
 }
 </style>
 
