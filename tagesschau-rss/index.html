@@ -41,7 +41,7 @@ main {
     background-color: var(--bg-color);
     padding: 0 5px;
     border-radius: 5px;
-    box-shadow: 0px 0px 5px var(--box-shadow-color);
+    box-shadow: 0 0 5px var(--box-shadow-color);
     min-height: 310px;
     color: var(--text-color);
 }
@@ -174,7 +174,6 @@ summary.filler {
     display: flex;
     align-items: center;
     font-weight: 600;
-    cursor: pointer;
     padding-left: 5px;
     color: var(--text-color);
     flex: 1;
@@ -195,12 +194,37 @@ nav {
   fill: #555;
 }
 .menu {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 20px;
-    justify-content: center;
     color: var(--text-color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    z-index: 1;
+}
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.menu-btn {
+    display: flex;
+    justify-content: center;
+    height: 35px;
+    align-items: center;
+    width: 30px;
+}
+.dropdown-content {
+    display: none;
+    background-color: var(--bg-color);
+    box-shadow: 0 0 5px var(--box-shadow-color);
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown-elem {
+    padding: 12px;
+    cursor:pointer;
 }
 </style>
 
@@ -209,13 +233,21 @@ nav {
 <body>
     <div class="wrapper">
         <nav>
-            <div class="logo" onclick="let x = this.innerHTML; this.innerHTML = 'bitte warten...'; setTimeout(() => { this.innerHTML = x; }, 2000)">TAGESSCHAU</div>
-            <div class="menu" onclick="document.documentElement.requestFullscreen()">
-                <svg class="dots">
-                    <circle cx="5" cy="4" r="1.5"/>
-                    <circle cx="5" cy="10" r="1.5"/>
-                    <circle cx="5" cy="16" r="1.5"/>
+            <div class="logo">TAGESSCHAU</div>
+            <div class="menu">
+                <div class="dropdown">
+                    <div class="menu-btn">
+                    <svg class="dots">
+                        <circle cx="5" cy="4" r="1.5"/>
+                        <circle cx="5" cy="10" r="1.5"/>
+                        <circle cx="5" cy="16" r="1.5"/>
                     </svg>
+                    </div>
+                    <div class="dropdown-content">
+                        <div onclick="document.documentElement.requestFullscreen()" class="dropdown-elem">Fullscreen</div>
+                        <div onclick="let x = this.innerHTML; this.innerHTML = 'bitte warten...'; setTimeout(() => { this.innerHTML = x; }, 2000)" class="dropdown-elem reload">Aktualisieren</div>
+                    </div>
+                </div>
             </div>
         </nav>
 <main>
