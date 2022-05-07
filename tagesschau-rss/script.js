@@ -12,7 +12,7 @@ function showData(data) {
   const xmlDoc = parser.parseFromString(data, "text/xml")
   let txt = ""
   xmlDoc.querySelectorAll('item').forEach((e,i) => {
-    txt += `<details><summary onclick="if(!this.parentElement.querySelector('p')){const para=document.createElement('p');this.parentElement.appendChild(para);const el=document.createElement('a');el.setAttribute('href','${e.querySelector('link').innerHTML}');el.setAttribute('target','_blank');el.setAttribute('rel','noreferrer');el.innerHTML='${e.querySelector('title').innerHTML.replace(/\"/g, "&quot;")}: ${e.querySelector('description').innerHTML.replace(/\"/g, "&quot;")}';para.appendChild(el)}">${showTime(i,getTime(e.querySelector('pubDate').innerHTML))}${e.querySelector('title').innerHTML}</summary></details>`
+    txt += `<details><summary onclick="if(!this.parentElement.querySelector('p')){const para=document.createElement('p');this.parentElement.appendChild(para);const el=document.createElement('a');el.setAttribute('href','${e.querySelector('link').innerHTML}');el.setAttribute('target','_blank');el.setAttribute('rel','noreferrer');el.innerHTML='${e.querySelector('title').innerHTML.replace(/\"/g, "&quot;").replace(/\'/g, "&apos;")}: ${e.querySelector('description').innerHTML.replace(/\"/g, "&quot;").replace(/\'/g, "&apos;")}';para.appendChild(el)}">${showTime(i,getTime(e.querySelector('pubDate').innerHTML))}${e.querySelector('title').innerHTML}</summary></details>`
   })
   document.querySelector('main').innerHTML = ""
   document.querySelector('main').innerHTML = txt
