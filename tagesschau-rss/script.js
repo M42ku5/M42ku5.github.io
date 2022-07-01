@@ -16,7 +16,7 @@ function showData(data) {
   let txt = ""
   const num = Math.round(xmlDoc.querySelectorAll('item').length / 2)
   const itemsArr = [...xmlDoc.querySelectorAll('item')]
-  itemsArr.slice(0,num).forEach((e,i) => {
+  itemsArr.slice(0).forEach((e,i) => {
     let description = e.querySelector('description').innerHTML.replace(/\"/g, "&quot;")
     console.log(description)
     description = btoa(description)
