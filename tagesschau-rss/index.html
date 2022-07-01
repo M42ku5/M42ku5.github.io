@@ -123,6 +123,36 @@ html {
 
 }
 
+@media(prefers-color-scheme: light) {
+
+ :root {
+  --bg-color: #000;
+  --bg-color-main: #000;
+  --text-color: #acb;
+  --a-hover-color: #acb;
+  --btn-hover-color: #000;
+  --border-color: #333;
+}
+
+html {
+    scrollbar-color: #555 transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+}
+
 summary.filler {
     min-width: 33vw;
     background-color: #ccc;
