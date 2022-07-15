@@ -9,6 +9,7 @@ const showTime = (condition, result) => {
 }
 
 const convText = input => atob(input)
+const convText2 = input => decodeURIComponent(input)
 
 function showData(data) {
   const parser = new DOMParser()
@@ -18,9 +19,12 @@ function showData(data) {
   const itemsArr = [...xmlDoc.querySelectorAll('item')]
   itemsArr.slice(0).forEach((e,i) => {
     let description = e.querySelector('description').innerHTML.replace(/\"/g, "&quot;")
-    console.log(description)
+    //console.log(description)
+    description = encodeURIComponent(description)
+    //console.log(description)
     description = btoa(description)
-    txt += `<details><summary data-description="${description}" onclick="if(!this.parentElement.querySelector('p')){const para=document.createElement('p');this.parentElement.appendChild(para);const el=document.createElement('a');el.setAttribute('href','${e.querySelector('link').innerHTML}');el.setAttribute('target','_blank');el.setAttribute('rel','noreferrer');el.innerHTML=convText(this.dataset.description);para.appendChild(el)}">${showTime(i,getTime(e.querySelector('pubDate').innerHTML))}${e.querySelector('title').innerHTML}</summary></details>`
+    //console.log(description)
+    txt += `<details><summary data-description="${description}" onclick="if(!this.parentElement.querySelector('p')){const para=document.createElement('p');this.parentElement.appendChild(para);const el=document.createElement('a');el.setAttribute('href','${e.querySelector('link').innerHTML}');el.setAttribute('target','_blank');el.setAttribute('rel','noreferrer');el.innerHTML=convText2(convText(this.dataset.description));para.appendChild(el)}">${showTime(i,getTime(e.querySelector('pubDate').innerHTML))}${e.querySelector('title').innerHTML}</summary></details>`
   })
   document.querySelector('main').innerHTML = ""
   document.querySelector('main').innerHTML = txt
