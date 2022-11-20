@@ -6,7 +6,7 @@ const addrArr = [
     'https://www.tagesschau.de/xml/rss2_https/',
     'https://www.heise.de/rss/heise.rdf',
     'https://news.ycombinator.com/rss',
-    'https://www.ksta.de/feed/index.rss',
+    'https://feed.ksta.de/feed/rss/koeln/index.rss',
     'https://www.sportschau.de//sportschauindex100~_type-rss.feed',
     'https://www.smashingmagazine.com/feed/',
     'https://rss.golem.de/rss.php?feed=RSS2.0',
