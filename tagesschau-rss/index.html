@@ -8,9 +8,9 @@
 </head>
 <body>
 <header><h1>Tagesschau Nachrichten</h1></header>
-<main></main>
+<main><ol></ol></main>
 <script>
-fetch("https://www.tagesschau.de/xml/rss2_https/").then(x=>x.text()).then(y=>{const z=new DOMParser().parseFromString(y,"text/xml");z.querySelectorAll('item').forEach(e=>{document.querySelector("main").innerHTML+="<a href='"+e.querySelector("link").innerHTML+"' target='_blank'>"+e.querySelector("title").innerHTML+"</a><br>"})})
+fetch("https://www.tagesschau.de/xml/rss2_https/").then(x=>x.text()).then(y=>{const z=new DOMParser().parseFromString(y,"text/xml");z.querySelectorAll('item').forEach(e=>{document.querySelector("main ol").innerHTML+="<li><a href='"+e.querySelector("link").innerHTML+"' target='_blank'><p>"+e.querySelector("title").innerHTML+"</p></a></li>"})})
 </script>
 </body>
 </html>
