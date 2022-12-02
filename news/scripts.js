@@ -1,30 +1,6 @@
 const proxy = 'https://corsproxyms.herokuapp.com/';
-const addrArr = [
-    'https://www.freecodecamp.org/news/rss/',
-    'https://css-tricks.com/feed/',
-    'https://dev.to/rss',
-    'https://www.tagesschau.de/xml/rss2_https/',
-    'https://www.heise.de/rss/heise.rdf',
-    'https://news.ycombinator.com/rss',
-    'https://feed.ksta.de/feed/rss/koeln/index.rss',
-    'https://www.sportschau.de//sportschauindex100~_type-rss.feed',
-    'https://www.smashingmagazine.com/feed/',
-    'https://rss.golem.de/rss.php?feed=RSS2.0',
-    'https://www.bild.de/rssfeeds/rss3-20745882,feed=alles.bild.html'
-];
-const btnArr = [
-    'fcc',
-    'css-tricks',
-    'devto',
-    'tagesschau',
-    'heise',
-    'hn',
-    'ksta',
-    'sportschau',
-    'smashingmag',
-    'golem',
-    'bild'
-];
+const addrArr = ['https://www.tagesschau.de/xml/rss2_https/'];
+const btnArr = ['tagesschau'];
 const addBtnTitles = (item, index) => {
     item.innerHTML = btnArr[index];
     item.classList.add(btnArr[index]);
@@ -163,7 +139,7 @@ function addBtnEventListeners(item, index) {
         })
     } else {
         item.addEventListener('click', function () {
-            fetchFunct(proxy, index);
+            fetchFunct('none', index);
             updateActive(this);
             addHash(index);
             updateTitle(this.innerText);
