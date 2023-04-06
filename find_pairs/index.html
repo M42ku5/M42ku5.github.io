@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>find pairs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
 *{
 box-sizing:border-box;
 }
-body {
+body{
 margin:10px 0 0 10px;
 }
 button{
@@ -15,64 +15,51 @@ margin-right:10px;
 margin-bottom:10px;
 width:calc(100%/4 - 10px);
 height:calc((100vh - 10px)/5 - 10px);
-font-size:clamp(1rem, 2vw, 2rem);
+font-size:3rem;
+line-height:3rem;
 }
 </style>
 </head>
 <body>
-
 <script>
-
-function compareVisibleValues() {
-  const activeButtons = document.querySelectorAll("button.active");
-  if (activeButtons.length == 2) {
-    if (activeButtons[0].innerText === activeButtons[1].innerText){
-      console.log("pair found");
-      activeButtons[0].setAttribute("disabled", "disabled");
-      activeButtons[1].setAttribute("disabled", "disabled");
-    } else {
-      setTimeout(function(){
-        activeButtons[0].innerText = "x";
-        activeButtons[1].innerText = "x";
-      }, 1000);
-    }
-    activeButtons[0].classList.remove("active");
-    activeButtons[1].classList.remove("active");
-  } 
+const myArray=["🐐", "🐐", "🐕", "🐕", "🐈", "🐈", "🐍", "🐍", "🐼", "🐼", "🐹", "🐹", "🐖", "🐖", "🐻", "🐻", "🐧", "🐧", "🐨", "🐨"];
+function compareVisibleValues(){
+const activeButtons=document.querySelectorAll("button.active");
+if(activeButtons.length==2){
+if(activeButtons[0].innerText===activeButtons[1].innerText){
+activeButtons[0].setAttribute("disabled","disabled");
+activeButtons[1].setAttribute("disabled","disabled");
+}else{
+setTimeout(function(){
+activeButtons[0].innerText="x";
+activeButtons[1].innerText="x";
+},1000);
 }
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-	const j = Math.floor(Math.random() * (i + 1));
-	[array[i], array[j]] = [array[j], array[i]];
-  }
-  createBtns(myArray)
+activeButtons[0].classList.remove("active");
+activeButtons[1].classList.remove("active");
+} 
 }
-
-const myArray = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10];
-shuffleArray(myArray);
-console.log(myArray);
-
 function createBtns(arr){
 arr.forEach(e=>{
-
-const el = document.createElement("button");
-el.innerText = "x";
-el.setAttribute("data-value", e);
+const el=document.createElement("button");
+el.innerText="x";
+el.setAttribute("data-value",e);
 document.body.appendChild(el);
-
 el.addEventListener("click",function(){
 this.classList.add("active");
-this.innerText = this.getAttribute("data-value");
-
+this.innerText=this.getAttribute("data-value");
 compareVisibleValues();
-
 })
-
 })
 }
-
+function shuffleArray(array){
+for (let i=array.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+}
+createBtns(myArray);
+}
+shuffleArray(myArray);
 </script>
-
 </body>
 </html>
