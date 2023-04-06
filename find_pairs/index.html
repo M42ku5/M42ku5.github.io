@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>find pairs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="find pairs game">
+<meta name="keywords" content="pairs, game">
+<meta name="author" content="Markus Schmieder">
 <style>
 *{
 box-sizing:border-box;
@@ -17,6 +21,7 @@ width:calc(100%/4 - 10px);
 height:calc((100vh - 10px)/5 - 10px);
 font-size:3rem;
 line-height:3rem;
+cursor:pointer;
 }
 </style>
 </head>
@@ -31,8 +36,8 @@ activeButtons[0].setAttribute("disabled","disabled");
 activeButtons[1].setAttribute("disabled","disabled");
 }else{
 setTimeout(function(){
-activeButtons[0].innerText="x";
-activeButtons[1].innerText="x";
+activeButtons[0].innerText="•";
+activeButtons[1].innerText="•";
 },1000);
 }
 activeButtons[0].classList.remove("active");
@@ -42,7 +47,7 @@ activeButtons[1].classList.remove("active");
 function createBtns(arr){
 arr.forEach(e=>{
 const el=document.createElement("button");
-el.innerText="x";
+el.innerText="•";
 el.setAttribute("data-value",e);
 document.body.appendChild(el);
 el.addEventListener("click",function(){
