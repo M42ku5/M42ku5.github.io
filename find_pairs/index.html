@@ -28,6 +28,18 @@ cursor:pointer;
 <body>
 <script>
 const myArray=["🐐", "🐐", "🐕", "🐕", "🐈", "🐈", "🐍", "🐍", "🐼", "🐼", "🐹", "🐹", "🐖", "🐖", "🐻", "🐻", "🐧", "🐧", "🐨", "🐨"];
+function checkComplete(){
+if(document.querySelectorAll("button[disabled]").length===20){
+alert("You won!🥳");
+location.reload();
+}
+}
+function openFullscreen(){
+const mainEl=document.documentElement;
+if(mainEl.requestFullscreen){
+mainEl.requestFullscreen();
+}
+}
 function compareVisibleValues(){
 const activeButtons=document.querySelectorAll("button.active");
 if(activeButtons.length==2){
@@ -42,7 +54,8 @@ activeButtons[1].innerText="•";
 }
 activeButtons[0].classList.remove("active");
 activeButtons[1].classList.remove("active");
-} 
+}
+checkComplete(); 
 }
 function createBtns(arr){
 arr.forEach(e=>{
@@ -51,6 +64,7 @@ el.innerText="•";
 el.setAttribute("data-value",e);
 document.body.appendChild(el);
 el.addEventListener("click",function(){
+openFullscreen();
 this.classList.add("active");
 this.innerText=this.getAttribute("data-value");
 compareVisibleValues();
