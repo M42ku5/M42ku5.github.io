@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src='https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js'></script>
+<title>OCR</title>
+<style>
+*{
+box-sizing:border-box;
+}
+textarea{
+width:100%;
+height:20rem;
+}
+img{
+width:100%;
+height:auto;
+}
+@media screen and (min-width:480px){
+textarea{
+width:480px;
+}
+img{
+width:480px;
+}
+}
+</style>
+</head>
+<body>
+<input type="file" onchange="conv()"><br><br>
+<img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Image preview"><br><br>
+<textarea style="display:none"></textarea>
+<script>
+function conv(){
+const preview=document.querySelector('img');
+const file=document.querySelector('input[type=file]').files[0];
+const reader=new FileReader();
+reader.addEventListener("load",()=>{
+preview.src=reader.result;
+const el=document.querySelector("textarea");
+Tesseract.recognize(
+reader.result,
+'eng',
+{logger:m=>{
+console.log(m);
+el.style.display="block";
+el.value='OCR Progress: '+(Math.round(m.progress*100))+'%';
+}}
+).then(({data:{text}})=>{
+console.log(text);
+el.value=text;
+})
+},false);
+if(file){
+reader.readAsDataURL(file);
+}
+}
+</script>
+</body>
+</html>
