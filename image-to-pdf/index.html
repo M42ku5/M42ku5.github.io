@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>convert image to pdf</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+h1{font-size:1rem;}
+</style>
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+<h1>Convert image to PDF</h1>
+<input type="file" id="upload" accept="image/*"><br>
+<br>
+<button id="convert" style="display: none;">Convert to PDF</button>
+
+<script>
+const { jsPDF } = window.jspdf;
+const upload = document.getElementById('upload');
+const convert = document.getElementById('convert');
+
+upload.addEventListener('change', function() {
+    if (upload.files.length > 0) {
+        convert.style.display = '';
+    } else {
+        convert.style.display = 'none';
+    }
+});
+
+convert.addEventListener('click', function() {
+    const file = upload.files[0];
+    if (!file) {
+        alert('Please upload an image');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = function() {
+        const image = new Image();
+        image.onload = function() {
+            const doc = new jsPDF();
+            doc.addImage(image, 'JPEG', 0, 0, 210, 297);
+            doc.save('a4.pdf');
+        };
+        image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+</body>
+</html>
