@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>File Zipper</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>h1{font-size:1rem;}#zipButton{margin-top:20px;}</style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+<h1>Zip one or more files</h1>
+    <input type="file" id="file" multiple onchange="fileSelected()">
+    <button id="zipButton" style="display: none;" onclick="zipFiles()">Zip and Download</button>
+
+    <script>
+        function fileSelected() {
+            let files = document.getElementById('file').files;
+            if (files.length > 0) {
+                document.getElementById('zipButton').style.display = 'block';
+            } else {
+                document.getElementById('zipButton').style.display = 'none';
+            }
+        }
+
+        function zipFiles() {
+            let zip = new JSZip();
+            let files = document.getElementById('file').files;
+            let zipFileName = files[0].name + '.zip';
+
+            for (let i = 0; i < files.length; i++) {
+                zip.file(files[i].name, files[i]);
+            }
+
+            zip.generateAsync({type:"blob"})
+            .then(function(content) {
+                let url = URL.createObjectURL(content);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = zipFileName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);  
+                }, 0); 
+            });
+        }
+    </script>
+</body>
+</html>
