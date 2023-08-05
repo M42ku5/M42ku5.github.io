@@ -13,6 +13,9 @@
         navigator.serviceWorker.addEventListener('message', function(event){
           console.log('Received a message from service worker: ', event.data);
           document.getElementById('uploadedImage').src = event.data;
+
+          navigator.serviceWorker.controller.postMessage('confirmation');
+
         });
       })
       .catch(function(err) {
@@ -21,6 +24,7 @@
   } else {
     console.log('Service Worker is not supported by the browser.');
   }
+
 </script>  
 
 </body>
