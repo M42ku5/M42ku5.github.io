@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>send image via service worker to next page</title>
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+<body>
+
+<input type="file" id="fileUpload" accept="image/*" onchange="encodeImageFileAsURL()"/>
+<a href="display.html" class="hidden">display image on next page</a>
+<script>
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('serviceWorker.js')
+    .then(function(reg) {
+      console.log('Service Worker Registered!', reg);
+    })
+    .catch(function(err) {
+      console.log('Service Worker registration failed: ', err);
+    });
+}
+
+function encodeImageFileAsURL() {
+  var file = document.getElementById('fileUpload').files[0];
+  var reader = new FileReader();
+  reader.onloadend = function() {
+    console.log('RESULT', reader.result)
+    navigator.serviceWorker.controller.postMessage(reader.result);
+    document.querySelector('a').classList.remove('hidden');
+  }
+  reader.readAsDataURL(file);
+}
+
+</script>
+
+</body>
+</html>

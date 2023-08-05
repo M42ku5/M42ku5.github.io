@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<img id="uploadedImage" alt="image" src="data:image/gif;base64,R0lGODlhAQABAID/AP///wAAACwAAAAAAQABAAACAkQBADs=" />
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready
+      .then(function(reg) {
+        console.log('Service Worker Ready!', reg);
+        navigator.serviceWorker.addEventListener('message', function(event){
+          console.log('Received a message from service worker: ', event.data);
+          document.getElementById('uploadedImage').src = event.data;
+        });
+      })
+      .catch(function(err) {
+        console.log('Service Worker registration failed: ', err);
+      });
+  }
+  </script>  
+
+</body>
+</html>
