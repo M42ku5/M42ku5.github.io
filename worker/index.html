@@ -11,7 +11,6 @@
 <body>
 
 <input type="file" id="fileUpload" accept="image/*" onchange="encodeImageFileAsURL()"/>
-<a href="display.html" class="hidden">display image on next page</a>
 <script>
 
 navigator.serviceWorker.register('/worker/serviceWorker.js').then(function(registration) {
@@ -41,9 +40,9 @@ function encodeImageFileAsURL() {
   var file = document.getElementById('fileUpload').files[0];
   var reader = new FileReader();
   reader.onloadend = function() {
-    console.log('RESULT', reader.result)
+    console.log('RESULT', reader.result);
+    window.open('display.html');
     navigator.serviceWorker.controller.postMessage(reader.result);
-    document.querySelector('a').classList.remove('hidden');
   }
   reader.readAsDataURL(file);
 }
