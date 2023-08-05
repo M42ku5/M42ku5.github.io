@@ -9,6 +9,7 @@
     navigator.serviceWorker.ready
       .then(function(reg) {
         console.log('Service Worker Ready!', reg);
+        console.log('Current page is controlled by: ', navigator.serviceWorker.controller);
         navigator.serviceWorker.addEventListener('message', function(event){
           console.log('Received a message from service worker: ', event.data);
           document.getElementById('uploadedImage').src = event.data;
@@ -17,8 +18,10 @@
       .catch(function(err) {
         console.log('Service Worker registration failed: ', err);
       });
+  } else {
+    console.log('Service Worker is not supported by the browser.');
   }
-  </script>  
+</script>  
 
 </body>
 </html>
