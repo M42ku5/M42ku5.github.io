@@ -7,10 +7,6 @@
 </head>
 <body>
     <input type="file" id="imageInput">
-    <button onclick="sendImageToSW()">Upload</button>
-    <p>
-    <a href="display.html">go to next page to view image</a>
-    </p>
     <script>
         async function sendImageToSW() {
             const fileInput = document.getElementById('imageInput');
@@ -27,6 +23,9 @@
                             image: base64data,
                             type: file.type
                         });
+
+                        // Navigate to the next page
+                        window.location.href = "display.html";
                     }
                 };
                 reader.readAsDataURL(file);
@@ -42,6 +41,10 @@
         } else {
             console.log('Service Worker not supported in this browser');
         }
+
+        // Add event listener to file input
+        document.getElementById('imageInput').addEventListener('change', sendImageToSW);
+
     </script>
 </body>
 </html>
