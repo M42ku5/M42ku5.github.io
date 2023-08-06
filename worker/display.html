@@ -10,11 +10,17 @@
 
     <script>
         async function getImageFromCache() {
+            console.log('Fetching image from Cache...');
             const cache = await caches.open('image-cache');
             const response = await cache.match('uploaded-image');
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            document.getElementById('displayImage').src = url;
+            if (response) {
+                console.log('Image found in Cache. Displaying...');
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('displayImage').src = url;
+            } else {
+                console.log('Image not found in Cache');
+            }
         }
 
         getImageFromCache();

@@ -8,6 +8,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', async (event) => {
     if (event.data && event.data.image) {
+        console.log('Received image in Service Worker. Storing in Cache...');
         const cache = await caches.open('image-cache');
         const response = new Response(event.data.image, {
             headers: {
@@ -16,5 +17,8 @@ self.addEventListener('message', async (event) => {
             },
         });
         cache.put('uploaded-image', response);
+        console.log('Image stored in Cache.');
+    } else {
+        console.log('No image data received in Service Worker');
     }
 });

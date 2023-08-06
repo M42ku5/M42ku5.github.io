@@ -17,14 +17,18 @@
             const file = fileInput.files[0];
             
             if (file) {
+                console.log('Reading file...');
                 const reader = new FileReader();
                 reader.onloadend = function() {
                     const base64data = reader.result.split(',')[1];
+                    console.log('Sending image to Service Worker...');
                     if (navigator.serviceWorker.controller) {
                         navigator.serviceWorker.controller.postMessage({ image: base64data });
                     }
                 };
                 reader.readAsDataURL(file);
+            } else {
+                console.log('No file selected');
             }
         }
 
@@ -32,6 +36,8 @@
             navigator.serviceWorker.register('/worker/serviceWorker.js').then(() => {
                 console.log('Service Worker registered');
             });
+        } else {
+            console.log('Service Worker not supported in this browser');
         }
     </script>
 </body>
