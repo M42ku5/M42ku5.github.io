@@ -32,15 +32,23 @@
             const db = await openDB();
             const transaction = db.transaction(['images'], 'readonly');
             const store = transaction.objectStore('images');
-            const base64data = await store.get('uploaded-image');
+            const request = store.get('uploaded-image');
 
-            if (base64data) {
-                console.log('Image found in IndexedDB. Displaying...');
-                document.getElementById('displayImage').src = base64data;
-            } else {
-                console.log('Image not found in IndexedDB');
-            }
+            request.onsuccess = function() {
+                const base64data = request.result;
+                if (base64data) {
+                    console.log('Image found in IndexedDB. Displaying...');
+                    document.getElementById('displayImage').src = base64data;
+                } else {
+                    console.log('Image not found in IndexedDB');
+                }
+            };
+
+            request.onerror = function(event) {
+                console.error('Error fetching image from IndexedDB:', event);
+            };
         }
+
 
         getImageFromDB();
     </script>
