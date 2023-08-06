@@ -15,9 +15,8 @@
             const response = await cache.match('uploaded-image');
             if (response) {
                 console.log('Image found in Cache. Displaying...');
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                document.getElementById('displayImage').src = url;
+                const base64data = await response.text();
+                document.getElementById('displayImage').src = base64data;
             } else {
                 console.log('Image not found in Cache');
             }
