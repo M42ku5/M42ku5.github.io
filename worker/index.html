@@ -1,53 +1,38 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>send image via service worker to next page</title>
-    <style>
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
 <body>
+    <input type="file" id="imageInput">
+    <button onclick="sendImageToSW()">Upload</button>
+    <p>
+    <a href="display.html">go to next page to view image</a>
+    </p>
+    <script>
+        async function sendImageToSW() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const base64data = reader.result.split(',')[1];
+                    if (navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({ image: base64data });
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
-<input type="file" id="fileUpload" accept="image/*" onchange="encodeImageFileAsURL()"/>
-<script>
-
-navigator.serviceWorker.register('/worker/serviceWorker.js').then(function(registration) {
-  console.log('Service Worker registration successful with scope: ', registration.scope);
-}).catch(function(err) {
-  console.log('Service Worker registration failed: ', err);
-});
-
-if (navigator.serviceWorker.controller) {
-  console.log('This page is currently controlled by: ', navigator.serviceWorker.controller);
-} else {
-  console.log('This page is not currently controlled by a service worker.');
-}
-
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/worker/serviceWorker.js')
-    .then(function(reg) {
-      console.log('Service Worker Registered!', reg);
-    })
-    .catch(function(err) {
-      console.log('Service Worker registration failed: ', err);
-    });
-}
-
-function encodeImageFileAsURL() {
-  var file = document.getElementById('fileUpload').files[0];
-  var reader = new FileReader();
-  window.open('display.html');
-  reader.onloadend = function() {
-    console.log('RESULT', reader.result);
-    navigator.serviceWorker.controller.postMessage(reader.result);
-  }
-  reader.readAsDataURL(file);
-}
-
-</script>
-
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/worker/serviceWorker.js').then(() => {
+                console.log('Service Worker registered');
+            });
+        }
+    </script>
 </body>
 </html>
