@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="el1"></div>
+<div class="el2"></div>
+<button onclick="fn()">update</button>
+<script>
+function fn(){
+document.querySelector(".el1").innerText = "outerWidth: " + window.outerWidth;
+document.querySelector(".el2").innerText = "innerWidth: " + window.innerWidth;
+}
+fn();
+</script>
+</body>
+</html>
