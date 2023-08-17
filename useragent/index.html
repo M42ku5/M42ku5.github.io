@@ -7,6 +7,11 @@
 <title>Show navigator userAgent string</title>
 </head>
 <body>
-<button onclick="document.body.innerHTML=navigator.userAgent">navigator.userAgent</button>
+<button onclick="document.querySelector(".output1").innerHTML=navigator.userAgent">show/update navigator.userAgent</button>
+  <div>navigator.userAgent:</div>
+  <div class="output1"></div>
+<button onclick="document.querySelector(".output2").innerHTML=navigator.platform">show/update navigator.platform</button>
+  <div>navigator.platform:</div>
+  <div class="output2"></div>
 </body>
 </html>
