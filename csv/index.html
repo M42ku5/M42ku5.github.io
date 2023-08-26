@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CSV to HTML Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    #tableContainer {
+      margin-top: 20px;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+    }
+
+    td, th {
+      border: 1px solid #ddd;
+      padding: 5px;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSV to HTML Table</h1>
+  <input type="file" id="csvFile" accept=".csv" />
+  <div id="tableContainer"></div>
+
+  <script>
+    document.getElementById('csvFile').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function(e) {
+        let csvData = e.target.result;
+        csvData = csvData.trim();
+        console.log(csvData);
+        const lines = csvData.split('\n');
+        console.log(lines);
+        let table = '<table>';
+        lines.forEach(function(line) {
+          table += '<tr>';
+          const cells = line.split(';');
+          console.log(cells);
+          cells.forEach(function(cell) {
+            table += '<td>' + cell.trim() + '</td>';
+          });
+          table += '</tr>';
+        });
+        table += '</table>';
+        document.getElementById('tableContainer').innerHTML = table;
+      };
+    });
+  </script>
+
+</body>
+</html>
