@@ -38,6 +38,7 @@ fetch("https://www.tagesschau.de/xml/rss2_https/")
     })})
   }
   getNews()
+  setInterval(()=>{getNews()},120000)
 </script>
 </body>
 </html>
