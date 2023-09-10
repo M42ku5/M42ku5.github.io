@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Letter Combination Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    h1 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+    button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Letter Combination Generator</h1>
+<div>Enter letters (maxlength: 9)</div><br>
+<input type="text" id="inputText" oninput="validateInput(this)" maxlength="9" onblur="document.querySelectorAll('option').forEach(e=>{e.removeAttribute('disabled');if(e.getAttribute('value') > this.value.length){e.setAttribute('disabled','disabled')}})"><br><br>
+Number of letters to list:
+<select id="letterCount">
+  <option value="0">All</option>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+</select><br><br>
+<button onclick="try{document.querySelector('#result').innerHTML='calculating...';setTimeout(()=>{generateCombinations()},0)}catch(e){console.log(e)}">Calculate</button><br><br>
+
+<div id="result"></div>
+
+<script>
+  function validateInput(input) {
+    input.value = input.value.replace(/[^a-zA-Z]/g, '');
+  }
+
+  function* permute(array) {
+    const length = array.length;
+    const c = Array(length).fill(0);
+    let i = 1;
+
+    yield array.join('');
+    while (i < length) {
+      if (c[i] < i) {
+        if (i % 2 === 0) {
+          [array[0], array[i]] = [array[i], array[0]];
+        } else {
+          [array[c[i]], array[i]] = [array[i], array[c[i]]];
+        }
+        yield array.join('');
+        c[i]++;
+        i = 1;
+      } else {
+        c[i] = 0;
+        i++;
+      }
+    }
+  }
+
+  function combinations(arr) {
+    const result = [];
+    const f = (prefix, arr) => {
+      for (let i = 0; i < arr.length; i++) {
+        const newPrefix = [...prefix, arr[i]];
+        result.push(newPrefix.join(''));
+        f(newPrefix, arr.slice(i + 1));
+      }
+    };
+    f([], arr);
+    return result;
+  }
+
+  function generateCombinations() {
+    const input = document.getElementById('inputText').value;
+    const selectedCount = parseInt(document.getElementById('letterCount').value);
+    const inputArr = input.split('');
+    const combs = combinations(inputArr);
+    let allCombs = [];
+
+    for (const comb of combs) {
+      const perms = Array.from(permute(comb.split('')));
+      allCombs = [...allCombs, ...perms];
+    }
+
+    const uniqueCombs = [...new Set(allCombs)];
+    const filteredCombs = selectedCount > 0 ? uniqueCombs.filter(c => c.length === selectedCount) : uniqueCombs;
+    const result = filteredCombs.map(c => c.toUpperCase()).join('<br>');
+    document.getElementById('result').innerHTML = result;
+  }
+</script>
+</body>
+</html>
