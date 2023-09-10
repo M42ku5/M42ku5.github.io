@@ -38,6 +38,12 @@
 <body>
 
   <h1>CSV to HTML Table</h1>
+  <label for="separator">Choose a separator:</label>
+  <select id="separator">
+    <option value=";">;</option>
+    <option value=",">,</option>
+  </select><br><br>
+
   <input type="file" id="csvFile" accept=".csv" />
   <div id="tableContainer"></div>
 
@@ -55,7 +61,7 @@
         let table = '<table>';
         lines.forEach(function(line) {
           table += '<tr>';
-          const cells = line.split(';');
+          const cells = line.split(document.querySelector('#separator').value);
           console.log(cells);
           cells.forEach(function(cell) {
             table += '<td>' + cell.trim() + '</td>';
