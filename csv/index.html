@@ -70,6 +70,14 @@
         });
         table += '</table>';
         document.getElementById('tableContainer').innerHTML = table;
+        
+        document.querySelectorAll("td").forEach(e=>{
+          if (/http/.test(e.innerText)) {
+            console.log(e.innerText);
+            e.innerHTML = `<a href="${e.innerText}" target="_blank">${e.innerText}</a>`
+          }
+        })
+        
       };
     });
   </script>
