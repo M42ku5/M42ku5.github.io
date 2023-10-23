@@ -2,227 +2,170 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Merger</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
-  <script>
-    const { PDFDocument } = PDFLib;
-
-    class PDFMerger {
-      constructor() {
-        this.reset()
-      }
-
-      reset() {
-        this.doc = undefined
-      }
-
-      async add(inputFile, pages) {
-        await this._ensureDoc()
-        if (typeof pages === 'undefined' || pages === null) {
-          await this._addEntireDocument(inputFile)
-        } else if (Array.isArray(pages)) {
-          await this._addGivenPages(inputFile, pages)
-        } else if (pages.indexOf(',') > 0) {
-          const aPages = pages.replace(/ /g, '').split(',')
-          await this._addGivenPages(inputFile, aPages)
-        } else if (pages.toLowerCase().indexOf('to') >= 0) {
-          const span = pages.replace(/ /g, '').split('to')
-          const from = parseInt(span[0])
-          const to = parseInt(span[1])
-          await this._addFromToPage(inputFile, from, to)
-        } else if (pages.indexOf('-') >= 0) {
-          const span = pages.replace(/ /g, '').split('-')
-          const from = parseInt(span[0])
-          const to = parseInt(span[1])
-          await this._addFromToPage(inputFile, from, to)
-        } else {
-          throw new Error('invalid parameter "pages"')
-        }
-      }
-
-      async _ensureDoc() {
-        if (!this.doc) {
-          this.doc = await PDFDocument.create()
-        }
-      }
-
-      async _getInputAsUint8Array(input) {
-        if (input instanceof Uint8Array) {
-          return input
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Merger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    <style>
+        #pdfList {
+            list-style-type: none;
+            padding: 0;
+            cursor: pointer;
         }
 
-        if (input instanceof ArrayBuffer || Object.prototype.toString.call(input) === '[object ArrayBuffer]') {
-          return new Uint8Array(input)
+        #pdfList li {
+            padding: 5px;
+            background-color: #f2f2f2;
+            margin: 2px 0;
+            border: 1px solid #ccc;
         }
 
-        if (typeof input === 'string' || input instanceof String) {
-          try {
-            Boolean(new URL(input))
-          } catch (e) {
-            throw new Error(`This is not a valid url: ${input}`)
-          }
-          const res = await window.fetch(input)
-          const aBuffer = await res.arrayBuffer()
-          return new Uint8Array(aBuffer)
+        #pdfList li.drag-over {
+            border-top: 3px solid #000;
         }
-
-        if (input instanceof window.File) {
-          const fileReader = new window.FileReader()
-          fileReader.onload = function (evt) {
-            return fileReader.result
-          }
-          fileReader.readAsArrayBuffer(input)
-        }
-
-        if (input instanceof window.Blob) {
-          const aBuffer = await input.arrayBuffer()
-          return new Uint8Array(aBuffer)
-        }
-
-        console.log({ input, inputc: Object.prototype.toString.call(input), ArrayBuffer, eq: input.contructor !== ArrayBuffer })
-        throw new Error('pdf must be represented as an ArrayBuffer, Blob, File, URL or fetchable string')
-      }
-
-      async _addEntireDocument(input) {
-        const src = await this._getInputAsUint8Array(input)
-        const srcDoc = await PDFDocument.load(src)
-
-        const copiedPages = await this.doc.copyPages(srcDoc, srcDoc.getPageIndices())
-        copiedPages.forEach((page) => {
-          this.doc.addPage(page)
-        })
-      }
-
-      async _addFromToPage(inputFile, from, to) {
-        if (typeof from !== 'number' || typeof to !== 'number' || from < 0 || from < 0) {
-          throw new Error('Invalid function parameter. \'from\' and \'to\' must be positive \'numbers\'.')
-        }
-        if (to < from) {
-          throw new Error('Invalid function parameter. \'to\' must be greater or eaqual to \'from\'.')
-        }
-
-        const src = await this._getInputAsUint8Array(inputFile)
-        const srcDoc = await PDFDocument.load(src)
-        const pageCount = srcDoc.getPageCount()
-
-        if (from >= pageCount || to >= pageCount) {
-          throw new Error(`Invalid function parameter. The document has not enough pages. (from:${from}, to:${to}, pages:${pageCount})`)
-        }
-
-        // create a array [2,3,4] with from=2 and to=4
-        const pages = Array.from({ length: (to - from) + 1 }, (_, i) => i + from - 1)
-        const copiedPages = await this.doc.copyPages(srcDoc, pages)
-        copiedPages.forEach((page) => {
-          this.doc.addPage(page)
-        })
-      }
-
-      async _addGivenPages(inputFile, pages) {
-        if (pages.length <= 0) return
-
-        const src = await this._getInputAsUint8Array(inputFile)
-        const srcDoc = await PDFDocument.load(src)
-
-        const pagesIndexed1 = pages.map(p => p - 1)
-        const copiedPages = await this.doc.copyPages(srcDoc, pagesIndexed1)
-        copiedPages.forEach((page) => {
-          this.doc.addPage(page)
-        })
-      }
-
-      async setMetadata(metadata) {
-        await this._ensureDoc()
-        if (metadata.producer) this.doc.setProducer(metadata.producer)
-        if (metadata.author) this.doc.setAuthor(metadata.author)
-        if (metadata.title) this.doc.setTitle(metadata.title)
-        if (metadata.creator) this.doc.setCreator(metadata.creator)
-      }
-
-      async saveAsBuffer() {
-        await this._ensureDoc()
-        return await this.doc.save()
-      }
-
-      async saveAsBlob() {
-        const buffer = await this.saveAsBuffer()
-
-        return new window.Blob([buffer], {
-          type: 'application/pdf'
-        })
-      }
-
-      async save(fileName) {
-        const dataUri = await this.doc.saveAsBase64({ dataUri: true })
-
-        const link = document.createElement('a')
-        link.href = dataUri
-        link.download = `${fileName}.pdf`
-        link.click()
-      }
-    }
-
-  </script>
+    </style>
 </head>
 
 <body>
-  <h1>PDF Merger</h1>
-  <input type="file" id="pdfFile" accept=".pdf" multiple><br><br>
-  <button id="mergeBtn" disabled>Merge PDFs</button><br><br>
-  <button id="downloadBtn" disabled>Download Merged PDF</button>
+    <h1>PDF Merger</h1>
+    <input type="file" id="pdfFile" accept=".pdf" multiple><br><br>
+    <ul id="pdfList"></ul>
+    <button id="mergeBtn" disabled>Merge PDFs</button><br><br>
+    <button id="downloadBtn" disabled>Download Merged PDF</button>
 
-  <script>
+    <script>
+        const { PDFDocument } = PDFLib;
 
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const mergeBtn = document.getElementById('mergeBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const pdfFile = document.getElementById('pdfFile');
+            const pdfList = document.getElementById('pdfList');
+            let mergedPdf;
+            let selectedFiles = [];
 
-      const mergeBtn = document.getElementById('mergeBtn');
-      const downloadBtn = document.getElementById('downloadBtn');
-      const pdfFile = document.getElementById('pdfFile');
-      let merger;
+            pdfFile.addEventListener('change', () => {
+                selectedFiles = [...pdfFile.files];
+                updateFileList(selectedFiles);
+                mergeBtn.disabled = selectedFiles.length < 2;
+            });
 
-      pdfFile.addEventListener('change', handleFileChange);
-      mergeBtn.addEventListener('click', mergePDFs);
-      downloadBtn.addEventListener('click', downloadMergedPDF);
+            mergeBtn.addEventListener('click', async () => {
+                mergedPdf = await mergeSelectedPDFs(selectedFiles);
+                if (mergedPdf) {
+                    downloadBtn.disabled = false;
+                }
+            });
 
-      async function handleFileChange() {
-        const files = pdfFile.files;
-        mergeBtn.disabled = files.length < 2;
-        merger = new PDFMerger();
+            downloadBtn.addEventListener('click', () => {
+                downloadPDF(mergedPdf);
+            });
 
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          const fileBuffer = await file.arrayBuffer();
-          merger.add(fileBuffer);
+            let dragSrcEl = null;
+
+            function handleDragStart(e) {
+                dragSrcEl = this;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.outerHTML);
+            }
+
+            function handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                this.classList.add('drag-over');
+                e.dataTransfer.dropEffect = 'move';
+                return false;
+            }
+
+            function handleDragEnter(e) {}
+
+            function handleDragLeave(e) {
+                this.classList.remove('drag-over');
+            }
+
+            function handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                }
+                if (dragSrcEl !== this) {
+                    this.parentNode.removeChild(dragSrcEl);
+                    let dropHTML = e.dataTransfer.getData('text/html');
+                    this.insertAdjacentHTML('beforebegin', dropHTML);
+                    const droppedElem = this.previousSibling;
+                    addDnDHandlers(droppedElem);
+                }
+                this.classList.remove('drag-over');
+                updateSelectedFilesOrder();
+                return false;
+            }
+
+            function handleDragEnd(e) {
+                this.classList.remove('drag-over');
+            }
+
+            function addDnDHandlers(elem) {
+                elem.addEventListener('dragstart', handleDragStart, false);
+                elem.addEventListener('dragover', handleDragOver, false);
+                elem.addEventListener('dragenter', handleDragEnter, false);
+                elem.addEventListener('dragleave', handleDragLeave, false);
+                elem.addEventListener('drop', handleDrop, false);
+                elem.addEventListener('dragend', handleDragEnd, false);
+            }
+
+            function updateFileList(files) {
+                pdfList.innerHTML = '';
+                files.forEach((file, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = file.name;
+                    li.draggable = true;
+                    li.dataset.index = index;
+                    pdfList.appendChild(li);
+                    addDnDHandlers(li);
+                });
+            }
+
+            function updateSelectedFilesOrder() {
+                selectedFiles = Array.from(pdfList.children).map(li => selectedFiles[li.dataset.index]);
+            }
+        });
+
+        async function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = event => resolve(event.target.result);
+                reader.onerror = error => reject(error);
+                reader.readAsArrayBuffer(file);
+            });
         }
-      }
 
-      async function mergePDFs() {
-        try {
-          const mergedPdf = await merger.saveAsBuffer(); // changed from saveAsArrayBuffer() to saveAsBuffer()
-          downloadBtn.disabled = false;
-          downloadBtn.mergedPdf = mergedPdf;
-        } catch (error) {
-          console.error('Error while merging PDFs:', error);
-          alert('An error occurred while merging PDFs.');
+        async function mergeSelectedPDFs(files) {
+            const mergedDocument = await PDFDocument.create();
+
+            for (let file of files) {
+                const arrayBuffer = await readFileAsArrayBuffer(file);
+                const pdfDoc = await PDFDocument.load(arrayBuffer);
+                const pages = await mergedDocument.copyPages(pdfDoc, pdfDoc.getPageIndices());
+                for (const page of pages) {
+                    mergedDocument.addPage(page);
+                }
+            }
+
+            return await mergedDocument.save();
         }
-      }
 
-
-      function downloadMergedPDF() {
-        const blob = new Blob([downloadBtn.mergedPdf], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'merged.pdf';
-        document.body.appendChild(a);
-        a.click();
-        URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }
-
-    });
-  </script>
+        function downloadPDF(pdfBytes) {
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'merged.pdf';
+            document.body.appendChild(a);
+            a.click();
+            URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
 </body>
 
 </html>
