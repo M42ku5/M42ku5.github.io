@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Border</title>
+    <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+            margin: 0;
+            background-color: #000;
+            border: 4px solid;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <script>
+    document.querySelector('body').addEventListener('click', () => {
+      document.documentElement.requestFullscreen()
+    });
+
+    let angle = 0;
+    const bodyElement = document.querySelector('body');
+
+    function updateGradient() {
+        const gradient = `linear-gradient(${angle}deg, red, transparent)`;
+        bodyElement.style.borderImage = gradient + ' 1';
+        angle = (angle + 1) % 360;
+        requestAnimationFrame(updateGradient);
+    }
+
+    updateGradient();
+    </script>
+</body>
+</html>
