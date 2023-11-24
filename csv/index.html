@@ -40,6 +40,10 @@
 <body>
 
   <h1>CSV to HTML Table</h1>
+  
+  <input type="checkbox" id="headerCheckbox" checked>
+  <label for="headerCheckbox">Use first line as header row</label><br><br>
+  
   <label for="separator">Choose a separator:</label>
   <select id="separator">
     <option value=";">;</option>
@@ -57,29 +61,36 @@
       reader.onload = function(e) {
         let csvData = e.target.result;
         csvData = csvData.trim();
-        console.log(csvData);
         const lines = csvData.split('\n');
-        console.log(lines);
+
         let table = '<table>';
-        lines.forEach(function(line) {
-          table += '<tr>';
+        lines.forEach(function(line, index) {
+          if (index === 0 && document.getElementById('headerCheckbox').checked) {
+            table += '<thead><tr>';
+          } else {
+            table += '<tr>';
+          }
           const cells = line.split(document.querySelector('#separator').value);
-          console.log(cells);
           cells.forEach(function(cell) {
-            table += '<td>' + cell.trim() + '</td>';
+            if (index === 0 && document.getElementById('headerCheckbox').checked) {
+              table += '<th>' + cell.trim() + '</th>';
+            } else {
+              table += '<td>' + cell.trim() + '</td>';
+            }
           });
           table += '</tr>';
-        });
-        table += '</table>';
-        document.getElementById('tableContainer').innerHTML = table;
-        
-        document.querySelectorAll("td").forEach(e=>{
-          if (/http/.test(e.innerText)) {
-            console.log(e.innerText);
-            e.innerHTML = `<a href="${e.innerText}" target="_blank">${e.innerText}</a>`
+          if (index === 0 && document.getElementById('headerCheckbox').checked) {
+            table += '</thead><tbody>';
           }
-        })
-        
+        });
+        table += '</tbody></table>';
+        document.getElementById('tableContainer').innerHTML = table;
+
+        document.querySelectorAll("td").forEach(e => {
+          if (/http/.test(e.innerText)) {
+            e.innerHTML = `<a href="${e.innerText}" target="_blank">${e.innerText}</a>`;
+          }
+        });
       };
     });
   </script>
