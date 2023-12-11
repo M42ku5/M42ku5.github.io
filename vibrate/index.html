@@ -9,14 +9,12 @@
 </head>
 <body>
 
-<p>Lets your android phone vibrate every 60 seconds.</p>
-
-<button>start</button>
+<button>vibrate</button>
 
 <script>
 
 function f() {
-navigator.vibrate(100);
+navigator.vibrate(200);
 }
 
 if (!navigator.vibrate) {
@@ -30,7 +28,7 @@ document.querySelector('button').addEventListener('click',()=>{
   try {
   
   f();
-  setInterval(()=>{ f() },60000);
+  // setInterval(()=>{ f() },60000);
   
 } catch (error) {
   console.error(error);
