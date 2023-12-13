@@ -21,7 +21,7 @@
 
 <body>
 
-  <div class="time"></div>
+  <div class="time">00:00:00</div>
   <br>
   <button class="instant">vibrate</button><br>
   <br>
@@ -31,7 +31,13 @@
 
     const el = document.querySelector('.time');
 
-    setInterval(()=>{el.innerHTML = new Date().toLocaleTimeString('en-GB')},1000);
+    function f2() {
+      el.innerHTML = new Date().toLocaleTimeString('en-GB');
+    }
+    
+    f2();
+
+    setInterval(()=>{ f2() },1000);
 
     function f() {
       navigator.vibrate(200);
