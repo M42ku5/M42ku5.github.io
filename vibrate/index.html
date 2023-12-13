@@ -18,11 +18,17 @@
 
 <body>
 
+  <div class="time"></div><br>
+  <br>
   <button class="instant">vibrate</button><br>
   <br>
   <button class="interval">vibrate 10s interval</button>
 
   <script>
+
+    const el = document.querySelector('.time');
+
+    setInterval(()=>{el.innerHTML = new Date().toLocaleTimeString('en-GB')},1000);
 
     function f() {
       navigator.vibrate(200);
