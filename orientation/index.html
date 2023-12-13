@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Device Orientation</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Show device orientation">
+  <meta name="keywords" content="orientation">
+  <meta name="author" content="MS">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+z-axis: <div id="alpha"></div>
+<br>
+x-axis: <div id="beta"></div>
+<br>
+y-axis: <div id="gamma"></div>
+<br>
+<div id="unsupported"></div>
+
+<script>
+
+if (window.DeviceOrientationEvent) {
+
+    window.addEventListener('deviceorientation', function(event) {
+
+        var alpha = event.alpha; // rotation around the z-axis
+        var beta = event.beta;   // rotation around the x-axis
+        var gamma = event.gamma; // rotation around the y-axis
+
+        document.getElementById('alpha').textContent = alpha?.toFixed(2);
+        document.getElementById('beta').textContent = beta?.toFixed(2);
+        document.getElementById('gamma').textContent = gamma?.toFixed(2);
+    }, false);
+} else {
+    document.getElementById('unsupported').textContent = 'Device Orientation API not supported.';
+}
+
+</script>
+
+</body>
+</html>
