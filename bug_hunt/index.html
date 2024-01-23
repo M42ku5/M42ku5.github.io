@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Bug Hunt Game">
+    <meta name="keywords" content="Casual Game">
+    <meta name="author" content="Markus Schmieder">
+    
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Bug Hunt</title>
+</head>
+<body>
+    <main>
+    <div id="all">
+
+        <section>
+        <div id="txt">Points: <span id="counter">0</span></div>
+        <div id="countdown">30s</div>
+        <div id="pointsalert"></div>
+        <div id="minuslayer"></div>
+        <div id="timestripe"></div>
+        <div id="bug1"></div>
+        <div id="bug2"></div>
+        <div id="closefullscreen"><i class="fas fa-compress"></i></div>
+        </section>
+
+        <section>
+        <div id="startscreen">
+            <h1 id="starttext">Bug Hunt</h1>
+            <img class="preview" src="img/badbugs/1.png" alt="Fliege">
+            <img class="preview" src="img/badbugs/6.png" alt="Kakerlake erste Ansicht">
+            <img class="preview" src="img/badbugs/10.png" alt="Kakerlake zweite Ansicht">
+            <img class="preview" src="img/goodbug/3.png" alt="Marienkäfer">
+            <br>
+            Tap as many flies/cockroaches as possible in 30 seconds:<br>+1 point<br><br>
+            Don't hit ladybugs:<br>-2 points<br><br>
+             For missing you get:<br>-1 point
+            <br><br>
+            Difficulty level:<br>
+            easy = without ladybugs and slow change of position<br>
+            <button type="button" class="btn" id="btn-easy">easy</button>
+            <button type="button" class="btn" id="btn-normal">normal activated</button><br>
+            <button type="button" class="btn" id="btn-start">START</button><br>
+        </div>
+    </section>
+
+    <section>
+        <div id="finalscreen">
+            <h2 id="endtext">Congratulations!</h2>
+            <br>
+            You earned <span id="finalscore"></span> points.<br>
+            <br>
+            Hit rate: <span id="trefferquote"></span><br>
+            <br>
+            The insects you caught: <span id="result"></span><br>
+            <br>
+            <div id="motivation"></div>
+            <button type="button" id="btn-restart">PLAY AGAIN</button><br>
+            <img id="endimg" src="img/pokal.png" alt="Pokal">
+        </div>
+    </section>
+
+    </div>
+
+</main>
+
+<script src="scripts.js"></script>
+</body>
+</html>
