@@ -33,13 +33,14 @@ convert.addEventListener('click', function() {
         alert('Please upload an image');
         return;
     }
+    const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
     const reader = new FileReader();
     reader.onloadend = function() {
         const image = new Image();
         image.onload = function() {
             const doc = new jsPDF();
             doc.addImage(image, 'JPEG', 0, 0, 210, 297);
-            doc.save('a4.pdf');
+            doc.save(`${fileNameWithoutExtension}.pdf`);
         };
         image.src = reader.result;
     };
