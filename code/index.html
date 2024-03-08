@@ -42,11 +42,12 @@ iframe {
   <iframe id="outputFrame"></iframe>
 </div>
 
+
 <script>
 function updateOutput() {
   const htmlCode = document.getElementById('htmlCode').value;
-  const cssCode = "<style>" + document.getElementById('cssCode').value + "</style>";
-  const jsCode = "<script>" + document.getElementById('jsCode').value + "</script>";
+  const cssCode = `<style>${document.getElementById('cssCode').value}</style>`;
+  const jsCode = `<scri` + `pt>${document.getElementById('jsCode').value}</scri` + `pt>`;
   const outputFrame = document.getElementById('outputFrame');
   outputFrame.contentWindow.document.open();
   outputFrame.contentWindow.document.write(htmlCode + cssCode + jsCode);
