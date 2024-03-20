@@ -1,40 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Tic-Tac-Toe</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+min-height: 100vh;
+min-width: 100vw;
+font-family: Arial;
+}
+h1 {
+text-align: center;
+font-size: 20px;
+padding: 5px 10px;
+}
+.description {
+padding: 5px 10px;
+font-size: 14px;
+background-color: rgba(0,0,0,0.1);
+text-align: center;
+}
+button {
+text-align: center;
+margin: 10px auto;
+display: inline-block;
+padding: 5px 10px;
+border-width: 0;
+background-color: rgba(0,0,0,0.2);
+cursor: pointer;
+}
+button:hover {
+background-color: rgba(100,100,100,0.1);
+color: #fff;
+}
+.grid-box {
+width: 300px;
+height: 300px;
+transform: translate(-50%,-50%);
+position: absolute;
+top: 50%;
+left: 50%;
+font-size: 95px;
+}
+.border-top {
+border-top-width: 1px;
+border-top-style: solid;
+border-top-color: black;
+}
+.border-right {
+border-right-width: 1px;
+border-right-style: solid;
+border-right-color: black;
+}
+.border-bottom {
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: black;
+}
+.border-left {
+border-left-width: 1px;
+border-left-style: solid;
+border-left-color: black;
+}
+.row {
+display: flex;
+}
+.row > div {
+width: 100px;
+height: 100px;
+text-align: center;
+line-height: 100px;
+cursor: pointer;
+}
+</style>
+<title>Tic-Tac-Toe</title>
 </head>
 <body>
 
-    <h1>Tic-Tac-Toe</h1>
+<h1>Tic-Tac-Toe</h1>
 
-    <div class="description"></div>
+<div class="description">
+<p>Click on a box to place an X or O.</p>
+<p>Player X goes first.</p>
+<button>restart</button>
+</div>
 
-    <div class="grid-box">
+<div class="grid-box">
 
-        <div class="row">
-            <div></div>
-            <div class="border-right border-left"></div>
-            <div></div>
-        </div>
+<div class="row">
+<div></div>
+<div class="border-right border-left"></div>
+<div></div>
+</div>
 
-        <div class="row">
-            <div class="border-top border-bottom"></div>
-            <div class="border-top border-right border-bottom border-left"></div>
-            <div class="border-top border-bottom"></div>
-        </div>
+<div class="row">
+<div class="border-top border-bottom"></div>
+<div class="border-top border-right border-bottom border-left"></div>
+<div class="border-top border-bottom"></div>
+</div>
 
-        <div class="row">
-            <div></div>
-            <div class="border-right border-left"></div>
-            <div></div>
-        </div>
-    
-    </div>
+<div class="row">
+<div></div>
+<div class="border-right border-left"></div>
+<div></div>
+</div>
 
-    <script src="script.js"></script>
+</div>
+
+<script>
+    let turn = 'X';
+    document.querySelectorAll('.row > div').forEach((div, index) => {
+        div.addEventListener('click', () => {
+            if (div.textContent === '') {
+                div.textContent = turn;
+                turn = turn === 'X' ? 'O' : 'X';
+            }
+        });
+    });
+    document.querySelector('button').addEventListener('click', () => {
+        document.querySelectorAll('.row > div').forEach((div) => {
+            div.textContent = '';
+        });
+        turn = 'X';
+    });
+</script>
 
 </body>
 </html>
