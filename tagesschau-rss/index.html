@@ -12,12 +12,7 @@ html{background-color:#000;scrollbar-width:thin}
 body{color:#fff;font-family:sans-serif}
 a{color:#fff;text-decoration:none;display:block;padding:9px 0}
 a:visited{color:#888}
-h1{
-margin:0;
-font-size:1rem;
-padding:9px 9px 9px 15px;
-cursor:pointer
-}
+h1{margin:0;font-size:1rem;padding:9px 9px 9px 15px;cursor:pointer}
 ol{margin-top:8px;padding-left:0;list-style-type:none}
 h1,ol{max-width:65ch;margin-inline:auto}
 </style>
@@ -29,16 +24,15 @@ h1,ol{max-width:65ch;margin-inline:auto}
 function getNews(){
 document.querySelector("main ol").innerHTML=""
 fetch("https://www.tagesschau.de/xml/rss2_https/")
-  .then(x=>x.text())
-  .then(y=>{
-    const z=new DOMParser()
-    .parseFromString(y,"text/xml");
-    z.querySelectorAll('item').forEach(e=>{
-      document.querySelector("main ol").innerHTML+="<li><a href='"+e.querySelector("link").innerHTML+"' target='_blank'>"+e.querySelector("title").innerHTML+"</a></li>"
-    })})
-  }
-  getNews()
-  setInterval(()=>{getNews()},240000)
+.then(x=>x.text())
+.then(y=>{
+const z=new DOMParser().parseFromString(y,"text/xml");
+z.querySelectorAll('item').forEach(e=>{
+document.querySelector("main ol").innerHTML+="<li><a href='"+e.querySelector("link").innerHTML+"' target='_blank'>"+e.querySelector("title").innerHTML+"</a></li>"
+})})
+}
+getNews()
+setInterval(()=>{getNews()},1200000) // 20 minutes
 </script>
 </body>
 </html>
