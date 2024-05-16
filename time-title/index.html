@@ -5,6 +5,7 @@
 <title>00:00:00</title>
 </head>
 <body>
+<div></div>
 <script>
 function updateClock(){
 const now=new Date()
@@ -13,6 +14,7 @@ let minutes=now.getMinutes().toString().padStart(2,'0')
 let seconds=now.getSeconds().toString().padStart(2,'0')
 let timeString=hours + ':' + minutes + ':' + seconds
 document.title=timeString
+document.querySelector('div').innerHTML=timeString
 }
 setInterval(updateClock,1000)
 updateClock()
