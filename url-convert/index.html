@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Clickable Links in Text Area</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Clickable Links in Text Area">
+<style>
+*{box-sizing:border-box}
+textarea{width:100%}
+</style>
+</head>
+<body>
+<div>
+<textarea id="textArea" rows="10" cols="30">
+Enter text with URLs here: http://example.com
+</textarea>
+</div>
+<div>
+<button onclick="convertUrls()">Convert URLs</button>
+</div>
+<br>
+<div id="output"></div>
+
+<script>
+function convertUrls() {
+    const text = document.getElementById('textArea').value;
+    const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    let convertedText = text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+    let withLineBreaks = convertedText.replace(/\n/g, '<br>');
+    document.getElementById('output').innerHTML = withLineBreaks;
+}
+</script>
+
+</body>
+</html>
