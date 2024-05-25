@@ -32,7 +32,9 @@ function convertUrls() {
     document.getElementById('output').innerHTML = withLineBreaks;
 }
 window.onload = function() {
-    document.getElementById('textArea').select();
+  const el = document.getElementById('textArea')
+  el.value=''
+  el.select()
 }
 </script>
 
