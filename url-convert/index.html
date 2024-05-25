@@ -19,6 +19,7 @@ textarea{width:100%}
 </div>
 <div>
 <button onclick="convertUrls()">Convert URLs</button>
+<button id="paste">Paste clipboard text</button>
 </div>
 <br>
 <div id="output"></div>
@@ -36,6 +37,13 @@ window.onload = function() {
   el.value=''
   el.select()
 }
+const destination = document.getElementById('textArea');
+document.querySelector('#paste').addEventListener("click", () => {
+  navigator.clipboard
+    .readText()
+    .then((clipText) => (destination.value = clipText));
+});
+
 </script>
 
 </body>
