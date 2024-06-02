@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QWERTZ DE Keyboard</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 600px;
+        }
+        .key {
+            background-color: #333;
+            border: 1px solid #555;
+            margin: 2px;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .key:hover {
+            background-color: #555;
+        }
+        .key.small {
+            text-transform: lowercase;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 20px;
+        }
+        input {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #555;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+        input::-webkit-scrollbar {
+            width: 10px;
+        }
+        input::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 5px;
+        }
+        input::-webkit-scrollbar-track {
+            background: #333;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #ffffff;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .key.space {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="keyboard">
+        <div class="key" data-key="1">1</div>
+        <div class="key" data-key="2">2</div>
+        <div class="key" data-key="3">3</div>
+        <div class="key" data-key="4">4</div>
+        <div class="key" data-key="5">5</div>
+        <div class="key" data-key="6">6</div>
+        <div class="key" data-key="7">7</div>
+        <div class="key" data-key="8">8</div>
+        <div class="key" data-key="9">9</div>
+        <div class="key" data-key="0">0</div>
+        <div class="key" data-key="Q">Q</div>
+        <div class="key" data-key="W">W</div>
+        <div class="key" data-key="E">E</div>
+        <div class="key" data-key="R">R</div>
+        <div class="key" data-key="T">T</div>
+        <div class="key" data-key="Z">Z</div>
+        <div class="key" data-key="U">U</div>
+        <div class="key" data-key="I">I</div>
+        <div class="key" data-key="O">O</div>
+        <div class="key" data-key="P">P</div>
+        <div class="key" data-key="A">A</div>
+        <div class="key" data-key="S">S</div>
+        <div class="key" data-key="D">D</div>
+        <div class="key" data-key="F">F</div>
+        <div class="key" data-key="G">G</div>
+        <div class="key" data-key="H">H</div>
+        <div class="key" data-key="J">J</div>
+        <div class="key" data-key="K">K</div>
+        <div class="key" data-key="L">L</div>
+        <div class="key" data-key="Y">Y</div>
+        <div class="key" data-key="X">X</div>
+        <div class="key" data-key="C">C</div>
+        <div class="key" data-key="V">V</div>
+        <div class="key" data-key="B">B</div>
+        <div class="key" data-key="N">N</div>
+        <div class="key" data-key="M">M</div>
+        <div class="key small" data-key="q">q</div>
+        <div class="key small" data-key="w">w</div>
+        <div class="key small" data-key="e">e</div>
+        <div class="key small" data-key="r">r</div>
+        <div class="key small" data-key="t">t</div>
+        <div class="key small" data-key="z">z</div>
+        <div class="key small" data-key="u">u</div>
+        <div class="key small" data-key="i">i</div>
+        <div class="key small" data-key="o">o</div>
+        <div class="key small" data-key="p">p</div>
+        <div class="key small" data-key="a">a</div>
+        <div class="key small" data-key="s">s</div>
+        <div class="key small" data-key="d">d</div>
+        <div class="key small" data-key="f">f</div>
+        <div class="key small" data-key="g">g</div>
+        <div class="key small" data-key="h">h</div>
+        <div class="key small" data-key="j">j</div>
+        <div class="key small" data-key="k">k</div>
+        <div class="key small" data-key="l">l</div>
+        <div class="key small" data-key="y">y</div>
+        <div class="key small" data-key="x">x</div>
+        <div class="key small" data-key="c">c</div>
+        <div class="key small" data-key="v">v</div>
+        <div class="key small" data-key="b">b</div>
+        <div class="key small" data-key="n">n</div>
+        <div class="key small" data-key="m">m</div>
+        <div class="key" data-key="Ä">Ä</div>
+        <div class="key" data-key="Ö">Ö</div>
+        <div class="key" data-key="Ü">Ü</div>
+        <div class="key" data-key="ß">ß</div>
+        <div class="key small" data-key="ä">ä</div>
+        <div class="key small" data-key="ö">ö</div>
+        <div class="key small" data-key="ü">ü</div>
+        <div class="key" data-key=",">,</div>
+        <div class="key" data-key=".">.</div>
+        <div class="key" data-key="-">-</div>
+        <div class="key" data-key="_">_</div>
+        <div class="key" data-key="!">!</div>
+        <div class="key" data-key="?">?</div>
+        <div class="key" data-key="(">(</div>
+        <div class="key" data-key=")">)</div>
+        <div class="key" data-key="@">@</div>
+        <div class="key space" data-key=" ">Space</div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="inputField">
+        <button id="copyButton">Copy</button>
+    </div>
+    <script>
+        document.querySelectorAll('.key').forEach(key => {
+            key.addEventListener('click', () => {
+                const inputField = document.getElementById('inputField');
+                inputField.value += key.getAttribute('data-key');
+            });
+        });
+
+        document.getElementById('copyButton').addEventListener('click', () => {
+            const inputField = document.getElementById('inputField');
+            inputField.select();
+            document.execCommand('copy');
+        });
+    </script>
+</body>
+</html>
