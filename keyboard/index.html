@@ -27,6 +27,7 @@
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 5px;
+            user-select: none;
         }
         .key:hover {
             background-color: #555;
@@ -65,6 +66,7 @@
             color: #ffffff;
             cursor: pointer;
             border-radius: 0 5px 5px 0;
+            user-select: none;
         }
         button:hover {
             background-color: #555;
@@ -72,6 +74,10 @@
         .key.space {
             width: 100%;
             text-align: center;
+        }
+        .clear-button {
+            border-radius: 5px;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -160,6 +166,7 @@
     <div class="input-container">
         <input type="text" id="inputField">
         <button id="copyButton">Copy</button>
+        <button id="clearButton" class="clear-button">Clear</button>
     </div>
     <script>
         document.querySelectorAll('.key').forEach(key => {
@@ -173,6 +180,11 @@
             const inputField = document.getElementById('inputField');
             inputField.select();
             document.execCommand('copy');
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            const inputField = document.getElementById('inputField');
+            inputField.value = '';
         });
     </script>
 </body>
