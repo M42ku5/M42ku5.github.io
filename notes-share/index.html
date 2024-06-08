@@ -27,12 +27,32 @@
     box-sizing: border-box;
     font-size: 16px;
   }
+  .floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #6200ea;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+  }
 </style>
 </head>
 <body>
 <textarea id="textArea"></textarea>
+<button class="floating-button" id="updateButton">✔</button>
 <script>
 const textArea = document.getElementById('textArea');
+const updateButton = document.getElementById('updateButton');
+
 const updateHash = () => {
   const text = textArea.value;
   const base64 = btoa(text);
@@ -41,10 +61,14 @@ const updateHash = () => {
 const handleTextChange = () => {
   setTimeout(updateHash, 0);
 }
+
 textArea.addEventListener('input', updateHash);
 textArea.addEventListener('paste', handleTextChange);
 textArea.addEventListener('cut', handleTextChange);
 textArea.addEventListener('keyup', updateHash);
+
+updateButton.addEventListener('click', updateHash);
+
 const loadTextFromHash = () => {
   const hash = window.location.hash.substring(1);
   if (hash) {
@@ -52,6 +76,7 @@ const loadTextFromHash = () => {
     textArea.value = text;
   }
 }
+
 window.addEventListener('load', loadTextFromHash);
 </script>
 </body>
