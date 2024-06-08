@@ -18,7 +18,7 @@
   }
   textarea {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     border: none;
     resize: none;
     background-color: #1e1e1e;
@@ -39,6 +39,9 @@ const updateHash = () => {
   window.location.hash = base64;
 }
 textArea.addEventListener('input', updateHash);
+textArea.addEventListener('paste', () => {
+  setTimeout(updateHash, 0);
+});
 const loadTextFromHash = () => {
   const hash = window.location.hash.substring(1);
   if (hash) {
