@@ -48,10 +48,10 @@
 </head>
 <body>
 <textarea id="textArea"></textarea>
-<button class="floating-button" id="updateButton">✔</button>
+<button class="floating-button" id="copyButton">📋</button>
 <script>
 const textArea = document.getElementById('textArea');
-const updateButton = document.getElementById('updateButton');
+const copyButton = document.getElementById('copyButton');
 
 const utf8ToBase64 = (str) => {
   return window.btoa(unescape(encodeURIComponent(str)));
@@ -76,7 +76,15 @@ textArea.addEventListener('paste', handleTextChange);
 textArea.addEventListener('cut', handleTextChange);
 textArea.addEventListener('keyup', updateHash);
 
-updateButton.addEventListener('click', updateHash);
+copyButton.addEventListener('click', () => {
+  updateHash(); // Ensure hash is up to date
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    alert('URL copied to clipboard!');
+  }).catch(err => {
+    console.error('Error copying URL: ', err);
+  });
+});
 
 const loadTextFromHash = () => {
   const hash = window.location.hash.substring(1);
