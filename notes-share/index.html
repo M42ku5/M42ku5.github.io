@@ -58,6 +58,7 @@ const updateHash = () => {
   const base64 = btoa(text);
   window.location.hash = base64;
 }
+
 const handleTextChange = () => {
   setTimeout(updateHash, 0);
 }
@@ -67,7 +68,11 @@ textArea.addEventListener('paste', handleTextChange);
 textArea.addEventListener('cut', handleTextChange);
 textArea.addEventListener('keyup', updateHash);
 
-updateButton.addEventListener('click', updateHash);
+updateButton.addEventListener('click', () => {
+  const text = textArea.value;
+  const base64 = btoa(text);
+  window.location.hash = base64;
+});
 
 const loadTextFromHash = () => {
   const hash = window.location.hash.substring(1);
