@@ -17,53 +17,29 @@
         justify-content: center;
         align-items: center;
     }
-
+    
     .wrapper {
-        position: relative;
-        width: 90%;
-        height: 90%;
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .wrapper::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 20px;
-        border: 4px solid transparent;
-        background: linear-gradient(0deg, red, transparent);
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .content {
-        position: relative;
         width: 100%;
         height: 100%;
-        background-color: #000;
-        z-index: 2;
+        border: 4px solid;
+        border-radius: 20px;
+        overflow: hidden;
     }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="content"></div>
-    </div>
+    <div class="wrapper"></div>
     <script>
     document.querySelector('.wrapper').addEventListener('click', () => {
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen()
     });
 
     let angle = 0;
-    const wrapperElement = document.querySelector('.wrapper::before');
+    const wrapperElement = document.querySelector('.wrapper');
 
     function updateGradient() {
         const gradient = `linear-gradient(${angle}deg, red, transparent)`;
-        document.querySelector('.wrapper::before').style.background = gradient;
+        wrapperElement.style.borderImage = gradient + ' 1';
         angle = (angle + 1) % 360;
         requestAnimationFrame(updateGradient);
     }
