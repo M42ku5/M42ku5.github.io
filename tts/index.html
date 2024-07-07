@@ -159,6 +159,7 @@
       let langChoice = '';
       let isLooping = false;
       let isSpeaking = false;
+      let stopRequested = false;
 
     function langSelect(x) {
         langChoice = x.value;
@@ -171,7 +172,7 @@
     });
 
     function speak(){
-        if(document.querySelector('.tts-input').value && !isSpeaking){
+        if(document.querySelector('.tts-input').value && !isSpeaking && !stopRequested){
             isSpeaking = true;
             const msg = new SpeechSynthesisUtterance;
             msg.text = document.querySelector('.tts-input').value;
@@ -179,11 +180,13 @@
             msg.rate = document.querySelector('.rate').value;
             msg.onend = function () {
                 isSpeaking = false;
-                if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking) {
-                    speak();
+                if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking && !stopRequested) {
+                    setTimeout(() => speak(), 100);  // Adding a brief delay
                 }
             };
             speechSynthesis.speak(msg);
+        }else if(stopRequested){
+            stopRequested = false;
         }else{
             alert('Please enter text first.');
         }
@@ -195,8 +198,11 @@
     showVal();
 
     document.querySelector('.btn-stop').addEventListener('click', () => {
-        speechSynthesis.cancel();
-        isSpeaking = false;
+        if (speechSynthesis.speaking) {
+            stopRequested = true;
+            speechSynthesis.cancel();
+            isSpeaking = false;
+        }
     });
 
     document.querySelectorAll('input[type=radio]').forEach(e=>e.addEventListener('click',function(){langSelect(this)}));
@@ -204,30 +210,28 @@
     document.querySelector('.tts-input').addEventListener('keyup',function(){
         updateLengthValue();
         lengthElemHider();
-    }
-    )
+    });
 
     function lengthElemHider() {
-    if(document.querySelector('.tts-input').value.length > 3999){
-        if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
-            document.querySelector('.shorten-warpper').classList.remove('hidden');
+        if(document.querySelector('.tts-input').value.length > 3999){
+            if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+                document.querySelector('.shorten-warpper').classList.remove('hidden');
+            }
+        } else {
+            if(!document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+                document.querySelector('.shorten-warpper').classList.add('hidden');
+            }
         }
-    } else {
-        if(!document.querySelector('.shorten-warpper').classList.contains('hidden')) {
-            document.querySelector('.shorten-warpper').classList.add('hidden');
-        }
-    }
     }
 
     document.querySelector('.shorten').addEventListener('click',function(){
         document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,3999);
         updateLengthValue();
         lengthElemHider();
-    }
-    )
+    });
 
     function updateLengthValue(){
-    document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
+        document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
     }
     updateLengthValue();
 
@@ -238,7 +242,7 @@
         document.querySelector('.tts-input').value = document.querySelector('.tts-input').value.replace(/\n/gi,' ').replace(/[ ]{2,}/gi,' ');
         updateLengthValue();
         lengthElemHider();
-        }).catch(error=>alert(error))
+        }).catch(error=>alert(error));
     } catch (e) {
         alert(e);
         document.querySelector('.btn-paste').setAttribute('disabled','');
