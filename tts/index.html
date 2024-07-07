@@ -7,7 +7,126 @@
     <meta name="author" content="Markus Schmieder">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text-to-Speech</title>
-    <link rel="stylesheet" href="style.min.css">
+    <style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    }
+
+    body{
+        background-color:#fafafa;
+        color:#333;
+        font-family:Arial;
+    }
+
+    h1{
+        text-align:center;
+        font-size:18px;
+        line-height:48px;
+    }
+
+    textarea{
+        resize:none;
+        width:100%;
+        min-height:55vh;
+        padding:5px;
+        font-family:Arial;
+        font-size:16px;
+        background-color:#fff;
+        color:#333;
+        border: 1px solid #333;
+    }
+
+    .txt,
+    form>div,
+    select{
+        display:block;
+        margin:0 auto;
+        font-family:sans-serif;
+        font-size:16px;
+        padding:5px;
+    }
+
+    select{
+        width:100%;
+        background:0 0;
+        color:#999;
+        border:1px solid #999;
+    }
+
+    .flex-container{
+        width:100%;
+        min-height:48px;
+        display:-webkit-flex;
+        -webkit-flex-wrap:wrap;
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .pitch-value,
+    .rate-value{
+        -webkit-flex-basis:40px;
+        flex-basis:40px;
+        text-align:center;
+    }
+
+    .txt,form>div {
+        margin-bottom:10px;
+        overflow:auto;
+    }
+
+    #all {
+        max-width:900px;
+        margin:0 auto;
+        padding:0;
+    }
+
+    .btn-stop,
+    .btn-tts {
+        background-color:#fff;
+        border:1px solid #aaa;
+        border-radius:5px;
+        color:#333;
+        padding:0 15px;
+        display:block;
+        cursor:pointer;
+        line-height: 40px;
+        font-size:16px;
+    }
+
+    input[type=range],
+    label {
+        cursor: pointer;
+    }
+
+    .btn-tts {
+        margin:10px 10px 0 0;
+    }
+
+    .btn-stop {
+        margin:10px 0 0 0;
+    }
+
+    .btn-stop:hover,
+    .btn-tts:hover {
+        background-color:#fafafa;
+    }
+
+    .language {
+        max-width: fit-content;
+        margin: 6px auto;
+    }
+
+    .hidden {
+        display: none;
+    }
+    p {
+        padding-bottom: 10px;
+    }
+    </style>
   </head>
   <body>
     <div id="all">
@@ -28,10 +147,103 @@
           <div class="rate-value"></div>
         </div>
         <div class="flex-container">
-        <button class="btn-tts" onclick="speak()">read</button>
-        <button class="btn-stop" onclick="speak()">stop</button>
-      </div>
+          <label for="loop">Loop:</label>
+          <input type="checkbox" id="loop" class="loop-checkbox">
+        </div>
+        <div class="flex-container">
+          <button class="btn-tts" onclick="speak()">read</button>
+          <button class="btn-stop">stop</button>
+        </div>
     </div>
-    <script src="script.min.js"></script>
+    <script>
+      let langChoice = '';
+      let isLooping = false;
+      let isSpeaking = false;
+
+    function langSelect(x) {
+        langChoice = x.value;
+    }
+
+    document.querySelectorAll('input[type=radio]').forEach(e=>{
+        if(e.checked) {
+            langChoice = e.value;
+        }
+    });
+
+    function speak(){
+        if(document.querySelector('.tts-input').value && !isSpeaking){
+            isSpeaking = true;
+            const msg = new SpeechSynthesisUtterance;
+            msg.text = document.querySelector('.tts-input').value;
+            msg.lang = langChoice;
+            msg.rate = document.querySelector('.rate').value;
+            msg.onend = function () {
+                isSpeaking = false;
+                if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking) {
+                    speak();
+                }
+            };
+            speechSynthesis.speak(msg);
+        }else{
+            alert('Please enter text first.');
+        }
+    }
+
+    function showVal(){
+        document.querySelector('.rate-value').innerHTML = document.querySelector('.rate').value;
+    }
+    showVal();
+
+    document.querySelector('.btn-stop').addEventListener('click', () => {
+        speechSynthesis.cancel();
+        isSpeaking = false;
+    });
+
+    document.querySelectorAll('input[type=radio]').forEach(e=>e.addEventListener('click',function(){langSelect(this)}));
+
+    document.querySelector('.tts-input').addEventListener('keyup',function(){
+        updateLengthValue();
+        lengthElemHider();
+    }
+    )
+
+    function lengthElemHider() {
+    if(document.querySelector('.tts-input').value.length > 3999){
+        if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+            document.querySelector('.shorten-warpper').classList.remove('hidden');
+        }
+    } else {
+        if(!document.querySelector('.shorten-warpper').classList.contains('hidden')) {
+            document.querySelector('.shorten-warpper').classList.add('hidden');
+        }
+    }
+    }
+
+    document.querySelector('.shorten').addEventListener('click',function(){
+        document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,3999);
+        updateLengthValue();
+        lengthElemHider();
+    }
+    )
+
+    function updateLengthValue(){
+    document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
+    }
+    updateLengthValue();
+
+    function pasteText(){
+        try{
+        navigator.clipboard.readText().then(e=>{
+        document.querySelector('.tts-input').value = e;
+        document.querySelector('.tts-input').value = document.querySelector('.tts-input').value.replace(/\n/gi,' ').replace(/[ ]{2,}/gi,' ');
+        updateLengthValue();
+        lengthElemHider();
+        }).catch(error=>alert(error))
+    } catch (e) {
+        alert(e);
+        document.querySelector('.btn-paste').setAttribute('disabled','');
+    }
+    }
+    </script>
   </body>
 </html>
