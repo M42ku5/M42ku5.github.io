@@ -72,36 +72,29 @@
         <ol></ol>
     </main>
     <script>
-        let newsList = [];
-
         function getNews() {
             document.querySelector("main ol").innerHTML = "";
             fetch("https://www.tagesschau.de/xml/rss2_https/")
                 .then(x => x.text())
                 .then(y => {
                     const z = new DOMParser().parseFromString(y, "text/xml");
-                    newsList = [];
                     z.querySelectorAll('item').forEach(e => {
                         const title = e.querySelector("title").innerHTML;
                         const link = e.querySelector("link").innerHTML;
-                        newsList.push({ title, link });
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
+                        document.querySelector("main ol").appendChild(li);
                     });
-                    displayNews(newsList);
                 });
-        }
-
-        function displayNews(newsArray) {
-            const ol = document.querySelector("main ol");
-            ol.innerHTML = "";
-            newsArray.forEach(newsItem => {
-                ol.innerHTML += `<li><a href="${newsItem.link}" target="_blank">${newsItem.title}</a></li>`;
-            });
         }
 
         document.getElementById('search').addEventListener('keyup', function () {
             const searchTerm = this.value.toLowerCase();
-            const filteredNews = newsList.filter(newsItem => newsItem.title.toLowerCase().includes(searchTerm));
-            displayNews(filteredNews);
+            const listItems = document.querySelectorAll('main ol li');
+            listItems.forEach(li => {
+                const text = li.textContent.toLowerCase();
+                li.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
         });
 
         getNews();
