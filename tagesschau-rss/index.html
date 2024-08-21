@@ -7,101 +7,155 @@
   <meta charset="UTF-8">
   <meta name="description" content="Tagesschau Nachrichten">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        
-        html {
-            background-color: #000;
-            scrollbar-width: thin;
-            scrollbar-color: #333 #000;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            color: #fff;
-            font-family: sans-serif;
-        }
+    html {
+      background-color: #000;
+      scrollbar-width: thin;
+      scrollbar-color: #333 #000;
+    }
 
-        a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            padding: 9px 0;
-        }
+    body {
+      color: #fff;
+      font-family: sans-serif;
+    }
 
-        a:visited {
-            color: #888;
-        }
+    a {
+      color: #fff;
+      text-decoration: none;
+      padding: 0;
+	  display: inline-block;
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 1rem;
-            padding: 9px 0 9px 0;
-            cursor: pointer;
-        }
+    a:visited {
+      color: #888;
+    }
 
-        ol {
-            margin-top: 8px;
-            padding-left: 0;
-            list-style-type: none;
-        }
+    h1 {
+      margin: 0;
+      font-size: 1rem;
+      padding: 9px 0 9px 0;
+      cursor: pointer;
+    }
+	
+	h2 {
+      font-size: 16px;
+	  margin: 0 0 5px;
+    }
 
-        h1,
-        ol,
-        input {
-            max-width: 65ch;
-            margin-inline: auto;
-        }
+    ol {
+      margin-top: 8px;
+      padding-left: 0;
+      list-style-type: none;
+    }
 
-        input {
-            display: block;
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            background-color: #111;
-            border: 1px solid #333;
-            color: #fff;
-        }
-    </style>
+    h1,
+    ol,
+    input {
+      max-width: 65ch;
+      margin-inline: auto;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      background-color: #111;
+      border: 1px solid #333;
+      color: #fff;
+    }
+
+    .news-item {
+      margin-bottom: 5px;
+      padding: 5px;
+      background-color: #111;
+      border: 1px solid #333;
+    }
+	
+	img {
+	  width: 100%;
+	  max-width: 150px;
+	  margin-right: 5px;
+	}
+	
+	.news-content > p > a:has(img) {
+	float: left;
+	}
+	
+	p {
+	  margin: 0;
+	  display: table;
+	  color: #aaa;
+	}
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>Tagesschau Nachrichten</h1>
-    </header>
-    <main>
-        <input type="text" id="search" placeholder="Filter Nachrichten">
-        <ol></ol>
-    </main>
-    <script>
-        function getNews() {
-            document.querySelector("main ol").innerHTML = "";
-            fetch("https://www.tagesschau.de/xml/rss2_https/")
-                .then(x => x.text())
-                .then(y => {
-                    const z = new DOMParser().parseFromString(y, "text/xml");
-                    z.querySelectorAll('item').forEach(e => {
-                        const title = e.querySelector("title").innerHTML;
-                        const link = e.querySelector("link").innerHTML;
-                        const li = document.createElement('li');
-                        li.innerHTML = `<a href="${link}" target="_blank">${title}</a>`;
-                        document.querySelector("main ol").appendChild(li);
-                    });
-                });
-        }
-
-        document.getElementById('search').addEventListener('keyup', function () {
-            const searchTerm = this.value.toLowerCase();
-            const listItems = document.querySelectorAll('main ol li');
-            listItems.forEach(li => {
-                const text = li.textContent.toLowerCase();
-                li.style.display = text.includes(searchTerm) ? '' : 'none';
+  <header>
+    <h1>Tagesschau Nachrichten</h1>
+  </header>
+  <main>
+    <input type="text" id="search" placeholder="Filter Nachrichten">
+    <ol></ol>
+  </main>
+<script>
+    function getNews() {
+      document.querySelector("main ol").innerHTML = "";
+      fetch("https://www.tagesschau.de/xml/rss2_https/")
+        .then(x => x.text())
+        .then(y => {
+          const z = new DOMParser().parseFromString(y, "text/xml");
+          z.querySelectorAll('item').forEach(e => {
+            const title = e.querySelector("title").textContent;
+            const link = e.querySelector("link").textContent;
+            
+            let contentEncodedElement = null;
+            e.childNodes.forEach(node => {
+              if (node.nodeName.includes("content")) {
+                contentEncodedElement = node;
+              }
             });
+
+            const contentEncoded = contentEncodedElement ? contentEncodedElement.textContent : "<p>No additional content available.</p>";
+
+            const sanitizedContent = contentEncoded.replace(/<br\/>/gi, '');
+
+            const li = document.createElement('li');
+            li.classList.add('news-item');
+            li.innerHTML = `<h2>${title}</h2>
+                            <div class="news-content"></div>`;
+
+            const contentDiv = li.querySelector(".news-content");
+
+            try {
+              contentDiv.innerHTML = sanitizedContent;
+            } catch (error) {
+              console.error("Error rendering HTML content:", error);
+              contentDiv.innerHTML = "<p>Failed to render content.</p>";
+            }
+
+            document.querySelector("main ol").appendChild(li);
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching or parsing the RSS feed:', err);
         });
+    }
 
-        getNews();
-    </script>
+    document.getElementById('search').addEventListener('keyup', function () {
+      const searchTerm = this.value.toLowerCase();
+      const listItems = document.querySelectorAll('main ol li');
+      listItems.forEach(li => {
+        const text = li.textContent.toLowerCase();
+        li.style.display = text.includes(searchTerm) ? '' : 'none';
+      });
+    });
+
+    getNews();
+</script>
 </body>
-
 </html>
