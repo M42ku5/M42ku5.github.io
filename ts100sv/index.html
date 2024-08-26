@@ -29,6 +29,10 @@
             width: 100%;
             max-width: 1280px;
         }
+#date,
+#videoSourceLink {
+  font-size: 14px;
+  }
     </style>
 </head>
 <body>
@@ -36,12 +40,10 @@
         <source src="" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <div id="date"></div>
     <div>
-        <a id="videoSourceLink" href="" target="_blank">Source</a>
+    <span id="date"></span>| <a id="videoSourceLink" href="" target="_blank">Source</a>
     </div>
-    <script>
-        fetch('https://www.tagesschau.de/multimedia/sendung/tagesschau_in_100_sekunden/podcast-ts100-video-100~podcast.xml')
+    <script>     fetch('https://www.tagesschau.de/multimedia/sendung/tagesschau_in_100_sekunden/podcast-ts100-video-100~podcast.xml')
             .then(response => response.text())
             .then(data => {
                 const parser = new DOMParser();
