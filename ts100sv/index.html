@@ -15,7 +15,7 @@
 
         body {
             margin: 0;
-            color: #fff;
+            color: #aaa;
             font-family: Arial, sans-serif;
             display: grid;
             place-items: center;
@@ -38,7 +38,7 @@
     </video>
     <div id="date"></div>
     <div>
-        Source: <a id="videoSourceLink" href="" target="_blank"></a>
+        <a id="videoSourceLink" href="" target="_blank">Source</a>
     </div>
     <script>
         fetch('https://www.tagesschau.de/multimedia/sendung/tagesschau_in_100_sekunden/podcast-ts100-video-100~podcast.xml')
@@ -52,7 +52,6 @@
                 const video = document.getElementById('myVideo');
                 video.querySelector('source').src = videoSource;
                 document.getElementById('videoSourceLink').href = videoSource;
-                document.getElementById('videoSourceLink').innerHTML = videoSource;
                 document.getElementById('date').innerHTML = pubDate;
 
                 video.load();
