@@ -29,10 +29,21 @@
             width: 100%;
             max-width: 1280px;
         }
-#date,
-#videoSourceLink {
-  font-size: 14px;
-  }
+
+        #date,
+        #videoSourceLink {
+            font-size: 14px;
+        }
+
+        #muteButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -41,9 +52,11 @@
         Your browser does not support the video tag.
     </video>
     <div>
-    <span id="date"></span>| <a id="videoSourceLink" href="" target="_blank">Source</a>
+        <span id="date"></span> | <a id="videoSourceLink" href="" target="_blank">Source</a>
     </div>
-    <script>     fetch('https://www.tagesschau.de/multimedia/sendung/tagesschau_in_100_sekunden/podcast-ts100-video-100~podcast.xml')
+    <button id="muteButton" onclick="toggleMute()">Unmute</button>
+    <script>     
+        fetch('https://www.tagesschau.de/multimedia/sendung/tagesschau_in_100_sekunden/podcast-ts100-video-100~podcast.xml')
             .then(response => response.text())
             .then(data => {
                 const parser = new DOMParser();
@@ -59,6 +72,13 @@
                 video.load();
                 video.playbackRate = 2;
             });
+
+        function toggleMute() {
+            const video = document.getElementById('myVideo');
+            const muteButton = document.getElementById('muteButton');
+            video.muted = !video.muted;
+            muteButton.textContent = video.muted ? 'Unmute' : 'Mute';
+        }
     </script>
 </body>
 </html>
