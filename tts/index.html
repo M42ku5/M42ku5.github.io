@@ -255,6 +255,37 @@
         document.querySelector('.btn-paste').setAttribute('disabled','');
     }
     }
+
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        alert('Wake lock aktiviert');
+    } catch (err) {
+        alert(`${err.name}, ${err.message}`);
+    }
+}
+
+async function releaseWakeLock() {
+    if (wakeLock) {
+        await wakeLock.release();
+        wakeLock = null;
+        alert('Wake lock deaktiviert');
+    }
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        requestWakeLock();
+    } else {
+        releaseWakeLock();
+    }
+});
+
+// Wake lock aktivieren, wenn die Seite geladen wird
+requestWakeLock();
+
     </script>
   </body>
 </html>
