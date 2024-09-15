@@ -261,9 +261,9 @@ let wakeLock = null;
 async function requestWakeLock() {
     try {
         wakeLock = await navigator.wakeLock.request('screen');
-        alert('Wake lock aktiviert');
+        console.log('Wake lock aktiviert');
     } catch (err) {
-        alert(`${err.name}, ${err.message}`);
+        console.log(`${err.name}, ${err.message}`);
     }
 }
 
@@ -271,7 +271,7 @@ async function releaseWakeLock() {
     if (wakeLock) {
         await wakeLock.release();
         wakeLock = null;
-        alert('Wake lock deaktiviert');
+        console.log('Wake lock deaktiviert');
     }
 }
 
