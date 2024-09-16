@@ -45,14 +45,19 @@
     cursor: pointer;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
   }
+  #cleanButton {
+    bottom: 90px; /* Positioned above the copy button */
+  }
 </style>
 </head>
 <body>
 <textarea id="textArea"></textarea>
 <button class="floating-button" id="copyButton">📋</button>
+<button class="floating-button" id="cleanButton">🧹</button>
 <script>
 const textArea = document.getElementById('textArea');
 const copyButton = document.getElementById('copyButton');
+const cleanButton = document.getElementById('cleanButton');
 const descriptionMeta = document.querySelector('meta[name=description]');
 
 const utf8ToBase64 = (str) => {
@@ -69,12 +74,24 @@ const updateHash = () => {
   window.location.hash = base64;
   
   descriptionMeta.content = textArea.value;
-
 }
 
 const handleTextChange = () => {
   setTimeout(updateHash, 0);
 }
+
+const cleanText = (text) => {
+  return text
+    .replace(/\s+/g, ' ')                    // Replace multiple spaces with a single space
+    .replace(/\n\s*\n+/g, '\n')              // Replace multiple line breaks with a single one
+    .replace(/^\s+|\s+$/gm, '');             // Trim spaces at the beginning/end of lines
+}
+
+cleanButton.addEventListener('click', () => {
+  const cleanedText = cleanText(textArea.value);
+  textArea.value = cleanedText;
+  updateHash(); // Update URL with cleaned text
+});
 
 textArea.addEventListener('input', updateHash);
 textArea.addEventListener('paste', handleTextChange);
