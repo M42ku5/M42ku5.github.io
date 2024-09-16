@@ -82,7 +82,7 @@ const handleTextChange = () => {
 
 const cleanText = (text) => {
   return text
-    .replace(/\s+/g, ' ')                    // Replace multiple spaces with a single space
+    .replace(/[ \t]+/g, ' ')                 // Replace multiple spaces with a single space
     .replace(/\n{2,}/g, '\n')                // Reduce two or more consecutive line breaks to one
     .replace(/^\s+|\s+$/gm, '');             // Trim spaces at the beginning/end of lines
 }
