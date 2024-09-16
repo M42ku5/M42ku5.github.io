@@ -145,7 +145,7 @@ const m=x.getMinutes();
 const zero=(x.getMinutes() < 10) ? '0' : '';
 const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:${iconBg}%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22${iconColor}%22 font-size=%2270%22>${h}<tspan x=%2215%22 y=%22100%22>${zero}${m}</tspan></text></svg>`;
 document.querySelector('link[rel=icon]').setAttribute('href',z);
-document.querySelector('title').innerHTML=sTime;
+document.querySelector('title').innerHTML=fullTime;
 document.querySelector('h1').innerHTML=fullTime;
 if(x.getSeconds()===0 && ttsAuto){getTime(document.getElementById('lang').value)};
 },1000);
