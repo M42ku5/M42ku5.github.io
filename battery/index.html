@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple dark mode website displaying battery status with TTS.">
+    <title>Battery Status</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #888800;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .battery-info {
+            margin: 10px 0;
+        }
+        .tts-control {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Battery Status</h1>
+    <div class="battery-info" id="batteryLevel">Battery Level: N/A</div>
+    <div class="battery-info" id="chargingStatus">Charging: N/A</div>
+    <div class="battery-info" id="chargingTime">Charging Time: N/A</div>
+    <div class="battery-info" id="dischargingTime">Discharging Time: N/A</div>
+    <div class="tts-control">
+        <label>
+            <input type="checkbox" id="ttsEnabled">
+            Enable TTS when charging
+        </label>
+    </div>
+
+    <script>
+        navigator.getBattery().then(battery => {
+            const batteryLevel = document.getElementById('batteryLevel');
+            const chargingStatus = document.getElementById('chargingStatus');
+            const chargingTime = document.getElementById('chargingTime');
+            const dischargingTime = document.getElementById('dischargingTime');
+            const ttsEnabledCheckbox = document.getElementById('ttsEnabled');
+
+            let ttsInterval = null;
+
+            const updateBatteryStatus = () => {
+                const level = Math.round(battery.level * 100);
+                batteryLevel.textContent = `Battery Level: ${level}%`;
+                chargingStatus.textContent = `Charging: ${battery.charging ? "Yes" : "No"}`;
+                chargingTime.textContent = `Charging Time: ${battery.chargingTime === Infinity ? 'N/A' : battery.chargingTime + ' seconds'}`;
+                dischargingTime.textContent = `Discharging Time: ${battery.dischargingTime === Infinity ? 'N/A' : battery.dischargingTime + ' seconds'}`;
+
+                if (battery.charging && ttsEnabledCheckbox.checked) {
+                    startTTS(level);
+                } else {
+                    stopTTS();
+                }
+
+                if (level >= 80) {
+                    navigator.vibrate(500);
+                }
+            };
+
+            const startTTS = (level) => {
+                if (ttsInterval === null) {
+                    speakBatteryLevel(level);
+                    ttsInterval = setInterval(() => speakBatteryLevel(level), 30000);
+                }
+            };
+
+            const stopTTS = () => {
+                if (ttsInterval !== null) {
+                    clearInterval(ttsInterval);
+                    ttsInterval = null;
+                }
+            };
+
+            const speakBatteryLevel = (level) => {
+                const utterance = new SpeechSynthesisUtterance(`${level} percent`);
+                window.speechSynthesis.speak(utterance);
+            };
+
+            updateBatteryStatus();
+
+            battery.addEventListener('levelchange', updateBatteryStatus);
+            battery.addEventListener('chargingchange', updateBatteryStatus);
+            battery.addEventListener('chargingtimechange', updateBatteryStatus);
+            battery.addEventListener('dischargingtimechange', updateBatteryStatus);
+
+            ttsEnabledCheckbox.addEventListener('change', updateBatteryStatus);
+        });
+    </script>
+</body>
+</html>
