@@ -21,13 +21,15 @@
     
     .wrapper {
         position: relative;
-        width: 80%;
-        height: 80%;
+        width: 100%;
+        height: 100%;
         border-radius: 20px;
         overflow: hidden;
+        border: 4px solid transparent;
     }
     
-    .border {
+    .wrapper::before {
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
@@ -37,18 +39,20 @@
         border-radius: 20px;
         pointer-events: none;
     }
-    
+
     .content {
-        width: 100%;
-        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background-color: #000;
-        border-radius: 20px;
+        border-radius: inherit;
     }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <div class="border"></div>
         <div class="content"></div>
     </div>
     <script>
@@ -57,11 +61,11 @@
     });
 
     let angle = 0;
-    const borderElement = document.querySelector('.border');
+    const wrapperElement = document.querySelector('.wrapper::before');
 
     function updateGradient() {
         const gradient = `linear-gradient(${angle}deg, red, transparent)`;
-        borderElement.style.borderImage = gradient + ' 1';
+        document.querySelector('.wrapper').style.borderImage = gradient + ' 1';
         angle = (angle + 1) % 360;
         requestAnimationFrame(updateGradient);
     }
