@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+    }
+    body {
+      width: 100%;
+      align-items: stretch;
+      background-color: #000;
+    }
+    div {
+      position: relative;
+      padding: 20px;
+      flex-grow: 1;
+      background-color: #000;
+      margin: 20px;
+      border-radius: 12px;
+    }
+    div::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 12px;
+      box-shadow: 
+        0 0 15px 5px rgba(255, 0, 0, 0.8),
+        0 0 30px 10px rgba(255, 0, 0, 0.6), 
+        0 0 50px 20px rgba(255, 0, 0, 0.4),
+        inset 0 0 15px 5px rgba(255, 0, 0, 0.8),  
+        inset 0 0 30px 10px rgba(255, 0, 0, 0.6), 
+        inset 0 0 50px 20px rgba(255, 0, 0, 0.4);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div></div>
+
+  <script>
+    document.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
