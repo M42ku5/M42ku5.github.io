@@ -27,8 +27,7 @@
         overflow: hidden;
     }
     
-    .wrapper::before {
-        content: '';
+    .border {
         position: absolute;
         top: 0;
         left: 0;
@@ -38,21 +37,31 @@
         border-radius: 20px;
         pointer-events: none;
     }
+    
+    .content {
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        border-radius: 20px;
+    }
     </style>
 </head>
 <body>
-    <div class="wrapper"></div>
+    <div class="wrapper">
+        <div class="border"></div>
+        <div class="content"></div>
+    </div>
     <script>
     document.querySelector('.wrapper').addEventListener('click', () => {
-        document.documentElement.requestFullscreen()
+        document.documentElement.requestFullscreen();
     });
 
     let angle = 0;
-    const wrapperElement = document.querySelector('.wrapper::before');
+    const borderElement = document.querySelector('.border');
 
     function updateGradient() {
         const gradient = `linear-gradient(${angle}deg, red, transparent)`;
-        document.querySelector('.wrapper::before').style.borderImage = gradient + ' 1';
+        borderElement.style.borderImage = gradient + ' 1';
         angle = (angle + 1) % 360;
         requestAnimationFrame(updateGradient);
     }
