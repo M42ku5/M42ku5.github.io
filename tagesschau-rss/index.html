@@ -27,7 +27,7 @@
       color: #fff;
       text-decoration: none;
       padding: 0;
-	  display: inline-block;
+      display: inline-block;
     }
 
     a:visited {
@@ -40,10 +40,10 @@
       padding: 9px 0 9px 0;
       cursor: pointer;
     }
-	
-	h2 {
+
+    h2 {
       font-size: 16px;
-	  margin: 0 0 5px;
+      margin: 0 0 5px;
     }
 
     ol {
@@ -75,22 +75,34 @@
       background-color: #111;
       border: 1px solid #333;
     }
-	
-	img {
-	  width: 100%;
-	  max-width: 150px;
-	  margin-right: 5px;
-	}
-	
-	.news-content > p > a:has(img) {
-	float: left;
-	}
-	
-	p {
-	  margin: 0;
-	  display: table;
-	  color: #aaa;
-	}
+
+    img {
+      width: 100%;
+      max-width: 150px;
+      margin-right: 5px;
+    }
+
+    .news-content>p>a:has(img) {
+      float: left;
+    }
+
+    p {
+      margin: 0;
+      display: table;
+      color: #aaa;
+    }
+
+    .top-words {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #ffcc00;
+    }
+
+    .top-word {
+      display: inline-block;
+      margin: 0 5px;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -100,19 +112,45 @@
   </header>
   <main>
     <input type="text" id="search" placeholder="Filter Nachrichten">
+    <div class="top-words"></div>
     <ol></ol>
   </main>
-<script>
+  <script>
+    function getTopWords(text, count = 3) {
+      const words = text.toLowerCase().match(/\b\w+\b/g);
+      const wordCount = {};
+
+      words.forEach(word => {
+        wordCount[word] = (wordCount[word] || 0) + 1;
+      });
+
+      const sortedWords = Object.entries(wordCount).sort((a, b) => b[1] - a[1]);
+      return sortedWords.slice(0, count).map(word => word[0]);
+    }
+
+    function displayTopWords(words) {
+      const topWordsContainer = document.querySelector('.top-words');
+      topWordsContainer.innerHTML = '';
+      words.forEach(word => {
+        const span = document.createElement('span');
+        span.classList.add('top-word');
+        span.textContent = word;
+        topWordsContainer.appendChild(span);
+      });
+    }
+
     function getNews() {
       document.querySelector("main ol").innerHTML = "";
       fetch("https://www.tagesschau.de/xml/rss2_https/")
         .then(x => x.text())
         .then(y => {
           const z = new DOMParser().parseFromString(y, "text/xml");
+          let allTextContent = '';
+
           z.querySelectorAll('item').forEach(e => {
             const title = e.querySelector("title").textContent;
             const link = e.querySelector("link").textContent;
-            
+
             let contentEncodedElement = null;
             e.childNodes.forEach(node => {
               if (node.nodeName.includes("content")) {
@@ -121,8 +159,8 @@
             });
 
             const contentEncoded = contentEncodedElement ? contentEncodedElement.textContent : "<p>No additional content available.</p>";
-
             const sanitizedContent = contentEncoded.replace(/<br\/>/gi, '');
+            allTextContent += ' ' + title + ' ' + sanitizedContent;
 
             const li = document.createElement('li');
             li.classList.add('news-item');
@@ -140,6 +178,9 @@
 
             document.querySelector("main ol").appendChild(li);
           });
+
+          const topWords = getTopWords(allTextContent);
+          displayTopWords(topWords);
         })
         .catch(err => {
           console.error('Error fetching or parsing the RSS feed:', err);
@@ -156,6 +197,7 @@
     });
 
     getNews();
-</script>
+  </script>
 </body>
+
 </html>
