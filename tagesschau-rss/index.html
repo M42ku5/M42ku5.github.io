@@ -117,11 +117,11 @@
   </main>
   <script>
     function getTopWords(text, count = 5) {
-      const words = text.toLowerCase().match(/\b\w+\b/g);
+      const words = text.match(/\b[A-Z][a-zäöüßÄÖÜ]+\b/g); // Match words that start with a capital letter
       const wordCount = {};
 
-      // Exclude common/unwanted words
-      const excludeWords = new Set(["a", "https", "tagesschau", "de", "p", "href", "www", "html"]);
+      // Exclude specific words
+      const excludeWords = new Set(["100", "die", "in", "der", "mehr", "De", "P", "Href", "Www", "Html"]);
 
       words.forEach(word => {
         if (!excludeWords.has(word)) {
@@ -130,16 +130,16 @@
       });
 
       const sortedWords = Object.entries(wordCount).sort((a, b) => b[1] - a[1]);
-      return sortedWords.slice(0, count).map(word => word[0]);
+      return sortedWords.slice(0, count);
     }
 
     function displayTopWords(words) {
       const topWordsContainer = document.querySelector('.top-words');
       topWordsContainer.innerHTML = '';
-      words.forEach(word => {
+      words.forEach(([word, frequency]) => {
         const span = document.createElement('span');
         span.classList.add('top-word');
-        span.textContent = word;
+        span.textContent = `${word} (${frequency})`;
         topWordsContainer.appendChild(span);
       });
     }
