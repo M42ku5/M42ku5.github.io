@@ -95,7 +95,7 @@
     .top-words {
       text-align: center;
       margin-bottom: 10px;
-      color: #ffcc00;
+      color: #aaa;
     }
 
     .top-word {
@@ -116,12 +116,17 @@
     <ol></ol>
   </main>
   <script>
-    function getTopWords(text, count = 3) {
+    function getTopWords(text, count = 5) {
       const words = text.toLowerCase().match(/\b\w+\b/g);
       const wordCount = {};
 
+      // Exclude common/unwanted words
+      const excludeWords = new Set(["a", "https", "tagesschau"]);
+
       words.forEach(word => {
-        wordCount[word] = (wordCount[word] || 0) + 1;
+        if (!excludeWords.has(word)) {
+          wordCount[word] = (wordCount[word] || 0) + 1;
+        }
       });
 
       const sortedWords = Object.entries(wordCount).sort((a, b) => b[1] - a[1]);
