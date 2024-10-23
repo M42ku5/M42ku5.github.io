@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, user-scalable=no">
+    <meta name="description" content="A web page with a big textarea optimized for dark mode and mobile, featuring line numbers and content stored in local storage">
+    <title>Dark Mode Textarea</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .line-numbers {
+            background-color: #1e1e1e;
+            color: #888800;
+            padding: 10px;
+            user-select: none;
+            text-align: right;
+            line-height: 1.5;
+            font-size: 1rem;
+            white-space: nowrap;
+            font-family: monospace;
+        }
+        #textarea {
+            flex-grow: 1;
+            width: 100%;
+            background-color: #000000;
+            color: #888800;
+            padding: 10px;
+            border: none;
+            resize: none;
+            outline: none;
+            overflow: auto;
+            font-size: 1rem;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+        #textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        #textarea::-webkit-scrollbar-thumb {
+            background-color: #444;
+            border-radius: 4px;
+        }
+        #textarea::-webkit-scrollbar-track {
+            background-color: #1e1e1e;
+        }
+        .footer {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 10px;
+        }
+        @media (max-width: 768px) {
+            .line-numbers {
+                padding: 5px;
+                font-size: 1rem;
+            }
+            #textarea {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="line-numbers" class="line-numbers">1</div>
+        <textarea id="textarea" placeholder="Type here..."></textarea>
+    </div>
+    <div class="footer">Total Lines: <span id="total-lines">1</span></div>
+
+    <script>
+        const textarea = document.getElementById('textarea');
+        const lineNumbers = document.getElementById('line-numbers');
+        const totalLines = document.getElementById('total-lines');
+
+        function updateLineNumbers() {
+            const lines = textarea.value.split('\n').length;
+            lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
+            totalLines.textContent = lines;
+        }
+
+        textarea.addEventListener('input', () => {
+            updateLineNumbers();
+            localStorage.setItem('textareaContent', textarea.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedContent = localStorage.getItem('textareaContent');
+            if (savedContent) {
+                textarea.value = savedContent;
+                updateLineNumbers();
+            }
+        });
+    </script>
+</body>
+</html>
