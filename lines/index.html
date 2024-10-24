@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, user-scalable=no">
-    <meta name="description" content="A web page with a big textarea optimized for dark mode and mobile, featuring line numbers and content stored in local storage">
-    <title>Dark Mode Textarea</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="textarea with line numbers, sorting and content stored in local storage">
+    <title>Sort Lines</title>
     <style>
         body {
             background-color: #121212;
@@ -25,7 +25,7 @@
         .line-numbers {
             background-color: #1e1e1e;
             color: #888800;
-            padding: 10px;
+            padding: 5px;
             user-select: none;
             text-align: right;
             line-height: 1.5;
@@ -38,7 +38,7 @@
             width: 100%;
             background-color: #000000;
             color: #888800;
-            padding: 10px;
+            padding: 5px;
             border: none;
             resize: none;
             outline: none;
@@ -60,17 +60,31 @@
         .footer {
             background-color: #1e1e1e;
             color: #e0e0e0;
-            text-align: center;
-            padding: 10px;
+            text-align: left;
+            padding: 3px 20px;
+            font-size: 0.6rem;
         }
-        @media (max-width: 768px) {
-            .line-numbers {
-                padding: 5px;
-                font-size: 1rem;
-            }
-            #textarea {
-                padding: 5px;
-            }
+        #floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #888800;
+            color: #000000;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        #floating-button:disabled {
+            background-color: #444;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -80,11 +94,13 @@
         <textarea id="textarea" placeholder="Type here..."></textarea>
     </div>
     <div class="footer">Total Lines: <span id="total-lines">1</span></div>
+    <button id="floating-button">a-z</button>
 
     <script>
         const textarea = document.getElementById('textarea');
         const lineNumbers = document.getElementById('line-numbers');
         const totalLines = document.getElementById('total-lines');
+        const floatingButton = document.getElementById('floating-button');
 
         function updateLineNumbers() {
             const lines = textarea.value.split('\n').length;
@@ -92,9 +108,25 @@
             totalLines.textContent = lines;
         }
 
+        function sortLines() {
+            const lines = textarea.value.split('\n');
+            const sortedLines = lines.sort((a, b) => a.localeCompare(b));
+            textarea.value = sortedLines.join('\n');
+            updateLineNumbers();
+            localStorage.setItem('textareaContent', textarea.value);
+        }
+
         textarea.addEventListener('input', () => {
             updateLineNumbers();
             localStorage.setItem('textareaContent', textarea.value);
+        });
+
+        floatingButton.addEventListener('click', () => {
+            floatingButton.disabled = true;
+            sortLines();
+            setTimeout(() => {
+                floatingButton.disabled = false;
+            }, 500);
         });
 
         document.addEventListener('DOMContentLoaded', () => {
