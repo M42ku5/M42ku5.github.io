@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="textarea with line numbers, sorting and content stored in local storage">
-    <title>Sort Lines</title>
+    <meta name="description" content="textarea with line numbers, sorting, sharing, and content stored in local storage">
+    <title>Sort and Share Lines</title>
     <style>
         body {
             background-color: #121212;
@@ -71,10 +71,8 @@
             flex-shrink: 0;
         }
 
-        #floating-button {
+        .floating-button {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
             background-color: #888800;
             color: #000000;
             border: none;
@@ -90,15 +88,24 @@
             transition: background-color 0.3s;
         }
 
-        #floating-button:disabled {
+        .floating-button:disabled {
             background-color: #444;
             cursor: not-allowed;
         }
 
-        @media (max-height: 600px) {
-            .container {
-                overflow-y: auto;
-            }
+        #sortButton {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        #copyButton {
+            bottom: 90px;
+            right: 20px;
+        }
+
+        #cleanButton {
+            bottom: 160px;
+            right: 20px;
         }
     </style>
 </head>
@@ -108,13 +115,19 @@
         <textarea id="textarea" placeholder="Type here..."></textarea>
     </div>
     <div class="footer">Total Lines: <span id="total-lines">1</span></div>
-    <button id="floating-button">a-z</button>
+    
+    <button id="sortButton" class="floating-button">a-z</button>
+    <button id="copyButton" class="floating-button">📋</button>
+    <button id="cleanButton" class="floating-button">🧹</button>
 
     <script>
         const textarea = document.getElementById('textarea');
         const lineNumbers = document.getElementById('line-numbers');
         const totalLines = document.getElementById('total-lines');
-        const floatingButton = document.getElementById('floating-button');
+        const sortButton = document.getElementById('sortButton');
+        const copyButton = document.getElementById('copyButton');
+        const cleanButton = document.getElementById('cleanButton');
+        const descriptionMeta = document.querySelector('meta[name=description]');
 
         function updateLineNumbers() {
             const lines = textarea.value.split('\n').length;
@@ -127,20 +140,70 @@
             const sortedLines = lines.sort((a, b) => a.localeCompare(b));
             textarea.value = sortedLines.join('\n');
             updateLineNumbers();
+            updateHash();
             localStorage.setItem('textareaContent', textarea.value);
+        }
+
+        const utf8ToBase64 = (str) => {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        }
+
+        const base64ToUtf8 = (str) => {
+            return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        const updateHash = () => {
+            const text = textarea.value;
+            const base64 = utf8ToBase64(text);
+            window.location.hash = base64;
+            descriptionMeta.content = textarea.value;
+        }
+
+        const loadTextFromHash = () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const text = base64ToUtf8(hash);
+                textarea.value = text;
+                updateLineNumbers();
+            }
+        }
+
+        const cleanText = (text) => {
+            return text
+                .replace(/[ \t]+/g, ' ')
+                .replace(/\n{2,}/g, '\n')
+                .replace(/^\s+|\s+$/gm, '');
         }
 
         textarea.addEventListener('input', () => {
             updateLineNumbers();
+            updateHash();
             localStorage.setItem('textareaContent', textarea.value);
         });
 
-        floatingButton.addEventListener('click', () => {
-            floatingButton.disabled = true;
+        sortButton.addEventListener('click', () => {
+            sortButton.disabled = true;
             sortLines();
             setTimeout(() => {
-                floatingButton.disabled = false;
+                sortButton.disabled = false;
             }, 500);
+        });
+
+        copyButton.addEventListener('click', () => {
+            updateHash();
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL copied to clipboard!');
+            }).catch(err => {
+                console.error('Error copying URL: ', err);
+            });
+        });
+
+        cleanButton.addEventListener('click', () => {
+            const cleanedText = cleanText(textarea.value);
+            textarea.value = cleanedText;
+            updateLineNumbers();
+            updateHash();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -149,6 +212,7 @@
                 textarea.value = savedContent;
                 updateLineNumbers();
             }
+            loadTextFromHash();
         });
     </script>
 </body>
