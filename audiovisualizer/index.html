@@ -6,6 +6,10 @@
     <meta name="description" content="Audio visualization website using WaveSurfer.js">
     <title>Audio Visualizer</title>
     <style>
+		* {
+			box-sizing: border-box;
+		}
+		
         body {
             margin: 0;
             padding: 0;
@@ -38,7 +42,24 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 90%;
+        }
+
+        #interaction-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: none;
+			border: 1px dashed #222;
+			text-align: center;
+			color: #222;
+			font-size: 13px;
+			justify-content: center;
+			align-items: center;
         }
     </style>
 </head>
@@ -48,11 +69,13 @@
         <input type="file" id="file-input" accept="audio/*">
     </div>
     <div id="waveform"></div>
+    <div id="interaction-area">pause/play</div>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script>
         const fileInputContainer = document.getElementById('file-input-container');
         const fileInput = document.getElementById('file-input');
         const waveformContainer = document.getElementById('waveform');
+        const interactionArea = document.getElementById('interaction-area');
 
         const waveSurfer = WaveSurfer.create({
             container: '#waveform',
@@ -73,6 +96,7 @@
                     waveSurfer.loadBlob(new Blob([e.target.result]));
                     fileInputContainer.style.display = 'none';
                     waveformContainer.style.display = 'block';
+                    interactionArea.style.display = 'flex';
 
                     // Start playback after waveform is ready
                     waveSurfer.on('ready', () => {
@@ -87,13 +111,25 @@
         document.addEventListener('keydown', (event) => {
             if (event.code === 'Space') {
                 event.preventDefault(); // Prevent page scrolling
-                if (waveSurfer.isPlaying()) {
-                    waveSurfer.pause();
-                } else {
-                    waveSurfer.play();
-                }
+                togglePlayback();
             }
         });
+
+        // Listen for clicks/taps on the interaction area to toggle play/pause
+        interactionArea.addEventListener('click', togglePlayback);
+        interactionArea.addEventListener('touchend', (event) => {
+            event.preventDefault(); // Prevent unintended touch behavior
+            togglePlayback();
+        });
+
+        // Toggle play/pause function
+        function togglePlayback() {
+            if (waveSurfer.isPlaying()) {
+                waveSurfer.pause();
+            } else {
+                waveSurfer.play();
+            }
+        }
     </script>
 </body>
 </html>
