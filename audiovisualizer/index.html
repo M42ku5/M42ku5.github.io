@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Audio visualization website using WaveSurfer.js">
+    <title>Audio Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #file-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #file-input {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #waveform {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="file-input-container">
+        <h1>Select an Audio File</h1>
+        <input type="file" id="file-input" accept="audio/*">
+    </div>
+    <div id="waveform"></div>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <script>
+        const fileInputContainer = document.getElementById('file-input-container');
+        const fileInput = document.getElementById('file-input');
+        const waveformContainer = document.getElementById('waveform');
+
+        const waveSurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#888800',
+            progressColor: '#aaaa00',
+            cursorColor: '#ffffff',
+            height: 256,
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                // Update the document title with the selected file name
+                document.title = `Playing: ${file.name}`;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    waveSurfer.loadBlob(new Blob([e.target.result]));
+                    fileInputContainer.style.display = 'none';
+                    waveformContainer.style.display = 'block';
+
+                    // Start playback after waveform is ready
+                    waveSurfer.on('ready', () => {
+                        waveSurfer.play();
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        // Listen for space bar keypress to toggle play/pause
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                event.preventDefault(); // Prevent page scrolling
+                if (waveSurfer.isPlaying()) {
+                    waveSurfer.pause();
+                } else {
+                    waveSurfer.play();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
