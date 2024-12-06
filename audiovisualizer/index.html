@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="description" content="Audio visualization website using WaveSurfer.js">
     <title>Audio Visualizer</title>
     <style>
@@ -42,7 +42,25 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 90%;
+            height: 80%;
+        }
+
+        #reset-area {
+            position: absolute;
+            bottom: 10%;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            background-color: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            display: none;
+            border: 1px dashed #555;
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            justify-content: center;
+            align-items: center;
+            display: none;
         }
 
         #interaction-area {
@@ -54,12 +72,13 @@
             background-color: rgba(0, 0, 0, 0.5);
             cursor: pointer;
             display: none;
-			border: 1px dashed #555;
-			text-align: center;
-			color: #555;
-			font-size: 13px;
-			justify-content: center;
-			align-items: center;
+            border: 1px dashed #555;
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            justify-content: center;
+            align-items: center;
+            display: none;
         }
     </style>
 </head>
@@ -69,6 +88,7 @@
         <input type="file" id="file-input" accept="audio/*">
     </div>
     <div id="waveform"></div>
+    <div id="reset-area">reset and play</div>
     <div id="interaction-area">pause/play</div>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script>
@@ -76,6 +96,7 @@
         const fileInput = document.getElementById('file-input');
         const waveformContainer = document.getElementById('waveform');
         const interactionArea = document.getElementById('interaction-area');
+        const resetArea = document.getElementById('reset-area');
 
         const waveSurfer = WaveSurfer.create({
             container: '#waveform',
@@ -97,6 +118,7 @@
                     fileInputContainer.style.display = 'none';
                     waveformContainer.style.display = 'block';
                     interactionArea.style.display = 'flex';
+                    resetArea.style.display = 'flex';
 
                     // Start playback after waveform is ready
                     waveSurfer.on('ready', () => {
@@ -122,6 +144,13 @@
             togglePlayback();
         });
 
+        // Listen for clicks/taps on the reset area to reset playback to the start
+        resetArea.addEventListener('click', resetPlayback);
+        resetArea.addEventListener('touchend', (event) => {
+            event.preventDefault(); // Prevent unintended touch behavior
+            resetPlayback();
+        });
+
         // Toggle play/pause function
         function togglePlayback() {
             if (waveSurfer.isPlaying()) {
@@ -129,6 +158,12 @@
             } else {
                 waveSurfer.play();
             }
+        }
+
+        // Reset playback function
+        function resetPlayback() {
+            waveSurfer.seekTo(0); // Seek to the start of the audio
+            waveSurfer.play(); // Start playback
         }
     </script>
 </body>
