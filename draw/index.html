@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Touch Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            touch-action: none;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        
+        #controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            touch-action: none;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        label {
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:active {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div class="control-group">
+            <label for="size">Size:</label>
+            <input type="range" id="size" min="1" max="50" value="10">
+        </div>
+        <div class="control-group">
+            <label for="color">Color:</label>
+            <input type="color" id="color" value="#000000">
+        </div>
+        <button id="clear">Clear</button>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const sizeInput = document.getElementById('size');
+        const colorInput = document.getElementById('color');
+        const clearButton = document.getElementById('clear');
+
+        // Set canvas size to window size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - 60; // Account for controls height
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Drawing functions
+        function drawCircle(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, sizeInput.value, 0, Math.PI * 2);
+            ctx.fillStyle = colorInput.value;
+            ctx.fill();
+        }
+
+        // Touch event handlers
+        function handleStart(evt) {
+            evt.preventDefault();
+            const touches = evt.changedTouches;
+            
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                drawCircle(x, y);
+            }
+        }
+
+        function handleMove(evt) {
+            evt.preventDefault();
+            const touches = evt.changedTouches;
+            
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                drawCircle(x, y);
+            }
+        }
+
+        // Mouse event handlers for desktop testing
+        function handleMouseDown(evt) {
+            evt.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const x = evt.clientX - rect.left;
+            const y = evt.clientY - rect.top;
+            drawCircle(x, y);
+        }
+
+        function handleMouseMove(evt) {
+            if (evt.buttons !== 1) return;
+            evt.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const x = evt.clientX - rect.left;
+            const y = evt.clientY - rect.top;
+            drawCircle(x, y);
+        }
+
+        // Clear canvas
+        clearButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Add event listeners
+        canvas.addEventListener('touchstart', handleStart, false);
+        canvas.addEventListener('touchmove', handleMove, false);
+        canvas.addEventListener('mousedown', handleMouseDown, false);
+        canvas.addEventListener('mousemove', handleMouseMove, false);
+    </script>
+</body>
+</html>
