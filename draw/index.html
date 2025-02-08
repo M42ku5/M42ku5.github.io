@@ -24,6 +24,7 @@
             gap: 10px;
             align-items: center;
             z-index: 1;
+            flex-wrap: wrap;
         }
         
         #canvas {
@@ -39,23 +40,69 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            min-width: fit-content;
         }
         
         label {
             font-size: 14px;
+            white-space: nowrap;
         }
         
         button {
-            padding: 8px 16px;
+            padding: 8px 12px;
             border: none;
             background: #007bff;
             color: white;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
+            min-width: 70px;
+            white-space: nowrap;
         }
         
         button:active {
             background: #0056b3;
+        }
+
+        button.error {
+            background: #dc3545;
+        }
+
+        button.error:active {
+            background: #bd2130;
+        }
+
+        input[type="range"] {
+            width: 80px;
+        }
+
+        /* Full screen adjustments */
+        :fullscreen #controls {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        :fullscreen #canvas {
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        @media (max-width: 480px) {
+            #controls {
+                padding: 8px;
+                gap: 8px;
+            }
+            
+            button {
+                padding: 6px 10px;
+                min-width: 60px;
+                font-size: 13px;
+            }
+            
+            input[type="range"] {
+                width: 60px;
+            }
         }
     </style>
 </head>
@@ -70,6 +117,7 @@
             <input type="color" id="color" value="#000000">
         </div>
         <button id="clear">Clear</button>
+        <button id="fullscreen">Full</button>
     </div>
     <canvas id="canvas"></canvas>
 
@@ -79,6 +127,7 @@
         const sizeInput = document.getElementById('size');
         const colorInput = document.getElementById('color');
         const clearButton = document.getElementById('clear');
+        const fullscreenButton = document.getElementById('fullscreen');
 
         // Set canvas size to window size
         function resizeCanvas() {
@@ -141,6 +190,40 @@
             const y = evt.clientY - rect.top;
             drawCircle(x, y);
         }
+
+        // Full screen handling
+        function showFullscreenError() {
+            fullscreenButton.classList.add('error');
+            fullscreenButton.textContent = 'Denied';
+            setTimeout(() => {
+                fullscreenButton.classList.remove('error');
+                fullscreenButton.textContent = 'Full';
+            }, 2000);
+        }
+
+        fullscreenButton.addEventListener('click', async () => {
+            if (!document.fullscreenElement) {
+                try {
+                    await document.documentElement.requestFullscreen();
+                    fullscreenButton.textContent = 'Exit';
+                } catch (err) {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                    showFullscreenError();
+                }
+            } else {
+                try {
+                    await document.exitFullscreen();
+                    fullscreenButton.textContent = 'Full';
+                } catch (err) {
+                    console.log(`Error attempting to exit full-screen mode: ${err.message}`);
+                }
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            fullscreenButton.textContent = document.fullscreenElement ? 'Exit' : 'Full';
+            resizeCanvas();
+        });
 
         // Clear canvas
         clearButton.addEventListener('click', () => {
