@@ -15,15 +15,36 @@
         }
         canvas {
             display: block;
+            cursor: pointer;
+        }
+        #fullscreenInfo {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 1.5s;
+        }
+        .fade-out {
+            opacity: 0 !important;
         }
     </style>
 </head>
 <body>
     <canvas id="dotsCanvas"></canvas>
+    <div id="fullscreenInfo">Tap anywhere to toggle fullscreen</div>
 
     <script>
         const canvas = document.getElementById('dotsCanvas');
         const ctx = canvas.getContext('2d');
+        const fullscreenInfo = document.getElementById('fullscreenInfo');
         
         // Set canvas to full window size
         function resizeCanvas() {
@@ -106,10 +127,54 @@
             requestAnimationFrame(animate);
         }
         
+        // Fullscreen functions
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Event listeners
+        canvas.addEventListener('click', toggleFullScreen);
+        canvas.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            toggleFullScreen();
+        });
+        
         // Handle window resize
         window.addEventListener('resize', () => {
             resizeCanvas();
             initDots();
+        });
+        
+        // Fade out instruction after 3 seconds
+        setTimeout(() => {
+            fullscreenInfo.classList.add('fade-out');
+        }, 3000);
+        
+        // Handle fullscreen change
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                // Changed to fullscreen mode
+                fullscreenInfo.textContent = "Tap again to exit fullscreen";
+                fullscreenInfo.classList.remove('fade-out');
+                setTimeout(() => {
+                    fullscreenInfo.classList.add('fade-out');
+                }, 1500);
+            } else {
+                // Exited fullscreen mode
+                fullscreenInfo.textContent = "Tap anywhere to toggle fullscreen";
+                fullscreenInfo.classList.remove('fade-out');
+                setTimeout(() => {
+                    fullscreenInfo.classList.add('fade-out');
+                }, 1500);
+            }
         });
         
         // Start animation
