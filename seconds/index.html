@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Zeitanzeige">
+<meta name="keywords" content="Zeit,Time">
+<meta name="author" content="Markus Schmieder">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:transparent%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22black%22 font-size=%2270%22>00<tspan x=%2215%22 y=%22100%22>00</tspan></text></svg>">
+<meta name="theme-color" content="white">
+<style>
+*{
+box-sizing:border-box;
+}
+html,
+body{
+background-color:#000;
+}
+</style>
+<title>00:00:00</title>
+</head>
+<body>
+<script>
+let iconColor='white';
+let iconBg='transparent';
+setInterval(()=>{
+const x=new Date();
+const sTime=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+const fullTime=x.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const h=x.toLocaleTimeString('de-DE',{hour:'2-digit'}).slice(0,2);
+const m=x.getMinutes();
+const s=x.getSeconds();
+const zero=(x.getSeconds() < 10) ? '0' : '';
+const z=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 style=%22background-color:${iconBg}%22><text style=%22font-weight:900%22 x=%2215%22 y=%2250%22 fill=%22${iconColor}%22 font-size=%2280%22><tspan x=%2215%22 y=%2280%22>${zero}${s}</tspan></text></svg>`;
+document.querySelector('link[rel=icon]').setAttribute('href',z);
+document.querySelector('title').innerHTML=fullTime;
+},1000);
+</script>
+</body>
+</html>
