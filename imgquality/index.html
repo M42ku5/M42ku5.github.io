@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Image quality checker with preview and analysis." />
+  <title>Image Quality Checker</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1a202c;
+      color: #e2e8f0;
+    }
+    #preview {
+      max-width: 200px;
+      max-height: 200px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+  <h1 class="text-2xl font-bold mb-4">Image Quality Checker</h1>
+  <input type="file" accept="image/*" id="imageInput" class="mb-4" />
+  <img id="preview" class="hidden border border-gray-500" />
+  <div id="results" class="mt-4 text-sm"></div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+    const results = document.getElementById('results');
+
+    const applyLaplacianAndVariance = (imageData, width, height) => {
+      const kernel = [
+        0,  -1,  0,
+        -1,  4, -1,
+        0,  -1,  0
+      ];
+
+      const gray = new Float32Array(width * height);
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
+          gray[y * width + x] = 0.299 * r + 0.587 * g + 0.114 * b;
+        }
+      }
+
+      const laplace = new Float32Array(width * height);
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          let sum = 0;
+          for (let ky = -1; ky <= 1; ky++) {
+            for (let kx = -1; kx <= 1; kx++) {
+              const w = kernel[(ky + 1) * 3 + (kx + 1)];
+              const val = gray[(y + ky) * width + (x + kx)];
+              sum += w * val;
+            }
+          }
+          laplace[y * width + x] = sum;
+        }
+      }
+
+      let mean = 0, variance = 0, count = width * height;
+
+      for (let i = 0; i < count; i++) {
+        mean += laplace[i];
+      }
+      mean /= count;
+
+      for (let i = 0; i < count; i++) {
+        variance += Math.pow(laplace[i] - mean, 2);
+      }
+      variance /= count;
+
+      return variance;
+    };
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+
+      const img = new Image();
+      const objectURL = URL.createObjectURL(file);
+
+      img.onload = () => {
+        preview.src = objectURL;
+        preview.classList.remove('hidden');
+
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        const fileSizeKB = Math.round(file.size / 1024);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, width, height).data;
+        const variance = applyLaplacianAndVariance(imageData, width, height);
+        const isBlurry = variance < 100;
+
+        results.innerHTML = `
+          <p>Resolution: ${width}x${height}px</p>
+          <p>File Size: ${fileSizeKB} KB</p>
+          <p>Sharpness (Variance): ${variance.toFixed(2)}</p>
+          <p class="font-bold ${isBlurry ? 'text-red-400' : 'text-green-400'}">
+            ${isBlurry ? 'The image may be blurry' : 'The image appears sharp'}
+          </p>
+        `;
+
+        URL.revokeObjectURL(objectURL);
+      };
+
+      img.src = objectURL;
+    });
+  </script>
+</body>
+</html>
