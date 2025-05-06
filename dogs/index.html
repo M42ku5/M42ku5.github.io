@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Responsive dark mode infinite scroll dog gallery using public API" />
+  <title>Dog Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: sans-serif;
+    }
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .gallery img {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.2rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="gallery" id="gallery"></div>
+  <div class="loading" id="loading">Loading cats...</div>
+
+  <script>
+    const gallery = document.getElementById('gallery')
+    const loading = document.getElementById('loading')
+    let isLoading = false
+
+    const fetchCats = async () => {
+      if (isLoading) return
+      isLoading = true
+      loading.style.display = 'block'
+      try {
+        const res = await fetch('https://api.thedogapi.com/v1/images/search?limit=4')
+        const data = await res.json()
+        data.forEach(cat => {
+          const img = document.createElement('img')
+          img.src = cat.url
+          img.alt = 'A cute dog'
+          gallery.appendChild(img)
+        })
+      } catch (err) {
+        console.error('Error fetching dog images:', err)
+      }
+      isLoading = false
+      loading.style.display = 'none'
+    }
+
+    const handleScroll = () => {
+      const images = document.querySelectorAll('.gallery img')
+      if (images.length < 4) return
+      const lastImage = images[images.length - 1]
+      const rect = lastImage.getBoundingClientRect()
+      if (rect.top < window.innerHeight) {
+        fetchCats()
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('DOMContentLoaded', fetchCats)
+  </script>
+</body>
+</html>
