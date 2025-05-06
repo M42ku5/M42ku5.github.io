@@ -34,23 +34,23 @@
 </head>
 <body>
   <div class="gallery" id="gallery"></div>
-  <div class="loading" id="loading">Loading cats...</div>
+  <div class="loading" id="loading">Loading dogs...</div>
 
   <script>
     const gallery = document.getElementById('gallery')
     const loading = document.getElementById('loading')
     let isLoading = false
 
-    const fetchCats = async () => {
+    const fetchDogs = async () => {
       if (isLoading) return
       isLoading = true
       loading.style.display = 'block'
       try {
         const res = await fetch('https://api.thedogapi.com/v1/images/search?limit=4')
         const data = await res.json()
-        data.forEach(cat => {
+        data.forEach(dog => {
           const img = document.createElement('img')
-          img.src = cat.url
+          img.src = dog.url
           img.alt = 'A cute dog'
           gallery.appendChild(img)
         })
@@ -67,12 +67,12 @@
       const lastImage = images[images.length - 1]
       const rect = lastImage.getBoundingClientRect()
       if (rect.top < window.innerHeight) {
-        fetchCats()
+        fetchDogs()
       }
     }
 
     window.addEventListener('scroll', handleScroll)
-    window.addEventListener('DOMContentLoaded', fetchCats)
+    window.addEventListener('DOMContentLoaded', fetchDogs)
   </script>
 </body>
 </html>
