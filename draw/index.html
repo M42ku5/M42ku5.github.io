@@ -18,14 +18,14 @@
             left: 0;
             right: 0;
             background: #fff;
-            padding: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
-            gap: 10px;
             align-items: center;
             z-index: 1;
             flex-wrap: wrap;
-        }
+            padding: 8px;
+            gap: 8px;
+            }
         
         #canvas {
             position: fixed;
@@ -44,21 +44,21 @@
         }
         
         label {
-            font-size: 14px;
+            font-size: 13px;
             white-space: nowrap;
         }
         
         button {
-            padding: 8px 12px;
             border: none;
             background: #007bff;
             color: white;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
-            min-width: 70px;
             white-space: nowrap;
-        }
+            padding: 6px 10px;
+            min-width: 60px;
+            font-size: 13px;
+            }
         
         button:active {
             background: #0056b3;
@@ -82,24 +82,13 @@
         }
 
         :fullscreen #canvas {
-            top: 60px;
+            top: 43px;
             left: 0;
             right: 0;
             bottom: 0;
         }
 
-        @media (max-width: 480px) {
-            #controls {
-                padding: 8px;
-                gap: 8px;
-            }
-            
-            button {
-                padding: 6px 10px;
-                min-width: 60px;
-                font-size: 13px;
-            }
-            
+        @media (max-width: 480px) {            
             input[type="range"] {
                 width: 60px;
             }
