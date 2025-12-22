@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Color Scheme Meta Tags -->
+    <meta name="color-scheme" content="only light">
+    
+    <title>TechStyle Shop - Light Mode Test v4</title>
+    
+    <style>
+        /* ============================================
+           BASIS STYLES (Light Mode)
+        ============================================ */
+        
+        :root {
+            color-scheme: only light;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           GEGEN-INVERSION - NUR AKTIV MIT KLASSE
+           Wird per JavaScript nur bei Samsung aktiviert
+        ============================================ */
+        
+        html.force-light-invert {
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+        
+        /* Bilder zurück-invertieren wenn Gegen-Inversion aktiv */
+        html.force-light-invert img,
+        html.force-light-invert video,
+        html.force-light-invert picture,
+        html.force-light-invert svg,
+        html.force-light-invert iframe,
+        html.force-light-invert .product-image,
+        html.force-light-invert .feature-icon {
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+        
+        /* ============================================
+           HEADER
+        ============================================ */
+        
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #dddddd;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .cart-btn {
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* ============================================
+           DEBUG BOX
+        ============================================ */
+        
+        .debug-box {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .debug-box h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        
+        .debug-box pre {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 0 0 1rem 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .debug-box .btn-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .debug-box button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .debug-box .btn-invert {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        
+        .debug-box .btn-reset {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+        
+        /* ============================================
+           SAMSUNG BROWSER WARNING
+        ============================================ */
+        
+        .samsung-warning {
+            display: none;
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            color: #721c24;
+        }
+        
+        .samsung-warning.visible {
+            display: block;
+        }
+        
+        .samsung-warning h3 {
+            color: #721c24;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+        
+        .samsung-warning ol {
+            padding-left: 1.5rem;
+        }
+        
+        .samsung-warning li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .samsung-warning .path {
+            background-color: #ffffff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #333333;
+            display: inline-block;
+            margin: 0.25rem 0;
+        }
+        
+        .samsung-warning .dismiss-btn {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        /* ============================================
+           HERO SECTION
+        ============================================ */
+        
+        .hero {
+            background-color: #e8f4e8;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            color: #1a1a1a;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            color: #555555;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .hero-btn {
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           TEST INFO
+        ============================================ */
+        
+        .test-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            color: #856404;
+        }
+        
+        .test-info h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .test-info code {
+            background-color: #ffffff;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #333333;
+        }
+        
+        /* ============================================
+           PRODUCTS
+        ============================================ */
+        
+        .products-section {
+            background-color: #ffffff;
+            padding: 3rem 2rem;
+        }
+        
+        .products-section h2 {
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .products-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            background-color: #f5f5f5;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .product-info {
+            padding: 1rem;
+            background-color: #ffffff;
+        }
+        
+        .product-info h3 {
+            color: #1a1a1a;
+            margin: 0 0 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .product-info p {
+            color: #555555;
+            margin: 0 0 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .product-price {
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .add-to-cart {
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+        }
+        
+        /* ============================================
+           FEATURES
+        ============================================ */
+        
+        .features {
+            background-color: #f5f5f5;
+            padding: 3rem 2rem;
+        }
+        
+        .features-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .feature-item {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-item h4 {
+            color: #1a1a1a;
+            margin: 0 0 0.5rem;
+        }
+        
+        .feature-item p {
+            color: #555555;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* ============================================
+           FOOTER
+        ============================================ */
+        
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid #dddddd;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: #555555;
+            margin: 0;
+        }
+        
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">🛒 TechStyle</a>
+            <nav>
+                <a href="#">Startseite</a>
+                <a href="#">Produkte</a>
+                <a href="#">Über uns</a>
+                <a href="#">Kontakt</a>
+            </nav>
+            <button class="cart-btn">🛍️ Warenkorb (0)</button>
+        </div>
+    </header>
+    
+    <!-- Debug Box -->
+    <div class="debug-box">
+        <h3>🔍 Debug-Informationen</h3>
+        <pre id="debug-output">Wird geladen...</pre>
+        <div class="btn-row">
+            <button class="btn-invert" onclick="toggleInversion()">🔄 Gegen-Inversion testen</button>
+            <button class="btn-reset" onclick="resetInversion()">↩️ Zurücksetzen</button>
+        </div>
+    </div>
+    
+    <!-- Samsung Browser Warning -->
+    <div class="samsung-warning" id="samsung-warning">
+        <h3>⚠️ Samsung Internet Browser erkannt</h3>
+        <p>Du verwendest den Samsung Internet Browser. Wenn diese Seite dunkel erscheint, obwohl sie hell sein sollte, liegt das am erzwungenen Dark Mode des Browsers.</p>
+        <p><strong>So deaktivierst du den erzwungenen Dark Mode:</strong></p>
+        <ol>
+            <li>Tippe auf das <strong>Menü-Symbol</strong> (≡ oder ⋮)</li>
+            <li>Wähle <strong>Einstellungen</strong></li>
+            <li>Gehe zu <span class="path">Darstellung</span> oder <span class="path">Webseitenanzeige und Scrollen</span></li>
+            <li>Tippe auf <span class="path">Dunkler Modus für Webseiten</span></li>
+            <li>Wähle <strong>"Aus"</strong></li>
+        </ol>
+        <button class="dismiss-btn" onclick="this.parentElement.classList.remove('visible')">Hinweis schließen</button>
+    </div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Willkommen bei TechStyle</h1>
+        <p>Entdecken Sie unsere neuesten Tech-Gadgets und Lifestyle-Produkte.</p>
+        <button class="hero-btn">Jetzt entdecken</button>
+    </section>
+    
+    <!-- Test Info Box -->
+    <div class="test-info">
+        <h3>🧪 Light Mode Test v4</h3>
+        <p>Diese Version hat einen <strong>manuellen Test-Button</strong> für die Gegen-Inversion.</p>
+        <p>Wenn die Seite im Samsung Browser dunkel ist, drücke oben den Button "Gegen-Inversion testen" und schau ob es hilft.</p>
+    </div>
+    
+    <!-- Products Section -->
+    <section class="products-section">
+        <h2>Beliebte Produkte</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">🎧</div>
+                <div class="product-info">
+                    <h3>Wireless Kopfhörer Pro</h3>
+                    <p>Aktive Geräuschunterdrückung, 30h Akku</p>
+                    <div class="product-price">€149,99</div>
+                    <button class="add-to-cart">In den Warenkorb</button>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image">⌚</div>
+                <div class="product-info">
+                    <h3>Smart Watch Ultra</h3>
+                    <p>Fitness-Tracking, GPS, Wasserdicht</p>
+                    <div class="product-price">€299,99</div>
+                    <button class="add-to-cart">In den Warenkorb</button>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image">📱</div>
+                <div class="product-info">
+                    <h3>Smartphone Hülle Premium</h3>
+                    <p>Stoßfest, MagSafe kompatibel</p>
+                    <div class="product-price">€39,99</div>
+                    <button class="add-to-cart">In den Warenkorb</button>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image">🔌</div>
+                <div class="product-info">
+                    <h3>USB-C Hub 7-in-1</h3>
+                    <p>HDMI, USB 3.0, SD-Kartenleser</p>
+                    <div class="product-price">€59,99</div>
+                    <button class="add-to-cart">In den Warenkorb</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🚚</div>
+                <h4>Kostenloser Versand</h4>
+                <p>Ab 50€ Bestellwert</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">↩️</div>
+                <h4>30 Tage Rückgabe</h4>
+                <p>Kostenlos & unkompliziert</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <h4>Sichere Zahlung</h4>
+                <p>SSL-verschlüsselt</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💬</div>
+                <h4>24/7 Support</h4>
+                <p>Immer für Sie da</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 TechStyle - Light Mode Test v4</p>
+    </footer>
+    
+    <script>
+        // ============================================
+        // GEGEN-INVERSION TOGGLE
+        // ============================================
+        
+        function toggleInversion() {
+            document.documentElement.classList.toggle('force-light-invert');
+            updateDebugOutput();
+        }
+        
+        function resetInversion() {
+            document.documentElement.classList.remove('force-light-invert');
+            updateDebugOutput();
+        }
+        
+        // ============================================
+        // DEBUG INFORMATIONEN
+        // ============================================
+        
+        function collectDebugInfo() {
+            const ua = navigator.userAgent;
+            const info = {
+                userAgent: ua,
+                isSamsungBrowser: /SamsungBrowser/i.test(ua),
+                samsungVersion: (ua.match(/SamsungBrowser\/(\d+(\.\d+)?)/) || [])[1] || 'N/A',
+                prefersColorScheme: 'nicht unterstützt',
+                bodyBgColor: getComputedStyle(document.body).backgroundColor,
+                inversionActive: document.documentElement.classList.contains('force-light-invert')
+            };
+            
+            if (window.matchMedia) {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    info.prefersColorScheme = 'dark';
+                } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    info.prefersColorScheme = 'light';
+                } else {
+                    info.prefersColorScheme = 'no-preference';
+                }
+            }
+            
+            // Helligkeit berechnen
+            const rgb = info.bodyBgColor.match(/\d+/g);
+            if (rgb) {
+                info.bgBrightness = Math.round((parseInt(rgb[0]) + parseInt(rgb[1]) + parseInt(rgb[2])) / 3);
+                info.visualAppearance = info.bgBrightness > 128 ? 'HELL ✓' : 'DUNKEL ✗';
+            }
+            
+            return info;
+        }
+        
+        function updateDebugOutput() {
+            const info = collectDebugInfo();
+            const output = document.getElementById('debug-output');
+            
+            output.textContent = `Browser: ${info.isSamsungBrowser ? '📱 Samsung Internet v' + info.samsungVersion : '🌐 ' + getBrowserName()}
+
+prefers-color-scheme: ${info.prefersColorScheme}
+body background-color: ${info.bodyBgColor}
+Helligkeit (0-255): ${info.bgBrightness || 'N/A'}
+Gegen-Inversion aktiv: ${info.inversionActive ? 'JA' : 'NEIN'}
+
+>>> VISUELLES ERGEBNIS: ${info.visualAppearance || 'unbekannt'} <<<`;
+            
+            // Samsung-Warnung anzeigen
+            const warning = document.getElementById('samsung-warning');
+            if (info.isSamsungBrowser) {
+                warning.classList.add('visible');
+            }
+        }
+        
+        function getBrowserName() {
+            const ua = navigator.userAgent;
+            if (/Chrome/i.test(ua) && !/Chromium|Edg|OPR|Samsung/i.test(ua)) return 'Chrome';
+            if (/Firefox/i.test(ua)) return 'Firefox';
+            if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) return 'Safari';
+            if (/Edg/i.test(ua)) return 'Edge';
+            return 'Anderer Browser';
+        }
+        
+        // ============================================
+        // WARENKORB SIMULATION
+        // ============================================
+        
+        let cartCount = 0;
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                cartCount++;
+                document.querySelector('.cart-btn').textContent = `🛍️ Warenkorb (${cartCount})`;
+                this.textContent = '✓ Hinzugefügt!';
+                setTimeout(() => { this.textContent = 'In den Warenkorb'; }, 1000);
+            });
+        });
+        
+        // ============================================
+        // START
+        // ============================================
+        
+        updateDebugOutput();
+        setTimeout(updateDebugOutput, 500);
+    </script>
+</body>
+</html>
