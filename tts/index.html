@@ -20,11 +20,13 @@
         font-family: sans-serif, Arial;
     }
 
-    h1{
-        text-align:center;
-        font-size:18px;
-        line-height:48px;
-    }
+h1{
+text-align:left;
+font-size:12px;
+font-weight:500;
+line-height:1;
+display:inline;
+}
 
     textarea{
         resize:none;
@@ -137,9 +139,11 @@
     </style>
   </head>
   <body>
-    <div id="all">
-      <h1>Text-to-Speech</h1>
-      <p>paste text from clipboard: <button onclick="pasteText()" class="btn-paste">paste</button></p>
+  <div id="all">
+
+  <h1>tts:</h1>
+
+  <p>paste text from clipboard: <button onclick="pasteText()" class="btn-paste">paste</button></p>
 
 <div style="padding:0 5px">
 <textarea class="tts-input" spellcheck="false" style="padding:5px;">Exampletext</textarea>
