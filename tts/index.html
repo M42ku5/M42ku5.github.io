@@ -231,24 +231,37 @@ display:inline;
     });
 
     function speak(){
-        if(document.querySelector('.tts-input').value && !isSpeaking && !stopRequested){
-            isSpeaking = true;
-            const msg = new SpeechSynthesisUtterance;
-            msg.text = document.querySelector('.tts-input').value;
-            msg.lang = langChoice;
-            msg.rate = document.querySelector('.rate').value;
-            msg.onend = function () {
-                isSpeaking = false;
-                if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking && !stopRequested) {
-                    setTimeout(() => speak(), 100);  // Adding a brief delay
-                }
-            };
-            speechSynthesis.speak(msg);
-        }else if(stopRequested){
-            stopRequested = false;
-        }else{
+        const text = document.querySelector('.tts-input').value;
+        
+        if (!text) {
             alert('Please enter text first.');
+            return;
         }
+        
+        if (stopRequested) {
+            stopRequested = false;
+            return;
+        }
+        
+        if (isSpeaking || speechSynthesis.speaking) {
+            return; // Already speaking
+        }
+        
+        isSpeaking = true;
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = text;
+        msg.lang = langChoice;
+        msg.rate = document.querySelector('.rate').value;
+        msg.onend = function () {
+            isSpeaking = false;
+            if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking && !stopRequested) {
+                setTimeout(() => speak(), 100);  // Adding a brief delay
+            }
+        };
+        msg.onerror = function() {
+            isSpeaking = false; // Reset flag on error
+        };
+        speechSynthesis.speak(msg);
     }
 
     function showVal(){
