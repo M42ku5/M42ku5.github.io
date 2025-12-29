@@ -136,6 +136,35 @@ display:inline;
     p {
         padding-bottom: 10px;
     }
+
+    .file-input-wrapper {
+        padding-bottom: 10px;
+    }
+
+    .file-input-label {
+        background-color: #000;
+        color: #aaa;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        padding: 3px 8px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .file-input-label:hover {
+        background-color: #ccc;
+        color: #000;
+    }
+
+    #file-input {
+        display: none;
+    }
+
+    .file-name {
+        margin-left: 10px;
+        color: #666;
+        font-size: 14px;
+    }
     </style>
   </head>
   <body>
@@ -144,6 +173,13 @@ display:inline;
   <h1>tts:</h1>
 
   <p>paste text from clipboard: <button onclick="pasteText()" class="btn-paste">paste</button></p>
+
+  <p class="file-input-wrapper">
+    load text file: 
+    <label for="file-input" class="file-input-label">choose file</label>
+    <input type="file" id="file-input" accept=".txt,text/plain">
+    <span class="file-name"></span>
+  </p>
 
 <div style="padding:0 5px">
 <textarea class="tts-input" spellcheck="false" style="padding:5px;">Exampletext</textarea>
@@ -176,7 +212,7 @@ display:inline;
           <label for="loop">Loop:</label>
           <input type="checkbox" id="loop" class="loop-checkbox">
         </div>
-        
+
     </div>
     <script>
       let langChoice = '';
@@ -271,6 +307,30 @@ display:inline;
         document.querySelector('.btn-paste').setAttribute('disabled','');
     }
     }
+
+    // File input handler
+    document.getElementById('file-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Display the file name
+            document.querySelector('.file-name').textContent = file.name;
+            
+            // Read the file content
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                let content = event.target.result;
+                // Replace newlines with spaces and collapse multiple spaces (same as paste)
+                content = content.replace(/\n/gi, ' ').replace(/[ ]{2,}/gi, ' ');
+                document.querySelector('.tts-input').value = content;
+                updateLengthValue();
+                lengthElemHider();
+            };
+            reader.onerror = function() {
+                alert('Error reading file');
+            };
+            reader.readAsText(file);
+        }
+    });
 
 let wakeLock = null;
 
