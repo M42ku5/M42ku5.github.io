@@ -20,18 +20,18 @@
         font-family: sans-serif, Arial;
     }
 
-h1{
-text-align:left;
-font-size:12px;
-font-weight:500;
-line-height:1;
-display:inline;
-}
+    h1{
+        text-align:left;
+        font-size:12px;
+        font-weight:500;
+        line-height:1;
+        display:inline;
+    }
 
     textarea{
         resize:none;
         width:100%;
-        min-height:55vh;
+        min-height:30vh;
         padding:5px;
         font-family:Arial;
         font-size:16px;
@@ -133,6 +133,7 @@ display:inline;
     .hidden {
         display: none;
     }
+
     p {
         padding-bottom: 10px;
     }
@@ -165,6 +166,53 @@ display:inline;
         color: #666;
         font-size: 14px;
     }
+
+    .chunk-container {
+        border: 1px solid #333;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .chunk-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .chunk-title {
+        color: #888;
+        font-size: 14px;
+    }
+
+    .chunk-length {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .chunk-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+        justify-content: center;
+    }
+
+    .chunk-buttons button {
+        padding: 5px 15px;
+        line-height: 30px;
+    }
+
+    #chunks-wrapper {
+        padding: 0 5px;
+    }
+
+    .total-info {
+        padding: 5px;
+        margin-bottom: 10px;
+        color: #888;
+        font-size: 14px;
+    }
     </style>
   </head>
   <body>
@@ -181,162 +229,228 @@ display:inline;
     <span class="file-name"></span>
   </p>
 
-<div style="padding:0 5px">
-<textarea class="tts-input" spellcheck="false" style="padding:5px;">Exampletext</textarea>
-</div>
+  <div class="total-info">
+    Total length: <span class="total-length">0</span> | Chunks: <span class="chunk-count">0</span>
+  </div>
 
-        <div>Text length: <span class="input-text-length"></span></div>
+  <div id="chunks-wrapper"></div>
 
-<div class="shorten-warpper hidden">Shorten text to a length of 3999: <button class="shorten">shorten</button>
-</div>
+  <div class="language">
+    <input type="radio" id="german" name="language" value="de-DE">
+    <label for="german">German</label><br>
+    <input type="radio" id="english" name="language" value="en-US" checked>
+    <label for="english">English</label>
+  </div>
 
-<div class="flex-container" style="padding-bottom:3px">
-  <button class="btn-tts" onclick="speak()">read</button>
-  <button class="btn-stop">stop</button>
-</div>
+  <div class="flex-container">
+    <label for="rate">Rate:</label>
+    <input type="range" min="1" max="10" value="2" step="0.5" class="rate" id="rate" onchange="showVal()">
+    <div class="rate-value"></div>
+  </div>
 
-        <div class="language">
-        <input type="radio" id="german" name="language" value="de-DE">
-        <label for="german">German</label><br>
-        <input type="radio" id="english" name="language" value="en-US" checked>
-        <label for="english">English</label>
-    </div>
+  <div class="flex-container">
+    <label for="loop">Loop:</label>
+    <input type="checkbox" id="loop" class="loop-checkbox">
+  </div>
 
-        <div class="flex-container">
-          <label for="rate">Rate:</label>
-          <input type="range" min="1" max="10" value="2" step="0.5" class="rate" id="rate" onchange="showVal()">
-          <div class="rate-value"></div>
-        </div>
-
-        <div class="flex-container">
-          <label for="loop">Loop:</label>
-          <input type="checkbox" id="loop" class="loop-checkbox">
-        </div>
-
-    </div>
-    <script>
-      let langChoice = '';
-      let isLooping = false;
-      let isSpeaking = false;
-      let stopRequested = false;
+  </div>
+  <script>
+    const MAX_CHUNK_SIZE = 3999;
+    let langChoice = '';
+    let speakingStates = {}; // Track speaking state per chunk
 
     function langSelect(x) {
         langChoice = x.value;
     }
 
-    document.querySelectorAll('input[type=radio]').forEach(e=>{
-        if(e.checked) {
+    document.querySelectorAll('input[type=radio]').forEach(e => {
+        if (e.checked) {
             langChoice = e.value;
         }
     });
 
-    function speak(){
-        const text = document.querySelector('.tts-input').value;
+    document.querySelectorAll('input[type=radio]').forEach(e => 
+        e.addEventListener('click', function() { langSelect(this); })
+    );
+
+    function showVal() {
+        document.querySelector('.rate-value').innerHTML = document.querySelector('.rate').value;
+    }
+    showVal();
+
+    function splitTextIntoChunks(text) {
+        const chunks = [];
+        let remaining = text;
+        
+        while (remaining.length > 0) {
+            if (remaining.length <= MAX_CHUNK_SIZE) {
+                chunks.push(remaining);
+                break;
+            }
+            
+            // Find a good break point (space, period, comma) near the limit
+            let breakPoint = MAX_CHUNK_SIZE;
+            let searchStart = Math.max(0, MAX_CHUNK_SIZE - 200);
+            
+            for (let i = MAX_CHUNK_SIZE; i >= searchStart; i--) {
+                if (remaining[i] === ' ' || remaining[i] === '.' || remaining[i] === ',') {
+                    breakPoint = i + 1;
+                    break;
+                }
+            }
+            
+            chunks.push(remaining.slice(0, breakPoint));
+            remaining = remaining.slice(breakPoint);
+        }
+        
+        return chunks;
+    }
+
+    function createChunkElement(text, index, total) {
+        const container = document.createElement('div');
+        container.className = 'chunk-container';
+        container.dataset.index = index;
+        
+        container.innerHTML = `
+            <div class="chunk-header">
+                <span class="chunk-title">Chunk ${index + 1} / ${total}</span>
+                <span class="chunk-length">${text.length} chars</span>
+            </div>
+            <textarea class="tts-input" spellcheck="false" data-index="${index}">${text}</textarea>
+            <div class="chunk-buttons">
+                <button class="btn-tts" data-index="${index}">read</button>
+                <button class="btn-stop" data-index="${index}">stop</button>
+            </div>
+        `;
+        
+        // Add event listeners
+        const readBtn = container.querySelector('.btn-tts');
+        const stopBtn = container.querySelector('.btn-stop');
+        const textarea = container.querySelector('textarea');
+        
+        readBtn.addEventListener('click', () => speak(index));
+        stopBtn.addEventListener('click', () => stopSpeaking(index));
+        textarea.addEventListener('input', () => updateChunkLength(index));
+        
+        return container;
+    }
+
+    function updateChunkLength(index) {
+        const container = document.querySelector(`.chunk-container[data-index="${index}"]`);
+        const textarea = container.querySelector('textarea');
+        const lengthSpan = container.querySelector('.chunk-length');
+        lengthSpan.textContent = `${textarea.value.length} chars`;
+        updateTotalInfo();
+    }
+
+    function updateTotalInfo() {
+        const textareas = document.querySelectorAll('.tts-input');
+        let total = 0;
+        textareas.forEach(ta => total += ta.value.length);
+        document.querySelector('.total-length').textContent = total;
+        document.querySelector('.chunk-count').textContent = textareas.length;
+    }
+
+    function renderChunks(text) {
+        const wrapper = document.getElementById('chunks-wrapper');
+        wrapper.innerHTML = '';
+        speakingStates = {};
+        
+        if (!text || text.trim() === '') {
+            // Create one empty chunk
+            const container = createChunkElement('', 0, 1);
+            wrapper.appendChild(container);
+            speakingStates[0] = { isSpeaking: false, stopRequested: false };
+            updateTotalInfo();
+            return;
+        }
+        
+        const chunks = splitTextIntoChunks(text);
+        
+        chunks.forEach((chunk, index) => {
+            const container = createChunkElement(chunk, index, chunks.length);
+            wrapper.appendChild(container);
+            speakingStates[index] = { isSpeaking: false, stopRequested: false };
+        });
+        
+        updateTotalInfo();
+    }
+
+    function speak(index) {
+        const textarea = document.querySelector(`textarea[data-index="${index}"]`);
+        const text = textarea.value;
+        const state = speakingStates[index];
         
         if (!text) {
             alert('Please enter text first.');
             return;
         }
         
-        if (stopRequested) {
-            stopRequested = false;
+        if (state.stopRequested) {
+            state.stopRequested = false;
             return;
         }
         
-        if (isSpeaking || speechSynthesis.speaking) {
-            return; // Already speaking
+        if (state.isSpeaking) {
+            return;
         }
         
-        isSpeaking = true;
+        state.isSpeaking = true;
         const msg = new SpeechSynthesisUtterance();
         msg.text = text;
         msg.lang = langChoice;
         msg.rate = document.querySelector('.rate').value;
-        msg.onend = function () {
-            isSpeaking = false;
-            if (document.querySelector('.loop-checkbox').checked && !speechSynthesis.speaking && !stopRequested) {
-                setTimeout(() => speak(), 100);  // Adding a brief delay
+        
+        msg.onend = function() {
+            state.isSpeaking = false;
+            if (document.querySelector('.loop-checkbox').checked && !state.stopRequested) {
+                setTimeout(() => speak(index), 100);
             }
         };
+        
         msg.onerror = function() {
-            isSpeaking = false; // Reset flag on error
+            state.isSpeaking = false;
         };
+        
         speechSynthesis.speak(msg);
     }
 
-    function showVal(){
-        document.querySelector('.rate-value').innerHTML = document.querySelector('.rate').value;
-    }
-    showVal();
-
-    document.querySelector('.btn-stop').addEventListener('click', () => {
-        if (speechSynthesis.speaking) {
-            stopRequested = true;
+    function stopSpeaking(index) {
+        const state = speakingStates[index];
+        if (state && state.isSpeaking) {
+            state.stopRequested = true;
             speechSynthesis.cancel();
-            isSpeaking = false;
-        }
-    });
-
-    document.querySelectorAll('input[type=radio]').forEach(e=>e.addEventListener('click',function(){langSelect(this)}));
-
-    document.querySelector('.tts-input').addEventListener('keyup',function(){
-        updateLengthValue();
-        lengthElemHider();
-    });
-
-    function lengthElemHider() {
-        if(document.querySelector('.tts-input').value.length > 3999){
-            if(document.querySelector('.shorten-warpper').classList.contains('hidden')) {
-                document.querySelector('.shorten-warpper').classList.remove('hidden');
-            }
-        } else {
-            if(!document.querySelector('.shorten-warpper').classList.contains('hidden')) {
-                document.querySelector('.shorten-warpper').classList.add('hidden');
-            }
+            state.isSpeaking = false;
         }
     }
 
-    document.querySelector('.shorten').addEventListener('click',function(){
-        document.querySelector('textarea').value = document.querySelector('textarea').value.slice(0,3999);
-        updateLengthValue();
-        lengthElemHider();
-    });
-
-    function updateLengthValue(){
-        document.querySelector('.input-text-length').innerHTML = document.querySelector('.tts-input').value.length;
+    function processText(text) {
+        // Replace newlines with spaces and collapse multiple spaces
+        return text.replace(/\n/gi, ' ').replace(/[ ]{2,}/gi, ' ');
     }
-    updateLengthValue();
 
-    function pasteText(){
-        try{
-        navigator.clipboard.readText().then(e=>{
-        document.querySelector('.tts-input').value = e;
-        document.querySelector('.tts-input').value = document.querySelector('.tts-input').value.replace(/\n/gi,' ').replace(/[ ]{2,}/gi,' ');
-        updateLengthValue();
-        lengthElemHider();
-        }).catch(error=>alert(error));
-    } catch (e) {
-        alert(e);
-        document.querySelector('.btn-paste').setAttribute('disabled','');
-    }
+    function pasteText() {
+        try {
+            navigator.clipboard.readText().then(e => {
+                const processed = processText(e);
+                renderChunks(processed);
+            }).catch(error => alert(error));
+        } catch (e) {
+            alert(e);
+            document.querySelector('.btn-paste').setAttribute('disabled', '');
+        }
     }
 
     // File input handler
     document.getElementById('file-input').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            // Display the file name
             document.querySelector('.file-name').textContent = file.name;
             
-            // Read the file content
             const reader = new FileReader();
             reader.onload = function(event) {
-                let content = event.target.result;
-                // Replace newlines with spaces and collapse multiple spaces (same as paste)
-                content = content.replace(/\n/gi, ' ').replace(/[ ]{2,}/gi, ' ');
-                document.querySelector('.tts-input').value = content;
-                updateLengthValue();
-                lengthElemHider();
+                const processed = processText(event.target.result);
+                renderChunks(processed);
             };
             reader.onerror = function() {
                 alert('Error reading file');
@@ -345,36 +459,38 @@ display:inline;
         }
     });
 
-let wakeLock = null;
+    // Initialize with one empty chunk
+    renderChunks('Exampletext');
 
-async function requestWakeLock() {
-    try {
-        wakeLock = await navigator.wakeLock.request('screen');
-        console.log('Wake lock aktiviert');
-    } catch (err) {
-        console.log(`${err.name}, ${err.message}`);
+    // Wake lock
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake lock aktiviert');
+        } catch (err) {
+            console.log(`${err.name}, ${err.message}`);
+        }
     }
-}
 
-async function releaseWakeLock() {
-    if (wakeLock) {
-        await wakeLock.release();
-        wakeLock = null;
-        console.log('Wake lock deaktiviert');
+    async function releaseWakeLock() {
+        if (wakeLock) {
+            await wakeLock.release();
+            wakeLock = null;
+            console.log('Wake lock deaktiviert');
+        }
     }
-}
 
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-        requestWakeLock();
-    } else {
-        releaseWakeLock();
-    }
-});
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            requestWakeLock();
+        } else {
+            releaseWakeLock();
+        }
+    });
 
-// Wake lock aktivieren, wenn die Seite geladen wird
-requestWakeLock();
-
-    </script>
+    requestWakeLock();
+  </script>
   </body>
 </html>
