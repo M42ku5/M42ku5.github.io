@@ -5,25 +5,64 @@
 <meta name="description" content="Show navigator userAgent string">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Show navigator userAgent string</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+* {
+box-sizing: border-box;
+}
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+.output1 {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+#qrcode {
+  margin: 10px 0;
+}
+</style>
 </head>
 <body>
 <button onclick="fn1()">show/update navigator.userAgent</button><br>
   <div>navigator.userAgent:</div>
   <div class="output1"></div>
+  <textarea id="textarea" name="textarea" class="textarea" style="width:100%;max-width:900px;margin:10px 0;padding:5px;min-height:100px;"></textarea>
   <br>
-  
+  <div id="qrcode"></div>
+  <br>
+
 <button onclick="fn2()">show/update navigator.platform</button><br>
   <div>navigator.platform:</div>
-  <div class="output2"></div>
+  <div class="output3"></div>
   <script>
+    let qrInstance = null;
+
     function fn1(){
-      document.querySelector(".output1").innerHTML=navigator.userAgent
+      const x = navigator.userAgent;
+      document.querySelector(".output1").innerHTML = x;
+      document.querySelector(".textarea").value = x;
+
+      // Clear previous QR code
+      document.getElementById("qrcode").innerHTML = "";
+
+      // Generate new QR code
+      qrInstance = new QRCode(document.getElementById("qrcode"), {
+        text: x,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.L
+      });
     }
-    fn1()
-     function fn2(){
-      document.querySelector(".output2").innerHTML=navigator.platform
+    fn1();
+
+    function fn2(){
+      const y = navigator.platform;
+      document.querySelector(".output3").innerHTML = y;
     }
-    fn2()
+    fn2();
   </script>
 </body>
 </html>
