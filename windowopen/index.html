@@ -36,14 +36,19 @@ cursor:pointer;
 </main>
 <script>
 const f=()=>{
-let x=document.querySelector('textarea').value;
-if(x!=''){
-x=x.trim();
-x.split('\n').forEach(e=>window.open(e))
-}
-else{
-alert('enter more that one url first.')
-}
+  const ta=document.querySelector('textarea');
+  const urls=ta.value
+    .split(/\r?\n/)
+    .map(s=>s.trim())
+    .filter(Boolean);
+
+  if(!urls.length){
+    alert('enter at least one url first.');
+    return;
+  }
+
+  ta.value=urls.join('\n');
+  urls.forEach(u=>window.open(u));
 }
 </script>
 </body>
