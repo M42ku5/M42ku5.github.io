@@ -38,7 +38,8 @@ cursor:pointer;
 const f=()=>{
 const x=document.querySelector('textarea').value;
 if(x!=''){
-x.trim().split('\n').forEach(e=>window.open(e))
+x=x.trim();
+x.split('\n').forEach(e=>window.open(e))
 }
 else{
 alert('enter more that one url first.')
