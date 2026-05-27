@@ -36,7 +36,7 @@ cursor:pointer;
 </main>
 <script>
 const f=()=>{
-const x=document.querySelector('textarea').value;
+let x=document.querySelector('textarea').value;
 if(x!=''){
 x=x.trim();
 x.split('\n').forEach(e=>window.open(e))
