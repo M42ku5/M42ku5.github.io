@@ -45,11 +45,12 @@
       if (isLoading) return
       isLoading = true
       loading.style.display = 'block'
+      loading.textContent = 'Loading images...'
 
       try {
         const [catRes, dogRes, foxRes] = await Promise.all([
           fetch('https://api.thecatapi.com/v1/images/search?limit=3'),
-          fetch('https://dog.ceo/api/breeds/image/random/3'),
+          fetch('https://api.thedogapi.com/v1/images/search?limit=3'),
           Promise.all([
             fetch('https://randomfox.ca/floof/'),
             fetch('https://randomfox.ca/floof/'),
@@ -57,38 +58,47 @@
           ])
         ])
 
+        if (!catRes.ok) throw new Error('Cat API error: ' + catRes.status)
+        if (!dogRes.ok) throw new Error('Dog API error: ' + dogRes.status)
+
         const catData = await catRes.json()
         const dogData = await dogRes.json()
         const foxData = await Promise.all(foxRes.map(res => res.json()))
 
         for (let i = 0; i < 3; i++) {
           const cat = catData[i]?.url
-          const dog = dogData.message[i]
+          const dog = dogData[i]?.url
           const fox = foxData[i]?.image
 
-          if (cat && dog && fox) {
+          if (cat) {
             const catImg = document.createElement('img')
             catImg.src = cat
             catImg.alt = 'A cute cat'
             gallery.appendChild(catImg)
+          }
 
+          if (dog) {
             const dogImg = document.createElement('img')
             dogImg.src = dog
             dogImg.alt = 'A good dog'
             gallery.appendChild(dogImg)
+          }
 
+          if (fox) {
             const foxImg = document.createElement('img')
             foxImg.src = fox
             foxImg.alt = 'A sly fox'
             gallery.appendChild(foxImg)
           }
         }
+
+        loading.style.display = 'none'
       } catch (err) {
         console.error('Error fetching images:', err)
+        loading.textContent = 'Could not load images. Please try again later.'
       }
 
       isLoading = false
-      loading.style.display = 'none'
     }
 
     const handleScroll = () => {
