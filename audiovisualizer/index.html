@@ -100,18 +100,18 @@
         // ===== Tuning =====
         // Anzahl der berechneten Waveform-Punkte (mehr = feiner)
         const BUCKETS = 2000;
-        // Dynamikbereich in dB, der auf die volle Höhe gemappt wird.
-        // Kleinerer Wert (z.B. 30) = mehr Kontrast bei lauter Musik,
-        // größerer Wert (z.B. 60) = mehr Details in leisen Passagen.
-        const DB_RANGE = 42;
+        // Kontrast-Exponent: 1 = neutrale RMS-Darstellung,
+        // höhere Werte (2-3) spreizen die Unterschiede zwischen
+        // laut und leise optisch weiter auseinander.
+        const CONTRAST = 2.2;
 
         const waveSurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#ff0000',
             progressColor: '#ee0000',
             cursorColor: '#aa0000',
-            height: 222,
-            normalize: true,
+            height: 'auto',
+            normalize: false,
             barWidth: 2,
             barGap: 1,
             barRadius: 2,
@@ -121,9 +121,11 @@
             waveSurfer.play();
         });
 
-        // Berechnet RMS-Energie pro Abschnitt und skaliert sie logarithmisch (dB).
-        // Dadurch bleibt auch stark komprimierte Musik (Metal, Loudness War)
-        // sichtbar differenziert statt als durchgehender Block.
+        // Berechnet RMS-Energie pro Abschnitt, normalisiert auf das
+        // 98. Perzentil (damit ein einzelner lauter Schlag nicht alles
+        // staucht) und spreizt die Unterschiede mit einem Kontrast-
+        // Exponenten. So bleiben sowohl komprimierte Musik (Metal) als
+        // auch dynamische Songs sichtbar differenziert.
         function computeRmsPeaks(audioBuffer, buckets) {
             const channels = [];
             for (let c = 0; c < audioBuffer.numberOfChannels; c++) {
@@ -145,10 +147,16 @@
                         count++;
                     }
                 }
+                peaks[i] = Math.sqrt(sum / Math.max(1, count));
+            }
 
-                const rms = Math.sqrt(sum / Math.max(1, count));
-                const db = 20 * Math.log10(rms + 1e-8);
-                peaks[i] = Math.min(1, Math.max(0, (db + DB_RANGE) / DB_RANGE));
+            // Referenzpegel: 98. Perzentil der RMS-Werte
+            const sorted = Array.from(peaks).sort((a, b) => a - b);
+            const ref = sorted[Math.floor(sorted.length * 0.98)] || 1;
+
+            for (let i = 0; i < buckets; i++) {
+                const rel = Math.min(1, peaks[i] / ref);
+                peaks[i] = Math.pow(rel, CONTRAST);
             }
             return peaks;
         }
