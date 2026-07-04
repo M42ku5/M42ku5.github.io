@@ -50,7 +50,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 50%;
+            width: 33.34%;
             height: 10%;
             background-color: rgba(0, 0, 0, 0.6);
             cursor: pointer;
@@ -66,8 +66,25 @@
         #interaction-area {
             position: absolute;
             bottom: 0;
+            left: 33.34%;
+            width: 33.33%;
+            height: 10%;
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            border: 1px dashed #555;
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+        #screenshot-area {
+            position: absolute;
+            bottom: 0;
             right: 0;
-            width: 50%;
+            width: 33.33%;
             height: 10%;
             background-color: rgba(0, 0, 0, 0.5);
             cursor: pointer;
@@ -89,6 +106,7 @@
     <div id="waveform"></div>
     <div id="reset-area">reset and play</div>
     <div id="interaction-area">pause/play</div>
+    <div id="screenshot-area">screenshot</div>
     <script src="https://cdn.jsdelivr.net/npm/wavesurfer.js@7"></script>
     <script>
         const fileInputContainer = document.getElementById('file-input-container');
@@ -96,6 +114,10 @@
         const waveformContainer = document.getElementById('waveform');
         const interactionArea = document.getElementById('interaction-area');
         const resetArea = document.getElementById('reset-area');
+        const screenshotArea = document.getElementById('screenshot-area');
+
+        let lastPeaks = null;
+        let lastFileName = 'waveform';
 
         // ===== Tuning =====
         // Anzahl der berechneten Waveform-Punkte (mehr = feiner)
@@ -171,11 +193,14 @@
                 audioCtx.close();
 
                 const peaks = computeRmsPeaks(audioBuffer, BUCKETS);
+                lastPeaks = peaks;
+                lastFileName = file.name.replace(/\.[^.]+$/, '');
 
                 fileInputContainer.style.display = 'none';
                 waveformContainer.style.display = 'block';
                 interactionArea.style.display = 'flex';
                 resetArea.style.display = 'flex';
+                screenshotArea.style.display = 'flex';
 
                 // Vorberechnete Peaks übergeben -> WaveSurfer zeichnet unsere
                 // dB-skalierte RMS-Kurve statt der Roh-Peaks.
@@ -217,6 +242,58 @@
             waveSurfer.seekTo(0);
             waveSurfer.play();
         }
+
+        // ===== Screenshot =====
+        // Bildgröße in Pixeln (quadratisch, 1:1)
+        const SHOT_SIZE = 2160;
+        // Anteil der Bildhöhe, den die Waveform einnimmt (Rest = schwarze
+        // Balken oben und unten)
+        const SHOT_WAVE_BAND = 0.35;
+
+        function saveScreenshot() {
+            if (!lastPeaks) return;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = SHOT_SIZE;
+            canvas.height = SHOT_SIZE;
+            const ctx = canvas.getContext('2d');
+
+            // Schwarzer Hintergrund
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, SHOT_SIZE, SHOT_SIZE);
+
+            // Waveform ohne Cursor und ohne Progress-Färbung zeichnen
+            const mid = SHOT_SIZE / 2;
+            const halfBand = (SHOT_SIZE * SHOT_WAVE_BAND) / 2;
+            const step = SHOT_SIZE / lastPeaks.length;
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, step);
+            ctx.beginPath();
+            for (let i = 0; i < lastPeaks.length; i++) {
+                const x = (i + 0.5) * step;
+                const h = Math.max(1, lastPeaks[i] * halfBand);
+                ctx.moveTo(x, mid - h);
+                ctx.lineTo(x, mid + h);
+            }
+            ctx.stroke();
+
+            canvas.toBlob((blob) => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${lastFileName}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            }, 'image/png');
+        }
+
+        screenshotArea.addEventListener('click', saveScreenshot);
+        screenshotArea.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            saveScreenshot();
+        });
     </script>
 </body>
 </html>
