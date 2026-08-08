@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Lab</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<style>
+:root{--bg:#0a0c11;--card:#151922;--line:#2a3140;--txt:#f5f7fa;--dim:#8b93a5;--c1:#ff4d6d;--c2:#3de0bc}
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,sans-serif}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 16px}
+h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.qr h2{color:var(--c1)}.ocr h2{color:var(--c2)}
+label.btn,button{background:var(--c1);color:#12060a;border:0;border-radius:999px;padding:11px 20px;font:600 15px system-ui;cursor:pointer;display:inline-block}
+input[type=file]{display:none}
+img{width:100%;border-radius:14px;margin-top:14px;display:none}
+pre{margin:0;padding:12px;background:var(--bg);border-radius:12px;border-left:3px solid var(--line);font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow:auto}
+.qr pre{border-color:var(--c1)}.ocr pre{border-color:var(--c2)}
+a{color:var(--c1)}
+#bar{height:5px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:14px;display:none}
+#bar div{height:100%;width:0;background:var(--c2)}
+</style>
+</head>
+<body>
+<h1>Image Lab</h1>
+
+<div class="card">
+  <label class="btn" for="f">Choose image</label>
+  <input id="f" type="file" accept="image/*">
+  <div id="bar"><div></div></div>
+  <img id="prev" alt="preview">
+</div>
+
+<div class="card qr"><h2>QR code</h2><pre id="qr">Nothing read yet.</pre></div>
+<div class="card ocr"><h2>Text</h2><pre id="ocr">Nothing read yet.</pre></div>
+
+<script>
+const $ = i => document.getElementById(i), bar = $('bar');
+
+$('f').onchange = e => {
+  const file = e.target.files[0]; if(!file) return;
+  const im = new Image();
+  im.onload = () => { $('prev').src = im.src; $('prev').style.display = 'block'; run(im); };
+  im.src = URL.createObjectURL(file);
+};
+
+function run(im){
+  const s = Math.min(1, 1600 / Math.max(im.width, im.height));
+  const c = document.createElement('canvas');
+  c.width = im.width * s | 0; c.height = im.height * s | 0;
+  const x = c.getContext('2d', {willReadFrequently:true});
+  x.drawImage(im, 0, 0, c.width, c.height);
+  const d = x.getImageData(0, 0, c.width, c.height);
+  const q = jsQR(d.data, c.width, c.height, {inversionAttempts:'attemptBoth'});
+
+  if(!q) $('qr').textContent = 'No QR code found.';
+  else if(/^https?:\/\//i.test(q.data)){
+    const a = document.createElement('a');
+    a.href = q.data; a.target = '_blank'; a.rel = 'noopener'; a.textContent = q.data;
+    $('qr').replaceChildren(a);
+  } else $('qr').textContent = q.data;
+
+  ocr(c);
+}
+
+async function ocr(c){
+  $('ocr').textContent = 'Reading…';
+  bar.style.display = 'block';
+  try{
+    const w = await Tesseract.createWorker('eng', 1, {
+      logger: m => bar.firstChild.style.width = ((m.progress || 0) * 100) + '%'
+    });
+    const {data} = await w.recognize(c);
+    $('ocr').textContent = data.text.trim() || 'No readable text.';
+    await w.terminate();
+  }catch(err){
+    $('ocr').textContent = 'OCR failed: ' + err.message;
+  }
+  bar.style.display = 'none';
+}
+</script>
+</body>
+</html>
