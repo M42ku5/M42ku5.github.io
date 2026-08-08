@@ -53,17 +53,36 @@ function run(im){
   c.width = im.width * s | 0; c.height = im.height * s | 0;
   const x = c.getContext('2d', {willReadFrequently:true});
   x.drawImage(im, 0, 0, c.width, c.height);
-  const d = x.getImageData(0, 0, c.width, c.height);
-  const q = jsQR(d.data, c.width, c.height, {inversionAttempts:'attemptBoth'});
-
-  if(!q) $('qr').textContent = 'No QR code found.';
-  else if(/^https?:\/\//i.test(q.data)){
-    const a = document.createElement('a');
-    a.href = q.data; a.target = '_blank'; a.rel = 'noopener'; a.textContent = q.data;
-    $('qr').replaceChildren(a);
-  } else $('qr').textContent = q.data;
-
+  render(scanAll(x, c.width, c.height));
   ocr(c);
+}
+
+// full frame first, then a 3x3 grid of half-size tiles overlapping by 50%
+function scanAll(x, w, h){
+  const found = new Set(), tiles = [[0, 0, w, h]];
+  for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++){
+    const tx = i * w >> 2, ty = j * h >> 2;
+    tiles.push([tx, ty, Math.min(w >> 1, w - tx), Math.min(h >> 1, h - ty)]);
+  }
+  for(const [tx, ty, tw, th] of tiles){
+    const d = x.getImageData(tx, ty, tw, th);
+    const r = jsQR(d.data, tw, th, {inversionAttempts:'attemptBoth'});
+    if(r && r.data) found.add(r.data);
+  }
+  return [...found];
+}
+
+function render(codes){
+  if(!codes.length){ $('qr').textContent = 'No QR code found.'; return; }
+  $('qr').replaceChildren(...codes.map((t, i) => {
+    const line = document.createElement('div');
+    if(/^https?:\/\//i.test(t)){
+      const a = document.createElement('a');
+      a.href = t; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t;
+      line.append(`${i + 1}. `, a);
+    } else line.textContent = `${i + 1}. ${t}`;
+    return line;
+  }));
 }
 
 async function ocr(c){
