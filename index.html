@@ -135,6 +135,37 @@
       .btn:hover { border-color: var(--accent); background: var(--accent-soft); }
       .btn:active { transform: translateY(1px); }
 
+      .search {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.5rem 0.9rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface);
+        color: var(--muted);
+        transition: border-color 0.18s ease;
+      }
+      .search:focus-within { border-color: var(--accent); }
+      .search input {
+        border: 0;
+        outline: 0;
+        background: none;
+        color: var(--text);
+        font: inherit;
+        font-size: 0.88rem;
+        width: 11rem;
+        max-width: 40vw;
+      }
+      .search input::-webkit-search-cancel-button { filter: grayscale(1); }
+
+      .empty {
+        margin: 0;
+        padding: 2rem 0;
+        text-align: center;
+        color: var(--muted);
+      }
+
       /* ---------- sections ---------- */
       section { margin-bottom: clamp(1.9rem, 4.5vw, 2.75rem); }
 
@@ -253,8 +284,12 @@
     <div class="wrap">
       <header>
         <h1>Projects by <span class="accent">Markus Schmieder</span></h1>
-        <p class="tagline">A collection of small, dependency-free browser tools and experiments — each one a single page that runs entirely on your device.</p>
+        <p class="tagline">A collection of 46 small, dependency-free browser tools and experiments — each one a single page that runs entirely on your device.</p>
         <div class="toolbar">
+          <label class="search">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" id="filter" placeholder="Filter projects…" autocomplete="off" aria-label="Filter projects">
+          </label>
           <button class="btn" id="theme-toggle" type="button" aria-pressed="false">
             <span aria-hidden="true" id="theme-icon">◐</span>
             <span id="theme-label">Theme</span>
@@ -265,7 +300,7 @@
         </div>
       </header>
 
-      <main>
+      <main id="projects">
         <section>
           <h2>News &amp; Feeds</h2>
           <div class="grid">
@@ -283,6 +318,13 @@
                 <span class="card-desc">RSS Text-News-Feed (German)</span>
               </span>
             </a>
+            <a class="card" href="ts100sv/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📺</span>
+              <span class="card-body">
+                <span class="card-title">Tagesschau in 100s</span>
+                <span class="card-desc">Tagesschau in 100 Sekunden (German)</span>
+              </span>
+            </a>
             <a class="card" href="news/" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">🗞️</span>
               <span class="card-body">
@@ -294,7 +336,7 @@
         </section>
 
         <section>
-          <h2>Text &amp; Writing</h2>
+          <h2>Text &amp; Data</h2>
           <div class="grid">
             <a class="card" href="tts/" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">🔊</span>
@@ -310,13 +352,54 @@
                 <span class="card-desc">Uses local storage</span>
               </span>
             </a>
+            <a class="card" href="notes-share/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📋</span>
+              <span class="card-body">
+                <span class="card-title">Sort &amp; Share Lines</span>
+                <span class="card-desc">Sort text lines and share them</span>
+              </span>
+            </a>
             <a class="card" href="coding/" target="_blank" rel="noopener">
-              <span class="icon" aria-hidden="true">⌨️</span>
+              <span class="icon" aria-hidden="true">🧹</span>
               <span class="card-body">
                 <span class="card-title">Code Minifier</span>
                 <span class="card-desc">Code minifier / reformatter</span>
               </span>
             </a>
+            <a class="card" href="code/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🧪</span>
+              <span class="card-body">
+                <span class="card-title">Code Playground</span>
+                <span class="card-desc">Scratchpad for HTML, CSS and JavaScript</span>
+              </span>
+            </a>
+            <a class="card" href="csv/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📊</span>
+              <span class="card-body">
+                <span class="card-title">CSV to Table</span>
+                <span class="card-desc">CSV to HTML Table</span>
+              </span>
+            </a>
+            <a class="card" href="lettermix/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🔤</span>
+              <span class="card-body">
+                <span class="card-title">Letter Mixer</span>
+                <span class="card-desc">Letter Combination Generator</span>
+              </span>
+            </a>
+            <a class="card" href="url-convert/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🔗</span>
+              <span class="card-body">
+                <span class="card-title">Linkify Text</span>
+                <span class="card-desc">Clickable Links in Text Area</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Images &amp; Files</h2>
+          <div class="grid">
             <a class="card" href="ocr/" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">🔍</span>
               <span class="card-body">
@@ -324,12 +407,6 @@
                 <span class="card-desc">Extract text from an image</span>
               </span>
             </a>
-          </div>
-        </section>
-
-        <section>
-          <h2>Files &amp; Conversion</h2>
-          <div class="grid">
             <a class="card" href="base64img/" target="_blank" rel="noopener">
               <span class="icon" aria-hidden="true">🖼️</span>
               <span class="card-body">
@@ -358,24 +435,147 @@
                 <span class="card-desc">Bundle files into a zip archive</span>
               </span>
             </a>
+            <a class="card" href="imgquality/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🔬</span>
+              <span class="card-body">
+                <span class="card-title">Image Quality</span>
+                <span class="card-desc">Image Quality Checker</span>
+              </span>
+            </a>
+            <a class="card" href="qr/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🎨</span>
+              <span class="card-body">
+                <span class="card-title">Image Lab</span>
+                <span class="card-desc">Image editing playground</span>
+              </span>
+            </a>
+            <a class="card" href="worker/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⬆️</span>
+              <span class="card-body">
+                <span class="card-title">Image Upload</span>
+                <span class="card-desc">Upload handled by a web worker</span>
+              </span>
+            </a>
           </div>
         </section>
 
         <section>
-          <h2>Utilities &amp; Fun</h2>
+          <h2>Audio &amp; Video</h2>
           <div class="grid">
-            <a class="card" href="time/" target="_blank" rel="noopener">
-              <span class="icon" aria-hidden="true">🕒</span>
+            <a class="card" href="audiovisualizer/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🎵</span>
               <span class="card-body">
-                <span class="card-title">Clock Favicon</span>
-                <span class="card-desc">Show time as favicon</span>
+                <span class="card-title">Audio Visualizer</span>
+                <span class="card-desc">Select an audio file to visualise</span>
               </span>
             </a>
-            <a class="card" href="windowopen/" target="_blank" rel="noopener">
-              <span class="icon" aria-hidden="true">🪟</span>
+            <a class="card" href="video/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🎬</span>
               <span class="card-body">
-                <span class="card-title">Multi-Open</span>
-                <span class="card-desc">Open multiple websites at once</span>
+                <span class="card-title">Video Demo</span>
+                <span class="card-desc">HTML5 video playback</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Games &amp; Drawing</h2>
+          <div class="grid">
+            <a class="card" href="find_pairs/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🃏</span>
+              <span class="card-body">
+                <span class="card-title">Find Pairs</span>
+                <span class="card-desc">Memory card matching game</span>
+              </span>
+            </a>
+            <a class="card" href="bug_hunt/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🐛</span>
+              <span class="card-body">
+                <span class="card-title">Bug Hunt</span>
+                <span class="card-desc">JavaScript arcade game</span>
+              </span>
+            </a>
+            <a class="card" href="tictactoe/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⭕</span>
+              <span class="card-body">
+                <span class="card-title">Tic-Tac-Toe</span>
+                <span class="card-desc">Classic three-in-a-row</span>
+              </span>
+            </a>
+            <a class="card" href="draw/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">✏️</span>
+              <span class="card-body">
+                <span class="card-title">Touch Drawing</span>
+                <span class="card-desc">Draw with touch or mouse</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Galleries</h2>
+          <div class="grid">
+            <a class="card" href="animals/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🦊</span>
+              <span class="card-body">
+                <span class="card-title">Animal Gallery</span>
+                <span class="card-desc">Cat, Dog &amp; Fox Gallery</span>
+              </span>
+            </a>
+            <a class="card" href="cats/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🐱</span>
+              <span class="card-body">
+                <span class="card-title">Cat Gallery</span>
+                <span class="card-desc">Random cat pictures</span>
+              </span>
+            </a>
+            <a class="card" href="dogs/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🐶</span>
+              <span class="card-body">
+                <span class="card-title">Dog Gallery</span>
+                <span class="card-desc">Random dog pictures</span>
+              </span>
+            </a>
+            <a class="card" href="catsdogs/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🐾</span>
+              <span class="card-body">
+                <span class="card-title">Cats &amp; Dogs</span>
+                <span class="card-desc">Cat &amp; Dog Gallery</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Device &amp; Browser</h2>
+          <div class="grid">
+            <a class="card" href="battery/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🔋</span>
+              <span class="card-body">
+                <span class="card-title">Battery Status</span>
+                <span class="card-desc">Battery Status API readout</span>
+              </span>
+            </a>
+            <a class="card" href="geolocation/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📍</span>
+              <span class="card-body">
+                <span class="card-title">Geolocation</span>
+                <span class="card-desc">Geolocation API readout</span>
+              </span>
+            </a>
+            <a class="card" href="orientation/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📐</span>
+              <span class="card-body">
+                <span class="card-title">Device Orientation</span>
+                <span class="card-desc">Device Orientation API readout</span>
+              </span>
+            </a>
+            <a class="card" href="vibrate/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📳</span>
+              <span class="card-body">
+                <span class="card-title">Vibrate</span>
+                <span class="card-desc">Vibration API test</span>
               </span>
             </a>
             <a class="card" href="useragent/" target="_blank" rel="noopener">
@@ -385,15 +585,99 @@
                 <span class="card-desc">Show browser user agent string</span>
               </span>
             </a>
-            <a class="card" href="find_pairs/" target="_blank" rel="noopener">
-              <span class="icon" aria-hidden="true">🃏</span>
+            <a class="card" href="screenwidth/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">📏</span>
               <span class="card-body">
-                <span class="card-title">Find Pairs</span>
-                <span class="card-desc">Memory card matching game</span>
+                <span class="card-title">Screen Width</span>
+                <span class="card-desc">outerWidth and innerWidth readout</span>
+              </span>
+            </a>
+            <a class="card" href="keyboard/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⌨️</span>
+              <span class="card-body">
+                <span class="card-title">QWERTZ Keyboard</span>
+                <span class="card-desc">QWERTZ DE Keyboard layout</span>
+              </span>
+            </a>
+            <a class="card" href="windowopen/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🪟</span>
+              <span class="card-body">
+                <span class="card-title">Multi-Open</span>
+                <span class="card-desc">Open multiple websites at once</span>
               </span>
             </a>
           </div>
         </section>
+
+        <section>
+          <h2>Clocks</h2>
+          <div class="grid">
+            <a class="card" href="time/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🕒</span>
+              <span class="card-body">
+                <span class="card-title">Clock Favicon</span>
+                <span class="card-desc">Show time as favicon</span>
+              </span>
+            </a>
+            <a class="card" href="seconds/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⏱️</span>
+              <span class="card-body">
+                <span class="card-title">Seconds Clock</span>
+                <span class="card-desc">Running clock display</span>
+              </span>
+            </a>
+            <a class="card" href="time-title/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⏲️</span>
+              <span class="card-body">
+                <span class="card-title">Clock in Tab Title</span>
+                <span class="card-desc">Show time in the page title</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2>Visual Experiments</h2>
+          <div class="grid">
+            <a class="card" href="dots/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⚫</span>
+              <span class="card-body">
+                <span class="card-title">Moving Dots</span>
+                <span class="card-desc">Moving Dots Animation</span>
+              </span>
+            </a>
+            <a class="card" href="border/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🟦</span>
+              <span class="card-body">
+                <span class="card-title">Moving Border</span>
+                <span class="card-desc">Animated border effect</span>
+              </span>
+            </a>
+            <a class="card" href="border2/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🟪</span>
+              <span class="card-body">
+                <span class="card-title">Moving Border 2</span>
+                <span class="card-desc">Border animation variant</span>
+              </span>
+            </a>
+            <a class="card" href="black/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">⬛</span>
+              <span class="card-body">
+                <span class="card-title">Black Screen</span>
+                <span class="card-desc">Black background fullscreen</span>
+              </span>
+            </a>
+            <a class="card" href="color-scheme/" target="_blank" rel="noopener">
+              <span class="icon" aria-hidden="true">🌗</span>
+              <span class="card-body">
+                <span class="card-title">Light / Dark Test</span>
+                <span class="card-desc">Colour scheme test page</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
+        <p class="empty" id="empty" hidden>No projects match that search.</p>
       </main>
 
       <footer>
@@ -435,6 +719,32 @@
         });
 
         render();
+
+        /* ---------- project filter ---------- */
+        var input = document.getElementById("filter");
+        var empty = document.getElementById("empty");
+        var sections = Array.prototype.slice.call(document.querySelectorAll("#projects section"));
+        var cards = sections.map(function (s) {
+          return Array.prototype.slice.call(s.querySelectorAll(".card")).map(function (c) {
+            return { el: c, text: c.textContent.toLowerCase() };
+          });
+        });
+
+        input.addEventListener("input", function () {
+          var q = input.value.trim().toLowerCase();
+          var hits = 0;
+          sections.forEach(function (section, i) {
+            var shown = 0;
+            cards[i].forEach(function (c) {
+              var match = !q || c.text.indexOf(q) !== -1;
+              c.el.hidden = !match;
+              if (match) shown++;
+            });
+            section.hidden = shown === 0;
+            hits += shown;
+          });
+          empty.hidden = hits !== 0;
+        });
       })();
     </script>
   </body>
