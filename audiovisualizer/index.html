@@ -109,6 +109,10 @@
     <div id="screenshot-area">screenshot</div>
     <script src="https://cdn.jsdelivr.net/npm/wavesurfer.js@8.0.1"></script>
     <script>
+        // Fallback: lokale Kopie laden, falls das CDN nicht erreichbar ist
+        window.WaveSurfer || document.write('<script src="wavesurfer.js"><\/script>');
+    </script>
+    <script>
         const fileInputContainer = document.getElementById('file-input-container');
         const fileInput = document.getElementById('file-input');
         const waveformContainer = document.getElementById('waveform');
