@@ -32,6 +32,7 @@
             max-width: 900px;
             display: flex;
             justify-content: flex-end;
+            flex-wrap: wrap;
             gap: 8px;
         }
         .tool {
@@ -196,6 +197,7 @@
 <body>
     <div class="top">
         <button class="tool" id="repeat" title="Frage wiederholen" hidden>🔊</button>
+        <button class="tool" id="level" title="Schwierigkeit" hidden>⭐ Leicht</button>
         <button class="tool" id="mode" title="Quiz / Lernen">🎯 Quiz</button>
         <button class="tool" id="fullscreen" title="Vollbild">⛶</button>
     </div>
@@ -356,6 +358,7 @@
             emoji,
             question: `Wo ist das ${letter}?`,
             questionHtml: `Wo ist das <b>${letter}</b>?`,
+            questionHardHtml: 'Wo ist das <b>👂</b>?',
             rightSay: `Super! ${letter} wie ${word}!`,
             wrongSay: `Das ist ${letter} wie ${word}.`
         }));
@@ -375,6 +378,7 @@
                 emoji: `<span class="dots">${dots}</span>`,
                 question: `Wo ist die ${word}?`,
                 questionHtml: `Wo ist die <b>${digit}</b>?`,
+                questionHardHtml: 'Wo ist die <b>👂</b>?',
                 rightSay: `Super! Das ist die ${word}!`,
                 wrongSay: `Das ist die ${word}.`
             });
@@ -382,6 +386,9 @@
 
         // Quiz state: null in learn mode
         let quiz = null;
+        // Hard level: the question is only spoken, the screen shows 👂 instead of the character
+        let hard = false;
+        try { hard = localStorage.getItem('kinder-tastatur-level') === 'hard'; } catch (e) {}
 
         function learn(item) {
             show(item.learnHtml);
@@ -391,7 +398,7 @@
         function askQuestion() {
             show(`<div class="score">⭐ ${quiz.score}</div>` +
                 `<div class="emoji">🤔</div>` +
-                `<div class="question">${quiz.target.questionHtml}</div>`);
+                `<div class="question">${hard ? quiz.target.questionHardHtml : quiz.target.questionHtml}</div>`);
             speak(quiz.target.question);
         }
 
@@ -417,7 +424,7 @@
                 flash(item.btn, 'correct');
                 show(`<div class="score">⭐ ${quiz.score}</div>` +
                     `<div class="emoji">🎉 ${target.emoji} 🎉</div>` +
-                    `<div class="question">Super!</div>`);
+                    `<div class="question">Super! <b>${target.char}</b></div>`);
                 speak(target.rightSay, { onEnd: () => setTimeout(nextQuestion, 400) });
             } else {
                 quiz.wrong++;
@@ -442,19 +449,32 @@
         // Switch between learn mode and quiz mode
         const modeBtn = document.getElementById('mode');
         const repeatBtn = document.getElementById('repeat');
+        const levelBtn = document.getElementById('level');
         const startHtml = display.innerHTML;
+        const updateLevelBtn = () => {
+            levelBtn.textContent = hard ? '⭐⭐ Schwer' : '⭐ Leicht';
+        };
+        updateLevelBtn();
+        levelBtn.addEventListener('click', () => {
+            hard = !hard;
+            try { localStorage.setItem('kinder-tastatur-level', hard ? 'hard' : 'easy'); } catch (e) {}
+            updateLevelBtn();
+            if (quiz) nextQuestion();
+        });
         modeBtn.addEventListener('click', () => {
             if (quiz) {
                 quiz = null;
                 document.querySelectorAll('.key.hint').forEach(k => k.classList.remove('hint'));
                 modeBtn.textContent = '🎯 Quiz';
                 repeatBtn.hidden = true;
+                levelBtn.hidden = true;
                 show(startHtml);
                 speak('Lernen');
             } else {
                 quiz = { score: 0, wrong: 0, target: null, busy: false };
                 modeBtn.textContent = '🔤 Lernen';
                 repeatBtn.hidden = false;
+                levelBtn.hidden = false;
                 nextQuestion();
             }
         });
