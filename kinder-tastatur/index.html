@@ -78,6 +78,18 @@
             line-height: 1.3;
             max-width: 340px;
         }
+        .display .question {
+            font-size: 34px;
+            font-weight: bold;
+        }
+        .display .question b {
+            color: #e5486b;
+            font-size: 56px;
+        }
+        .display .score {
+            font-size: 24px;
+            align-self: flex-end;
+        }
         .display .hint {
             font-size: 22px;
             opacity: .7;
@@ -118,6 +130,28 @@
         .key:active, .key.pressed {
             transform: translateY(5px);
             box-shadow: 0 1px 0 rgba(0, 0, 0, .18);
+        }
+        .key.shake {
+            animation: shake .4s;
+        }
+        @keyframes shake {
+            0%, 100% { translate: 0; }
+            25% { translate: -8px; }
+            75% { translate: 8px; }
+        }
+        .key.correct {
+            animation: correct .6s;
+        }
+        @keyframes correct {
+            0%, 100% { scale: 1; }
+            50% { scale: 1.25; }
+        }
+        .key.hint {
+            animation: glow 1s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 6px 0 rgba(0, 0, 0, .18), 0 0 0 0 #ffffff; }
+            50% { box-shadow: 0 6px 0 rgba(0, 0, 0, .18), 0 0 0 8px #ffffff, 0 0 24px 10px #ffd400; }
         }
         .key .l {
             font-size: 30px;
@@ -161,6 +195,8 @@
 </head>
 <body>
     <div class="top">
+        <button class="tool" id="repeat" title="Frage wiederholen" hidden>🔊</button>
+        <button class="tool" id="mode" title="Quiz / Lernen">🎯 Quiz</button>
         <button class="tool" id="fullscreen" title="Vollbild">⛶</button>
     </div>
     <div class="display" id="display">
@@ -219,7 +255,7 @@
             window.addEventListener('error', e => log(`JS error: ${e.message} (${e.lineno}:${e.colno})`, true));
             window.addEventListener('unhandledrejection', e => log('Promise error: ' + e.reason, true));
             document.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click',
-                () => speak(b.dataset.say, b.hasAttribute('data-novoice'))));
+                () => speak(b.dataset.say, { noVoice: b.hasAttribute('data-novoice') })));
             document.getElementById('debugCopy').addEventListener('click', () => {
                 debugLog.select();
                 (navigator.clipboard ? navigator.clipboard.writeText(debugLog.value) : Promise.reject())
@@ -246,8 +282,11 @@
         // a reference and wait briefly after cancelling.
         let currentUtterance = null;
         let speakTimer = null;
-        function speak(text, noVoice) {
-            if (!('speechSynthesis' in window)) return;
+        function speak(text, { noVoice = false, onEnd = null } = {}) {
+            if (!('speechSynthesis' in window)) {
+                if (onEnd) setTimeout(onEnd, 1500);
+                return;
+            }
             const synth = speechSynthesis;
             clearTimeout(speakTimer);
             const u = new SpeechSynthesisUtterance(text);
@@ -256,16 +295,26 @@
             u.rate = 0.85;
             u.pitch = 1.1;
             currentUtterance = u;
+            // onEnd runs once when this utterance finishes, fails, or seems stuck,
+            // but not when a newer speak() replaced it
+            let finished = false;
+            const done = () => {
+                if (finished || currentUtterance !== u) return;
+                finished = true;
+                if (onEnd) onEnd();
+            };
+            setTimeout(done, 8000);
+            let started = false;
+            log(`speak "${text}" voice=${describeVoice(u.voice)} | speaking=${synth.speaking} pending=${synth.pending} paused=${synth.paused}`);
+            u.onstart = () => { started = true; log(`  start "${text}"`); };
+            u.onend = () => { log(`  end "${text}"`); done(); };
+            u.onerror = e => {
+                // 'interrupted'/'canceled' are expected when a new key cuts off the previous word
+                const expected = e.error === 'interrupted' || e.error === 'canceled';
+                log(`  ${expected ? 'stopped' : 'SPEECH ERROR'} "${text}": ${e.error}`, !expected);
+                done();
+            };
             if (DEBUG) {
-                log(`speak "${text}" voice=${describeVoice(u.voice)} | speaking=${synth.speaking} pending=${synth.pending} paused=${synth.paused}`);
-                let started = false;
-                u.onstart = () => { started = true; log(`  start "${text}"`); };
-                u.onend = () => log(`  end "${text}"`);
-                u.onerror = e => {
-                    // 'interrupted'/'canceled' are expected when a new key cuts off the previous word
-                    const expected = e.error === 'interrupted' || e.error === 'canceled';
-                    log(`  ${expected ? 'stopped' : 'SPEECH ERROR'} "${text}": ${e.error}`, !expected);
-                };
                 setTimeout(() => { if (!started && currentUtterance === u) log(`  NO START after 3s "${text}"`, true); }, 3000);
             }
             const start = () => {
@@ -287,39 +336,134 @@
             display.classList.add('pop');
         }
 
-        function makeKey(parent, char, html, color, onPress, extraClass) {
-            const btn = document.createElement('button');
-            btn.className = 'key' + (extraClass ? ' ' + extraClass : '');
-            btn.style.setProperty('--c', color);
-            btn.innerHTML = html;
-            btn.addEventListener('click', onPress);
-            parent.appendChild(btn);
-            keyByChar[char] = btn;
+        function flash(btn, cls) {
+            btn.classList.remove(cls);
+            void btn.offsetWidth;
+            btn.classList.add(cls);
         }
 
-        LETTERS.forEach(([letter, word, emoji], i) => {
-            makeKey(lettersEl, letter,
-                `<span class="l">${letter}<small>${letter.toLowerCase()}</small></span><span class="e">${emoji}</span>`,
-                COLORS[i % COLORS.length],
-                () => {
-                    show(`<div class="big">${letter} ${letter.toLowerCase()}</div>` +
-                        `<div class="emoji">${emoji}</div>` +
-                        `<div class="word"><b>${word[0]}</b>${word.slice(1)}</div>`);
-                    speak(`${letter} wie ${word}`);
-                });
-        });
-
+        // Every key is an item; learn mode and quiz mode both work on items
+        const ITEMS = [];
+        LETTERS.forEach(([letter, word, emoji], i) => ITEMS.push({
+            char: letter,
+            keyHtml: `<span class="l">${letter}<small>${letter.toLowerCase()}</small></span><span class="e">${emoji}</span>`,
+            color: COLORS[i % COLORS.length],
+            parent: lettersEl,
+            learnHtml: `<div class="big">${letter} ${letter.toLowerCase()}</div>` +
+                `<div class="emoji">${emoji}</div>` +
+                `<div class="word"><b>${word[0]}</b>${word.slice(1)}</div>`,
+            learnSay: `${letter} wie ${word}`,
+            emoji,
+            question: `Wo ist das ${letter}?`,
+            questionHtml: `Wo ist das <b>${letter}</b>?`,
+            rightSay: `Super! ${letter} wie ${word}!`,
+            wrongSay: `Das ist ${letter} wie ${word}.`
+        }));
         NUMBERS.forEach((word, n) => {
             const digit = String(n);
-            makeKey(numbersEl, digit, `<span class="l">${digit}</span>`,
-                COLORS[(n + 3) % COLORS.length],
-                () => {
-                    show(`<div class="big">${digit}</div>` +
-                        `<div class="dots">${n === 0 ? '&nbsp;' : '🔴'.repeat(n)}</div>` +
-                        `<div class="word">${word}</div>`);
-                    speak(word);
-                }, 'num');
+            const dots = n === 0 ? '&nbsp;' : '🔴'.repeat(n);
+            ITEMS.push({
+                char: digit,
+                keyHtml: `<span class="l">${digit}</span>`,
+                color: COLORS[(n + 3) % COLORS.length],
+                parent: numbersEl,
+                extraClass: 'num',
+                learnHtml: `<div class="big">${digit}</div>` +
+                    `<div class="dots">${dots}</div>` +
+                    `<div class="word">${word}</div>`,
+                learnSay: word,
+                emoji: `<span class="dots">${dots}</span>`,
+                question: `Wo ist die ${word}?`,
+                questionHtml: `Wo ist die <b>${digit}</b>?`,
+                rightSay: `Super! Das ist die ${word}!`,
+                wrongSay: `Das ist die ${word}.`
+            });
         });
+
+        // Quiz state: null in learn mode
+        let quiz = null;
+
+        function learn(item) {
+            show(item.learnHtml);
+            speak(item.learnSay);
+        }
+
+        function askQuestion() {
+            show(`<div class="score">⭐ ${quiz.score}</div>` +
+                `<div class="emoji">🤔</div>` +
+                `<div class="question">${quiz.target.questionHtml}</div>`);
+            speak(quiz.target.question);
+        }
+
+        function nextQuestion() {
+            if (!quiz) return;
+            document.querySelectorAll('.key.hint').forEach(k => k.classList.remove('hint'));
+            let target;
+            do {
+                target = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+            } while (target === quiz.target);
+            quiz.target = target;
+            quiz.wrong = 0;
+            quiz.busy = false;
+            askQuestion();
+        }
+
+        function answer(item) {
+            if (quiz.busy) return;
+            const target = quiz.target;
+            if (item === target) {
+                quiz.score++;
+                quiz.busy = true;
+                flash(item.btn, 'correct');
+                show(`<div class="score">⭐ ${quiz.score}</div>` +
+                    `<div class="emoji">🎉 ${target.emoji} 🎉</div>` +
+                    `<div class="question">Super!</div>`);
+                speak(target.rightSay, { onEnd: () => setTimeout(nextQuestion, 400) });
+            } else {
+                quiz.wrong++;
+                flash(item.btn, 'shake');
+                // After two wrong tries, make the right key glow as a hint
+                if (quiz.wrong >= 2) target.btn.classList.add('hint');
+                speak(`${item.wrongSay} ${target.question}`);
+            }
+        }
+
+        ITEMS.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'key' + (item.extraClass ? ' ' + item.extraClass : '');
+            btn.style.setProperty('--c', item.color);
+            btn.innerHTML = item.keyHtml;
+            btn.addEventListener('click', () => (quiz ? answer(item) : learn(item)));
+            item.parent.appendChild(btn);
+            item.btn = btn;
+            keyByChar[item.char] = btn;
+        });
+
+        // Switch between learn mode and quiz mode
+        const modeBtn = document.getElementById('mode');
+        const repeatBtn = document.getElementById('repeat');
+        const startHtml = display.innerHTML;
+        modeBtn.addEventListener('click', () => {
+            if (quiz) {
+                quiz = null;
+                document.querySelectorAll('.key.hint').forEach(k => k.classList.remove('hint'));
+                modeBtn.textContent = '🎯 Quiz';
+                repeatBtn.hidden = true;
+                show(startHtml);
+                speak('Lernen');
+            } else {
+                quiz = { score: 0, wrong: 0, target: null, busy: false };
+                modeBtn.textContent = '🔤 Lernen';
+                repeatBtn.hidden = false;
+                nextQuestion();
+            }
+        });
+        // Repeat the question (button or tap on the display)
+        const repeatQuestion = () => {
+            if (quiz && !quiz.busy) speak(quiz.target.question);
+        };
+        repeatBtn.addEventListener('click', repeatQuestion);
+        display.addEventListener('click', repeatQuestion);
 
         // Physical keyboard support
         document.addEventListener('keydown', e => {
