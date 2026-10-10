@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kinder-Tastatur: Buchstaben und Zahlen lernen mit Tieren und Sprache">
+    <title>Kinder-Tastatur</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        body {
+            background: linear-gradient(180deg, #fff6d6 0%, #ffe3ef 100%);
+            color: #3b2c5a;
+            font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 16px 24px;
+        }
+        .top {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .tool {
+            font: inherit;
+            font-size: 22px;
+            background: #fff;
+            border: 3px solid #3b2c5a22;
+            border-radius: 14px;
+            padding: 4px 10px;
+            cursor: pointer;
+        }
+        .display {
+            width: 100%;
+            max-width: 900px;
+            min-height: 190px;
+            margin: 8px 0 16px;
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 6px 0 #3b2c5a22;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            text-align: center;
+        }
+        .display .big {
+            font-size: 72px;
+            line-height: 1.1;
+            font-weight: bold;
+        }
+        .display .emoji {
+            font-size: 64px;
+            line-height: 1.2;
+        }
+        .display .word {
+            font-size: 32px;
+        }
+        .display .word b {
+            color: #e5486b;
+        }
+        .display .dots {
+            font-size: 30px;
+            line-height: 1.3;
+            max-width: 340px;
+        }
+        .display .hint {
+            font-size: 22px;
+            opacity: .7;
+        }
+        .pop {
+            animation: pop .45s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(.4); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .keys {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 10px;
+        }
+        .keys + .keys {
+            margin-top: 18px;
+        }
+        .key {
+            font: inherit;
+            color: #3b2c5a;
+            background: var(--c);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, .18);
+            min-height: 84px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform .08s, box-shadow .08s;
+        }
+        .key:active, .key.pressed {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, .18);
+        }
+        .key .l {
+            font-size: 30px;
+            font-weight: bold;
+        }
+        .key .l small {
+            font-size: 22px;
+        }
+        .key .e {
+            font-size: 26px;
+        }
+        .key.num .l {
+            font-size: 38px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <button class="tool" id="fullscreen" title="Vollbild">⛶</button>
+    </div>
+    <div class="display" id="display">
+        <div class="emoji">🐒🐻🦁</div>
+        <div class="hint">Tippe auf einen Buchstaben oder eine Zahl!</div>
+    </div>
+    <div class="keys" id="letters"></div>
+    <div class="keys" id="numbers"></div>
+
+    <script>
+        const LETTERS = [
+            ['A', 'Affe', '🐒'], ['B', 'Bär', '🐻'], ['C', 'Chamäleon', '🦎'],
+            ['D', 'Delfin', '🐬'], ['E', 'Elefant', '🐘'], ['F', 'Frosch', '🐸'],
+            ['G', 'Giraffe', '🦒'], ['H', 'Hase', '🐰'], ['I', 'Igel', '🦔'],
+            ['J', 'Jaguar', '🐆'], ['K', 'Katze', '🐱'], ['L', 'Löwe', '🦁'],
+            ['M', 'Maus', '🐭'], ['N', 'Nashorn', '🦏'], ['O', 'Orca', '🐋'],
+            ['P', 'Pinguin', '🐧'], ['Q', 'Qualle', '🪼'], ['R', 'Raupe', '🐛'],
+            ['S', 'Schaf', '🐑'], ['T', 'Tiger', '🐯'], ['U', 'Uhu', '🦉'],
+            ['V', 'Vogel', '🐦'], ['W', 'Wal', '🐳'], ['X', 'Xylophon', '🎵'],
+            ['Y', 'Yak', '🐃'], ['Z', 'Zebra', '🦓']
+        ];
+        const NUMBERS = ['null', 'eins', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun'];
+        const COLORS = ['#ff9aa2', '#ffb870', '#ffe066', '#b5ea8c', '#8fd8f8', '#b9a6ff', '#ffa8e0'];
+
+        const display = document.getElementById('display');
+        const lettersEl = document.getElementById('letters');
+        const numbersEl = document.getElementById('numbers');
+        const keyByChar = {};
+
+        // Speech: prefer a German voice; voices may load asynchronously
+        let germanVoice = null;
+        function pickVoice() {
+            const voices = speechSynthesis.getVoices();
+            germanVoice = voices.find(v => v.lang === 'de-DE') ||
+                voices.find(v => v.lang && v.lang.toLowerCase().startsWith('de')) || null;
+        }
+        if ('speechSynthesis' in window) {
+            pickVoice();
+            speechSynthesis.addEventListener('voiceschanged', pickVoice);
+        }
+        function speak(text) {
+            if (!('speechSynthesis' in window)) return;
+            speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'de-DE';
+            if (germanVoice) u.voice = germanVoice;
+            u.rate = 0.85;
+            u.pitch = 1.1;
+            speechSynthesis.speak(u);
+        }
+
+        function show(html) {
+            display.innerHTML = html;
+            display.classList.remove('pop');
+            void display.offsetWidth;
+            display.classList.add('pop');
+        }
+
+        function makeKey(parent, char, html, color, onPress, extraClass) {
+            const btn = document.createElement('button');
+            btn.className = 'key' + (extraClass ? ' ' + extraClass : '');
+            btn.style.setProperty('--c', color);
+            btn.innerHTML = html;
+            btn.addEventListener('click', onPress);
+            parent.appendChild(btn);
+            keyByChar[char] = btn;
+        }
+
+        LETTERS.forEach(([letter, word, emoji], i) => {
+            makeKey(lettersEl, letter,
+                `<span class="l">${letter}<small>${letter.toLowerCase()}</small></span><span class="e">${emoji}</span>`,
+                COLORS[i % COLORS.length],
+                () => {
+                    show(`<div class="big">${letter} ${letter.toLowerCase()}</div>` +
+                        `<div class="emoji">${emoji}</div>` +
+                        `<div class="word"><b>${word[0]}</b>${word.slice(1)}</div>`);
+                    speak(`${letter} wie ${word}`);
+                });
+        });
+
+        NUMBERS.forEach((word, n) => {
+            const digit = String(n);
+            makeKey(numbersEl, digit, `<span class="l">${digit}</span>`,
+                COLORS[(n + 3) % COLORS.length],
+                () => {
+                    show(`<div class="big">${digit}</div>` +
+                        `<div class="dots">${n === 0 ? '&nbsp;' : '🔴'.repeat(n)}</div>` +
+                        `<div class="word">${word}</div>`);
+                    speak(word);
+                }, 'num');
+        });
+
+        // Physical keyboard support
+        document.addEventListener('keydown', e => {
+            if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+            const btn = keyByChar[e.key.toUpperCase()];
+            if (!btn) return;
+            btn.classList.add('pressed');
+            setTimeout(() => btn.classList.remove('pressed'), 120);
+            btn.click();
+        });
+
+        // Fullscreen toggle (hidden where unsupported, e.g. iPhone Safari)
+        const fsBtn = document.getElementById('fullscreen');
+        if (!document.fullscreenEnabled) {
+            fsBtn.style.display = 'none';
+        } else {
+            fsBtn.addEventListener('click', () => {
+                if (document.fullscreenElement) document.exitFullscreen();
+                else document.documentElement.requestFullscreen();
+            });
+        }
+    </script>
+</body>
+</html>
