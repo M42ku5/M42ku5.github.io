@@ -132,6 +132,31 @@
         .key.num .l {
             font-size: 38px;
         }
+        .debug {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 18px;
+            font-family: monospace;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        .debug-tests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .debug button {
+            font: inherit;
+            padding: 6px 8px;
+        }
+        .debug textarea {
+            width: 100%;
+            height: 260px;
+            font: 12px monospace;
+            -webkit-user-select: text;
+            user-select: text;
+        }
     </style>
 </head>
 <body>
@@ -144,6 +169,17 @@
     </div>
     <div class="keys" id="letters"></div>
     <div class="keys" id="numbers"></div>
+    <div class="debug" id="debug" hidden>
+        <div class="debug-tests">
+            <button data-say="D">„D“</button>
+            <button data-say="Delfin">„Delfin“</button>
+            <button data-say="D wie Delfin">„D wie Delfin“</button>
+            <button data-say="D wie Delfin" data-novoice>„D wie Delfin“ ohne Stimme</button>
+            <button data-say="drei" data-novoice>„drei“ ohne Stimme</button>
+            <button id="debugCopy">Log kopieren</button>
+        </div>
+        <textarea id="debugLog" readonly></textarea>
+    </div>
 
     <script>
         const LETTERS = [
@@ -151,7 +187,7 @@
             ['D', 'Delfin', '🐬'], ['E', 'Elefant', '🐘'], ['F', 'Frosch', '🐸'],
             ['G', 'Giraffe', '🦒'], ['H', 'Hase', '🐰'], ['I', 'Igel', '🦔'],
             ['J', 'Jaguar', '🐆'], ['K', 'Katze', '🐱'], ['L', 'Löwe', '🦁'],
-            ['M', 'Maus', '🐭'], ['N', 'Nashorn', '🦏'], ['O', 'Orca', '🐋'],
+            ['M', 'Marienkäfer', '🐞'], ['N', 'Nashorn', '🦏'], ['O', 'Orca', '🐋'],
             ['P', 'Pinguin', '🐧'], ['Q', 'Qualle', '🪼'], ['R', 'Raupe', '🐛'],
             ['S', 'Schaf', '🐑'], ['T', 'Tiger', '🐯'], ['U', 'Uhu', '🦉'],
             ['V', 'Vogel', '🐦'], ['W', 'Wal', '🐳'], ['X', 'Xylophon', '🎵'],
@@ -165,26 +201,83 @@
         const numbersEl = document.getElementById('numbers');
         const keyByChar = {};
 
+        // Debug mode (?debug in the URL): log speech events and errors on the page
+        const DEBUG = new URLSearchParams(location.search).has('debug');
+        const debugLog = document.getElementById('debugLog');
+        const t0 = Date.now();
+        function log(msg, isError) {
+            if (!DEBUG) return;
+            const line = `[${((Date.now() - t0) / 1000).toFixed(2)}s] ${msg}`;
+            debugLog.value += line + '\n';
+            debugLog.scrollTop = debugLog.scrollHeight;
+            if (isError) alert(line);
+        }
+        if (DEBUG) {
+            document.getElementById('debug').hidden = false;
+            log('UA: ' + navigator.userAgent);
+            log('speechSynthesis supported: ' + ('speechSynthesis' in window));
+            window.addEventListener('error', e => log(`JS error: ${e.message} (${e.lineno}:${e.colno})`, true));
+            window.addEventListener('unhandledrejection', e => log('Promise error: ' + e.reason, true));
+            document.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click',
+                () => speak(b.dataset.say, b.hasAttribute('data-novoice'))));
+            document.getElementById('debugCopy').addEventListener('click', () => {
+                debugLog.select();
+                (navigator.clipboard ? navigator.clipboard.writeText(debugLog.value) : Promise.reject())
+                    .catch(() => document.execCommand('copy'));
+            });
+        }
+        const describeVoice = v => v ? `${v.name} | ${v.lang} | local=${v.localService} | default=${v.default}` : 'none';
+
         // Speech: prefer a German voice; voices may load asynchronously
         let germanVoice = null;
         function pickVoice() {
             const voices = speechSynthesis.getVoices();
             germanVoice = voices.find(v => v.lang === 'de-DE') ||
                 voices.find(v => v.lang && v.lang.toLowerCase().startsWith('de')) || null;
+            log(`voices loaded: ${voices.length}, picked: ${describeVoice(germanVoice)}`);
+            voices.filter(v => /^de/i.test(v.lang)).forEach(v => log('  de voice: ' + describeVoice(v)));
         }
         if ('speechSynthesis' in window) {
             pickVoice();
             speechSynthesis.addEventListener('voiceschanged', pickVoice);
         }
-        function speak(text) {
+        // Chrome (esp. Android) silently drops speak() called right after cancel(),
+        // and may stop speaking if the utterance gets garbage collected, so we keep
+        // a reference and wait briefly after cancelling.
+        let currentUtterance = null;
+        let speakTimer = null;
+        function speak(text, noVoice) {
             if (!('speechSynthesis' in window)) return;
-            speechSynthesis.cancel();
+            const synth = speechSynthesis;
+            clearTimeout(speakTimer);
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'de-DE';
-            if (germanVoice) u.voice = germanVoice;
+            if (germanVoice && !noVoice) u.voice = germanVoice;
             u.rate = 0.85;
             u.pitch = 1.1;
-            speechSynthesis.speak(u);
+            currentUtterance = u;
+            if (DEBUG) {
+                log(`speak "${text}" voice=${describeVoice(u.voice)} | speaking=${synth.speaking} pending=${synth.pending} paused=${synth.paused}`);
+                let started = false;
+                u.onstart = () => { started = true; log(`  start "${text}"`); };
+                u.onend = () => log(`  end "${text}"`);
+                u.onerror = e => {
+                    // 'interrupted'/'canceled' are expected when a new key cuts off the previous word
+                    const expected = e.error === 'interrupted' || e.error === 'canceled';
+                    log(`  ${expected ? 'stopped' : 'SPEECH ERROR'} "${text}": ${e.error}`, !expected);
+                };
+                setTimeout(() => { if (!started && currentUtterance === u) log(`  NO START after 3s "${text}"`, true); }, 3000);
+            }
+            const start = () => {
+                synth.resume();
+                synth.speak(currentUtterance);
+            };
+            if (synth.speaking || synth.pending) {
+                synth.cancel();
+                speakTimer = setTimeout(start, 150);
+            } else {
+                start();
+            }
         }
 
         function show(html) {
