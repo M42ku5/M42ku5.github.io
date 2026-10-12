@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff6d6"/>
+      <stop offset="1" stop-color="#ffd3e4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- Three key tiles inside the maskable safe zone (center 80%) -->
+  <g font-family="Roboto, sans-serif" font-weight="bold" font-size="118" text-anchor="middle" fill="#3b2c5a">
+    <rect x="92" y="150" width="104" height="128" rx="24" fill="#00000022" transform="translate(0 10)"/>
+    <rect x="92" y="150" width="104" height="128" rx="24" fill="#ff9aa2"/>
+    <text x="144" y="256">A</text>
+    <rect x="204" y="150" width="104" height="128" rx="24" fill="#00000022" transform="translate(0 10)"/>
+    <rect x="204" y="150" width="104" height="128" rx="24" fill="#ffe066"/>
+    <text x="256" y="256">B</text>
+    <rect x="316" y="150" width="104" height="128" rx="24" fill="#00000022" transform="translate(0 10)"/>
+    <rect x="316" y="150" width="104" height="128" rx="24" fill="#8fd8f8"/>
+    <text x="368" y="256">C</text>
+    <rect x="148" y="300" width="216" height="74" rx="22" fill="#00000022" transform="translate(0 10)"/>
+    <rect x="148" y="300" width="216" height="74" rx="22" fill="#b5ea8c"/>
+    <text x="256" y="358" font-size="60">1 2 3</text>
+  </g>
+</svg>

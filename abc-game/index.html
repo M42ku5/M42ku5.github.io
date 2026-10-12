@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="ABC Game: Buchstaben und Zahlen lernen mit Tieren, Sprache und Quiz">
     <title>ABC Game</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#fff6d6">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <style>
         * {
             box-sizing: border-box;
@@ -547,9 +551,26 @@
             btn.click();
         });
 
-        // Fullscreen toggle (hidden where unsupported, e.g. iPhone Safari)
+        // Offline support: the service worker caches the game (installable as an app)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => {
+                    log(`service worker registered, scope ${reg.scope}, controlling page: ${!!navigator.serviceWorker.controller}`);
+                    if (DEBUG && window.caches) {
+                        caches.keys().then(keys => Promise.all(keys.map(k => caches.open(k)
+                            .then(c => c.keys()).then(reqs => log(`  cache ${k}: ${reqs.map(r => r.url.replace(reg.scope, './')).join(', ')}`)))));
+                    }
+                })
+                .catch(err => log('service worker failed: ' + err, true));
+        } else {
+            log('service worker not supported');
+        }
+        const installed = !!window.matchMedia && matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+        log(`installed app: ${installed} | online: ${navigator.onLine}`);
+
+        // Fullscreen toggle (hidden where unsupported, e.g. iPhone Safari, and in the installed app)
         const fsBtn = document.getElementById('fullscreen');
-        if (!document.fullscreenEnabled) {
+        if (!document.fullscreenEnabled || installed) {
             fsBtn.style.display = 'none';
         } else {
             fsBtn.addEventListener('click', () => {
