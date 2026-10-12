@@ -89,9 +89,26 @@
         .display .word b {
             color: #e5486b;
         }
-        .display .dots {
-            font-size: clamp(18px, 3vh, 30px);
-            line-height: 1.2;
+        /* Counting frame: rows of 5 places, filled circles show the amount */
+        .frame {
+            --s: min(clamp(14px, 2.6vh, 30px), 6vw);
+            display: inline-grid;
+            grid-template-columns: repeat(5, var(--s));
+            gap: calc(var(--s) * .2);
+            padding: calc(var(--s) * .2);
+            margin: 2px auto;
+            border: 2px solid #3b2c5a33;
+            border-radius: 10px;
+        }
+        .frame i {
+            width: var(--s);
+            height: var(--s);
+            border-radius: 50%;
+            border: 2px solid #e5486b55;
+        }
+        .frame i.on {
+            background: #e5486b;
+            border-color: #e5486b;
         }
         .display .question {
             font-size: clamp(24px, 3.8vh, 34px);
@@ -417,9 +434,16 @@
             rightSay: `Super! ${letter} wie ${word}!`,
             wrongSay: `Das ist ${letter} wie ${word}.`
         }));
+        // Counting frame for n: one row of 5 places for 0-5, two rows for 6-9
+        function frameHtml(n) {
+            const places = n > 5 ? 10 : 5;
+            let cells = '';
+            for (let i = 0; i < places; i++) cells += i < n ? '<i class="on"></i>' : '<i></i>';
+            return `<div class="frame" role="img" aria-label="${n}">${cells}</div>`;
+        }
         NUMBERS.forEach((word, n) => {
             const digit = String(n);
-            const dots = n === 0 ? '&nbsp;' : '🔴'.repeat(n);
+            const frame = frameHtml(n);
             ITEMS.push({
                 char: digit,
                 keyHtml: `<span class="l">${digit}</span>`,
@@ -427,10 +451,10 @@
                 parent: numbersEl,
                 extraClass: 'num',
                 learnHtml: `<div class="big">${digit}</div>` +
-                    `<div class="dots">${dots}</div>` +
+                    frame +
                     `<div class="word">${word}</div>`,
                 learnSay: word,
-                emoji: `<span class="dots">${dots}</span>`,
+                emoji: frame,
                 question: `Wo ist die ${word}?`,
                 questionHtml: `Wo ist die <b>${digit}</b>?`,
                 questionHardHtml: 'Wo ist die <b>👂</b>?',
@@ -479,8 +503,8 @@
                 quiz.busy = true;
                 flash(item.btn, 'correct');
                 show(`<div class="score">⭐ ${quiz.score}</div>` +
-                    `<div class="emoji">🎉 ${target.emoji} 🎉</div>` +
-                    `<div class="question">Super! <b>${target.char}</b></div>`);
+                    `<div class="emoji">${target.emoji}</div>` +
+                    `<div class="question">🎉 Super! <b>${target.char}</b> 🎉</div>`);
                 speak(target.rightSay, { onEnd: () => setTimeout(nextQuestion, 400) });
             } else {
                 quiz.wrong++;
